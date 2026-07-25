@@ -220,9 +220,9 @@
       },
       "simple": {
         "title": "Prueba tu primer dictado",
-        "subtitle": "Mantén presionado tu atajo, habla con naturalidad y suéltalo al terminar.",
+        "subtitle": "Mantén pulsado el atajo y habla con naturalidad, o púlsalo una vez para empezar y otra vez para detener.",
         "tip": "Puedes configurar el formato con IA conectando un modelo de IA en Configuración más adelante o cambiando a Esper Cloud.",
-        "cta": "Mantén presionado {{keys}} y habla",
+        "cta": "Mantén {{keys}} y habla, o púlsalo una vez para empezar y otra para detener",
         "mockHeader": "Notas",
         "ghost": "Comprar agua, leche, pan y tostadas de camino a casa."
       }

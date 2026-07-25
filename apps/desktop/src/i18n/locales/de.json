@@ -220,9 +220,9 @@
       },
       "simple": {
         "title": "Probiere dein erstes Diktat",
-        "subtitle": "Halte dein Tastenkürzel gedrückt, sprich ganz natürlich und lass los, wenn du fertig bist.",
+        "subtitle": "Halte das Tastenkürzel gedrückt und sprich natürlich – oder tippe es einmal zum Starten und erneut zum Stoppen.",
         "tip": "KI-Formatierung kannst du später einrichten, indem du in den Einstellungen ein KI-Modell verbindest oder zu Esper Cloud wechselst.",
-        "cta": "Halte {{keys}} und sprich",
+        "cta": "Halte {{keys}} gedrückt und sprich – oder tippe einmal zum Starten, erneut zum Stoppen",
         "mockHeader": "Notizen",
         "ghost": "Auf dem Heimweg Wasser, Milch, Brot und Toast besorgen."
       }
