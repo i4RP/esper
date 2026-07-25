@@ -292,6 +292,12 @@
     }
   },
   "widget": {
+    "actions": {
+      "openSettings": "Einstellungen öffnen",
+      "startRecording": "Aufnahme starten",
+      "stopRecording": "Aufnahme beenden und transkribieren",
+      "openApp": "Esper öffnen"
+    },
     "draft": {
       "label": "Entwurf",
       "insert": "Einfügen",

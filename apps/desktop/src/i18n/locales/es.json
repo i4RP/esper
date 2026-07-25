@@ -292,6 +292,12 @@
     }
   },
   "widget": {
+    "actions": {
+      "openSettings": "Abrir ajustes",
+      "startRecording": "Iniciar grabación",
+      "stopRecording": "Detener la grabación y transcribir",
+      "openApp": "Abrir Esper"
+    },
     "draft": {
       "label": "Borrador",
       "insert": "Pegar",

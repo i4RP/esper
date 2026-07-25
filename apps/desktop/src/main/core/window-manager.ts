@@ -53,7 +53,11 @@ export class WindowManager {
     return { x: 16, y: 16 };
   }
 
-  /** Calculate widget default bounds with edge inset applied for taskbar auto-hide */
+  /**
+   * Calculate widget default bounds. The widget docks at the top-center of the
+   * screen, hugging the menu bar — on notched MacBooks that puts the idle pill
+   * directly under the camera notch.
+   */
   private getWidgetDefaultBounds(
     workArea: Electron.Rectangle,
   ): Electron.Rectangle {
@@ -63,7 +67,7 @@ export class WindowManager {
     const width = Math.min(WindowManager.WIDGET_MAX_WIDTH, maxWidth);
     const height = Math.min(WindowManager.WIDGET_MAX_HEIGHT, maxHeight);
     const x = workArea.x + Math.round((workArea.width - width) / 2);
-    const y = workArea.y + workArea.height - height - inset;
+    const y = workArea.y;
 
     return {
       x,

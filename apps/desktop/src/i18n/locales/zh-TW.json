@@ -292,6 +292,12 @@
     }
   },
   "widget": {
+    "actions": {
+      "openSettings": "開啟設定",
+      "startRecording": "開始錄音",
+      "stopRecording": "停止錄音並轉錄",
+      "openApp": "開啟 Esper"
+    },
     "draft": {
       "label": "草稿",
       "insert": "貼上",

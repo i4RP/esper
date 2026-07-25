@@ -289,6 +289,12 @@
     }
   },
   "widget": {
+    "actions": {
+      "openSettings": "Open settings",
+      "startRecording": "Start recording",
+      "stopRecording": "Stop recording and transcribe",
+      "openApp": "Open Esper"
+    },
     "draft": {
       "label": "Draft",
       "insert": "Insert",
