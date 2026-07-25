@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Settings, Triangle, Maximize2, Pencil } from "lucide-react";
+import { Settings, Mic, Maximize2, Pencil } from "lucide-react";
 import { Waveform } from "@/components/Waveform";
 import type { RecordingStatus } from "@/hooks/useRecording";
 import { api } from "@/trpc/react";
@@ -195,7 +195,7 @@ export const FloatingButton: React.FC<FloatingButtonProps> = ({
             onClick={handleStartClick}
             label={t("widget.actions.startRecording")}
           >
-            <Triangle className="w-[14px] h-[14px]" strokeWidth={2.5} />
+            <Mic className="w-[15px] h-[15px]" strokeWidth={2.25} />
           </PillIconButton>
           <PillIconButton
             onClick={handleOpenApp}
@@ -226,9 +226,9 @@ export const FloatingButton: React.FC<FloatingButtonProps> = ({
               title={t("widget.actions.stopRecording")}
               className="flex items-center justify-center w-[28px] h-[28px] rounded-full bg-red-900/70 hover:bg-red-800/80 transition-colors"
             >
-              <Triangle
-                className="w-[13px] h-[13px] text-red-400"
-                strokeWidth={2.75}
+              <Mic
+                className="w-[14px] h-[14px] text-red-400"
+                strokeWidth={2.5}
               />
             </button>
           </div>

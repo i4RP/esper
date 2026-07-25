@@ -1118,21 +1118,12 @@ export class RecordingManager extends EventEmitter {
       }
       await this.pasteTranscription(result);
     } else {
-      // Check for empty transcript notification
-      const sessionDurationMs =
-        this.recordingStoppedAt && this.recordingStartedAt
-          ? this.recordingStoppedAt - this.recordingStartedAt
-          : 0;
-      if (sessionDurationMs > 3500) {
-        this.emit("widget-notification", {
-          type: "empty_transcript",
-          params: this.getActiveMicrophoneNotificationParams(),
-        });
-        logger.audio.info("Emitted widget notification", {
-          type: "empty_transcript",
-          microphoneName: this.activeMicrophoneName,
-        });
-      }
+      // Empty transcript: silence is a normal outcome, so no user-facing
+      // notification — just log it.
+      logger.audio.info("Session finalized with empty transcript", {
+        sessionId,
+        microphoneName: this.activeMicrophoneName,
+      });
     }
 
     this.resetSessionState();
@@ -1190,17 +1181,12 @@ export class RecordingManager extends EventEmitter {
     });
   }
 
+  // Deliberately NO widget notification here (nor for empty transcripts):
+  // silent dictations are a normal part of usage, so surfacing a warning
+  // toast for them is just noise. The session still cancels and logs.
   private notifyNoAudio(): void {
     logger.audio.warn("No audio detected for 5 seconds");
     this.emit("no-audio-detected");
-    this.emit("widget-notification", {
-      type: "no_audio",
-      params: this.getActiveMicrophoneNotificationParams(),
-    });
-    logger.audio.info("Emitted widget notification", {
-      type: "no_audio",
-      microphoneName: this.activeMicrophoneName,
-    });
   }
 
   private notifyDurationWarning(): void {

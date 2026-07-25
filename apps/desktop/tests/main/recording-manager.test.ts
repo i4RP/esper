@@ -643,13 +643,10 @@ describe("final transcript delivery", () => {
     expect(widgetNotifications).toEqual([]);
   });
 
-  it("includes the active microphone name in no-audio notifications", () => {
+  it("does not emit a widget notification for no-audio cancellations", () => {
     const manager = createRecordingManager();
     const internals = internalsOf(manager);
-    const widgetNotifications: Array<{
-      type: string;
-      params?: Record<string, string>;
-    }> = [];
+    const widgetNotifications: Array<{ type: string }> = [];
     manager.on("widget-notification", (n) => {
       widgetNotifications.push(n);
     });
@@ -667,24 +664,17 @@ describe("final transcript delivery", () => {
 
     internals.notifyNoAudio();
 
-    expect(widgetNotifications).toEqual([
-      {
-        type: "no_audio",
-        params: { microphone: "External USB Mic" },
-      },
-    ]);
+    // Silence is a normal outcome — no toast, the session just cancels.
+    expect(widgetNotifications).toEqual([]);
   });
 
-  it("includes the active microphone name in empty-transcript notifications", async () => {
+  it("does not emit a widget notification for empty transcripts", async () => {
     const finalizeSession = vi.fn().mockResolvedValue("");
     const manager = createRecordingManager({
       transcriptionService: { finalizeSession },
     });
     const internals = internalsOf(manager);
-    const widgetNotifications: Array<{
-      type: string;
-      params?: Record<string, string>;
-    }> = [];
+    const widgetNotifications: Array<{ type: string }> = [];
     manager.on("widget-notification", (n) => {
       widgetNotifications.push(n);
     });
@@ -695,11 +685,6 @@ describe("final transcript delivery", () => {
       tag: "REC_HF",
       firstChunkReceived: true,
     });
-    manager.setActiveMicrophoneForCurrentSession({
-      microphoneName: "External USB Mic",
-      deviceId: "usb-mic",
-      captureSource: "preferred",
-    });
     internals.machine.transition({ type: "signalStop" });
     internals.recordingStartedAt = 1000;
     internals.recordingStoppedAt = 6000;
@@ -709,70 +694,6 @@ describe("final transcript delivery", () => {
     await internals.handleFinalChunk();
 
     expect(finalizeSession).toHaveBeenCalledTimes(1);
-    expect(widgetNotifications).toEqual([
-      {
-        type: "empty_transcript",
-        params: { microphone: "External USB Mic" },
-      },
-    ]);
-  });
-
-  it("ignores active microphone reports when there is no active session", () => {
-    const manager = createRecordingManager();
-    const internals = internalsOf(manager);
-    const widgetNotifications: Array<{
-      type: string;
-      params?: Record<string, string>;
-    }> = [];
-    manager.on("widget-notification", (n) => {
-      widgetNotifications.push(n);
-    });
-
-    // A report that arrives with no session in flight (e.g. after the session
-    // ended and currentSessionId was cleared) must be dropped, so it can't leak
-    // a stale mic name into the next session.
-    internals.currentSessionId = null;
-    manager.setActiveMicrophoneForCurrentSession({
-      microphoneName: "Stale Mic",
-      deviceId: "stale",
-      captureSource: "preferred",
-    });
-
-    // A genuine recording session that never reported a mic emits no mic param.
-    internals.currentSessionId = "s1";
-    internals.machine.__setStateForTesting({
-      tag: "REC_HF",
-      firstChunkReceived: false,
-    });
-    internals.notifyNoAudio();
-
-    expect(widgetNotifications).toEqual([
-      { type: "no_audio", params: undefined },
-    ]);
-  });
-
-  it("omits the microphone param when no active microphone was reported", () => {
-    const manager = createRecordingManager();
-    const internals = internalsOf(manager);
-    const widgetNotifications: Array<{
-      type: string;
-      params?: Record<string, string>;
-    }> = [];
-    manager.on("widget-notification", (n) => {
-      widgetNotifications.push(n);
-    });
-
-    internals.currentSessionId = "s1";
-    internals.machine.__setStateForTesting({
-      tag: "REC_HF",
-      firstChunkReceived: false,
-    });
-    // No setActiveMicrophoneForCurrentSession call → falls back to the generic
-    // copy with no mic name.
-    internals.notifyNoAudio();
-
-    expect(widgetNotifications).toEqual([
-      { type: "no_audio", params: undefined },
-    ]);
+    expect(widgetNotifications).toEqual([]);
   });
 });
