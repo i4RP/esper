@@ -116,38 +116,9 @@ export interface ModelManagerState {
 //   },
 // ];
 
+// Esper is local-only: the upstream "amical-cloud" entry was removed, so only
+// on-device Whisper models are offered.
 export const AVAILABLE_MODELS: AvailableWhisperModel[] = [
-  {
-    id: "amical-cloud",
-    name: "Esper Cloud",
-    type: "whisper",
-    description: "Fast cloud-based transcription with high accuracy.",
-    checksum: "", // No checksum for cloud model
-    filename: "", // No file for cloud model
-    downloadUrl: "", // No download for cloud model
-    size: 0, // No size for cloud model
-    sizeFormatted: "Cloud",
-    modelSize: "Cloud",
-    features: [
-      {
-        icon: "cloud",
-        tooltip: "Cloud-based processing",
-      },
-      {
-        icon: "bolt",
-        tooltip: "Fast transcription",
-      },
-      {
-        icon: "languages",
-        tooltip: "Multilingual support",
-      },
-    ],
-    speed: 4.5,
-    accuracy: 4.5,
-    setup: "cloud",
-    provider: "Esper Cloud",
-    providerIcon: "/assets/icon_logo.svg",
-  },
   {
     id: "whisper-tiny",
     name: "Whisper Tiny",

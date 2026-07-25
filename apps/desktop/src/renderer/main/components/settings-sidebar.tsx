@@ -1,7 +1,5 @@
 import * as React from "react";
 import {
-  IconBookFilled,
-  IconBrandDiscordFilled,
   IconChevronLeft,
   IconDownload,
   IconInfoCircle,
@@ -76,20 +74,7 @@ export function SettingsSidebar({
     ? settingsNavItems
     : [...appNavItems, settingsEntryItem];
 
-  const baseNavSecondary: NavSecondaryItem[] = [
-    {
-      id: "docs",
-      title: t("settings.sidebar.docs"),
-      url: "https://amical.ai/docs",
-      icon: IconBookFilled,
-    },
-    {
-      id: "community",
-      title: t("settings.sidebar.community"),
-      url: "https://amical.ai/community",
-      icon: IconBrandDiscordFilled,
-    },
-  ];
+  const baseNavSecondary: NavSecondaryItem[] = [];
 
   const navSecondaryCta: NavSecondaryItem | null = sidebarCtaPayload
     ? {
