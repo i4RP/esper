@@ -17,7 +17,6 @@
  * - Migrations run automatically when loading settings with an older version
  */
 
-import { app } from "electron";
 import { eq } from "drizzle-orm";
 import { db } from ".";
 import {
@@ -25,7 +24,6 @@ import {
   type NewAppSettings,
   type AppSettingsData,
 } from "./schema";
-import { dictationLanguageForLocale } from "../constants/languages";
 import { isMacOS } from "../utils/platform";
 import { MAC_KEYCODES, WINDOWS_KEYCODES } from "../utils/keycodes";
 import {
@@ -79,22 +77,10 @@ const getDefaultShortcuts = () => {
   };
 };
 
-// New installs get concrete dictation languages rather than auto-detect —
-// accuracy is better with a language constraint, and the onboarding language
-// step lets users adjust. English plus the OS language, when whisper supports
-// it and it isn't English.
+// New installs default to Japanese only — accuracy is better with a language
+// constraint, and the onboarding language step lets users adjust.
 const defaultDictationSettings = (): AppSettingsData["dictation"] => {
-  try {
-    const locale =
-      app.getPreferredSystemLanguages()[0] ?? app.getSystemLocale();
-    const system = locale ? dictationLanguageForLocale(locale) : undefined;
-    if (system && system !== "en") {
-      return { autoDetectEnabled: false, languages: ["en", system] };
-    }
-  } catch {
-    // Locale APIs unavailable (e.g. before app ready); English-only is fine.
-  }
-  return { autoDetectEnabled: false, languages: ["en"] };
+  return { autoDetectEnabled: false, languages: ["ja"] };
 };
 
 // Default settings. Built per call rather than cached at module load — the

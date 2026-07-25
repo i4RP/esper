@@ -5,8 +5,8 @@ import { setTestDatabase } from "../setup";
 import { getAppSettings } from "../../src/db/app-settings";
 
 /**
- * First-run seeding of dictation defaults: concrete languages (English + the
- * OS language) with auto-detect off, so first dictations carry a language
+ * First-run seeding of dictation defaults: Japanese only with auto-detect
+ * off, regardless of the OS language, so first dictations carry a language
  * constraint. Existing installs are untouched — this only runs when no
  * settings row exists.
  */
@@ -22,7 +22,7 @@ describe("default settings seed", () => {
     await testDb.close();
   });
 
-  it("seeds English plus the OS language with auto-detect off", async () => {
+  it("seeds Japanese only with auto-detect off, ignoring the OS language", async () => {
     vi.mocked(app.getPreferredSystemLanguages).mockReturnValue([
       "hi-IN",
       "en-IN",
@@ -32,32 +32,10 @@ describe("default settings seed", () => {
 
     expect(settings.dictation).toEqual({
       autoDetectEnabled: false,
-      languages: ["en", "hi"],
+      languages: ["ja"],
     });
     expect(settings.labs).toEqual({
       selfCorrection: false,
-    });
-  });
-
-  it("does not duplicate English when the OS language is English", async () => {
-    vi.mocked(app.getPreferredSystemLanguages).mockReturnValue(["en-US"]);
-
-    const settings = await getAppSettings();
-
-    expect(settings.dictation).toEqual({
-      autoDetectEnabled: false,
-      languages: ["en"],
-    });
-  });
-
-  it("falls back to English only for unsupported OS languages", async () => {
-    vi.mocked(app.getPreferredSystemLanguages).mockReturnValue(["eo-001"]);
-
-    const settings = await getAppSettings();
-
-    expect(settings.dictation).toEqual({
-      autoDetectEnabled: false,
-      languages: ["en"],
     });
   });
 
@@ -66,9 +44,9 @@ describe("default settings seed", () => {
 
     await getAppSettings();
     // Change the reported locale; the stored row must win on re-read.
-    vi.mocked(app.getPreferredSystemLanguages).mockReturnValue(["ja-JP"]);
+    vi.mocked(app.getPreferredSystemLanguages).mockReturnValue(["en-US"]);
     const settings = await getAppSettings();
 
-    expect(settings.dictation?.languages).toEqual(["en", "fr"]);
+    expect(settings.dictation?.languages).toEqual(["ja"]);
   });
 });
