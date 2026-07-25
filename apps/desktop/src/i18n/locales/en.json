@@ -218,7 +218,7 @@
       "simple": {
         "title": "Try your first dictation",
         "subtitle": "Hold the shortcut and speak naturally, or tap it once to start and again to stop.",
-        "tip": "You can set up AI formatting by connecting an AI model in Settings later or switching to Esper Cloud.",
+        "tip": "AI formatting is available later by connecting an AI model in Settings.",
         "cta": "Hold {{keys}} and speak — or tap once to start, again to stop",
         "mockHeader": "Notes",
         "ghost": "Pick up water, milk, bread, and toast on the way home."
@@ -435,7 +435,7 @@
         "description": "Try experimental features"
       },
       "history": {
-        "title": "History",
+        "title": "Home",
         "description": "View and manage dictation history"
       },
       "advanced": {

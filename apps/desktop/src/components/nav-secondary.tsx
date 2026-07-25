@@ -12,7 +12,6 @@ import {
   SidebarMenu,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { AuthButton } from "@/components/auth-button";
 import { FeedbackButton } from "@/components/feedback-button";
 import { isInternalUrl } from "@/utils/url";
 export type { NavSecondaryItem } from "@/components/nav-secondary-item-button";
@@ -54,7 +53,6 @@ export function NavSecondary({
           {process.env.NODE_ENV === "development" && <DevMenu />}
           <FeedbackButton />
           {beforeAuth}
-          <AuthButton />
         </SidebarMenu>
       </SidebarGroupContent>
     </SidebarGroup>

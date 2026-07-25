@@ -221,7 +221,7 @@
       "simple": {
         "title": "試試您的第一次聽寫",
         "subtitle": "按住快捷鍵自然說話，或按一下開始、再按一下停止。",
-        "tip": "您之後可以在設定中連接 AI 模型，或切換到 Esper Cloud，來啟用 AI 格式化。",
+        "tip": "AI 格式化功能可稍後在設定中連接 AI 模型後使用。",
         "cta": "按住 {{keys}} 說話，或按一下開始、再按一下停止",
         "mockHeader": "筆記",
         "ghost": "回家路上買水、牛奶、麵包和吐司。"
@@ -438,7 +438,7 @@
         "description": "試用實驗性功能"
       },
       "history": {
-        "title": "歷史紀錄",
+        "title": "首頁",
         "description": "轉錄歷史紀錄檢視和管理"
       },
       "advanced": {

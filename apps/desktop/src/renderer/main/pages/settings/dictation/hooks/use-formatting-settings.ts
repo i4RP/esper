@@ -122,38 +122,15 @@ export function useFormattingSettings(): UseFormattingSettingsReturn {
   // Derived values
   const languageModels = languageModelsQuery.data || [];
   const hasLanguageModels = languageModels.length > 0;
-  const isCloudSpeechSelected = speechModelQuery.data === "amical-cloud";
+  // Esper is local-only: cloud formatting was removed, so only connected
+  // language models are offered.
   const cloudFormattingOptionValue = getSpeechModelSelectionKey("amical-cloud");
-  const canUseCloudFormatting =
-    isCloudSpeechSelected && (isAuthenticated ?? false);
-  const hasFormattingOptions = hasLanguageModels || canUseCloudFormatting;
+  const hasFormattingOptions = hasLanguageModels;
   const formattingEnabled = formatterConfig?.enabled ?? false;
   const disableFormattingToggle = !hasFormattingOptions;
 
   const formattingOptions = useMemo<ComboboxOption[]>(() => {
-    const getCloudDisabledReason = () => {
-      if (!isCloudSpeechSelected && !isAuthenticated) {
-        return t("settings.dictation.formatting.disabledReason.cloudAndSignIn");
-      }
-      if (!isCloudSpeechSelected) {
-        return t("settings.dictation.formatting.disabledReason.cloud");
-      }
-      if (!isAuthenticated) {
-        return t("settings.dictation.formatting.disabledReason.signIn");
-      }
-      return undefined;
-    };
-
-    const options: ComboboxOption[] = [
-      {
-        value: cloudFormattingOptionValue,
-        label: t("settings.dictation.formatting.cloudOptionLabel"),
-        disabled: !canUseCloudFormatting,
-        disabledReason: getCloudDisabledReason(),
-      },
-    ];
-
-    const languageOptions = languageModels.map((model) => ({
+    return languageModels.map((model) => ({
       value: getModelSelectionKey(
         model.providerInstanceId,
         model.type,
@@ -161,16 +138,7 @@ export function useFormattingSettings(): UseFormattingSettingsReturn {
       ),
       label: `${model.name} (${model.provider})`,
     }));
-
-    return [...options, ...languageOptions];
-  }, [
-    canUseCloudFormatting,
-    isCloudSpeechSelected,
-    isAuthenticated,
-    cloudFormattingOptionValue,
-    languageModels,
-    t,
-  ]);
+  }, [languageModels]);
 
   const optionValues = useMemo(() => {
     return new Set(formattingOptions.map((option) => option.value));
@@ -182,10 +150,6 @@ export function useFormattingSettings(): UseFormattingSettingsReturn {
 
     if (optionValues.has(preferredModelId)) {
       return preferredModelId;
-    }
-
-    if (preferredModelId === "amical-cloud") {
-      return cloudFormattingOptionValue;
     }
 
     const normalizedSelection = resolveStoredModelSelectionValue(
@@ -205,19 +169,11 @@ export function useFormattingSettings(): UseFormattingSettingsReturn {
     optionValues,
   ]);
 
-  // Inline state conditions
-  const showCloudRequiresSpeech =
-    selectedModelId === cloudFormattingOptionValue && !isCloudSpeechSelected;
-  const showCloudRequiresAuth =
-    selectedModelId === cloudFormattingOptionValue &&
-    isCloudSpeechSelected &&
-    !isAuthenticated;
-  const showCloudReady =
-    selectedModelId === cloudFormattingOptionValue && canUseCloudFormatting;
-  const showNoLanguageModels =
-    !hasLanguageModels &&
-    !canUseCloudFormatting &&
-    selectedModelId !== cloudFormattingOptionValue;
+  // Inline state conditions (cloud formatting no longer exists)
+  const showCloudRequiresSpeech = false;
+  const showCloudRequiresAuth = false;
+  const showCloudReady = false;
+  const showNoLanguageModels = !hasLanguageModels;
 
   // Handlers
   const handleFormattingEnabledChange = useCallback(

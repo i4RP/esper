@@ -221,7 +221,7 @@
       "simple": {
         "title": "Prueba tu primer dictado",
         "subtitle": "Mantén pulsado el atajo y habla con naturalidad, o púlsalo una vez para empezar y otra vez para detener.",
-        "tip": "Puedes configurar el formato con IA conectando un modelo de IA en Configuración más adelante o cambiando a Esper Cloud.",
+        "tip": "El formato con IA estará disponible más adelante conectando un modelo de IA en Ajustes.",
         "cta": "Mantén {{keys}} y habla, o púlsalo una vez para empezar y otra para detener",
         "mockHeader": "Notas",
         "ghost": "Comprar agua, leche, pan y tostadas de camino a casa."
@@ -438,7 +438,7 @@
         "description": "Prueba funciones experimentales"
       },
       "history": {
-        "title": "Historial",
+        "title": "Inicio",
         "description": "Consulta y administra el historial de transcripciones"
       },
       "advanced": {

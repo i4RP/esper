@@ -30,7 +30,6 @@ import {
   SIDEBAR_CTA_FEATURE_FLAG,
 } from "@/utils/feature-flags";
 import { CommandSearchButton } from "./command-search-button";
-import { NavCloud } from "./nav-cloud";
 import { RemoteConfigSidebarSlot } from "./remote-config-surfaces";
 import { SettingsNavigationControls } from "./settings-navigation-controls";
 import { APP_NAV_ITEMS, SETTINGS_NAV_ITEMS } from "../lib/settings-navigation";
@@ -184,11 +183,7 @@ export function SettingsSidebar({
       </SidebarContent>
       <SidebarFooter className="p-0">
         <RemoteConfigSidebarSlot />
-        <NavSecondary
-          items={navSecondary}
-          prefix={<NavCloud />}
-          beforeAuth={updateReadyButton}
-        />
+        <NavSecondary items={navSecondary} beforeAuth={updateReadyButton} />
       </SidebarFooter>
     </Sidebar>
   );
