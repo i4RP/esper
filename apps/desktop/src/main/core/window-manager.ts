@@ -224,11 +224,15 @@ export class WindowManager {
     const colors = await this.getThemeColors();
 
     const primaryDisplay = screen.getPrimaryDisplay();
-    const windowHeight = Math.min(800, primaryDisplay.workAreaSize.height - 40);
+    // Compact, utility-style window (Superwhisper-sized) instead of a large
+    // app window.
+    const windowHeight = Math.min(640, primaryDisplay.workAreaSize.height - 40);
 
     this.mainWindow = new BrowserWindow({
-      width: 1200,
+      width: 980,
       height: windowHeight,
+      minWidth: 760,
+      minHeight: 480,
       frame: true,
       backgroundColor:
         process.platform === "darwin" ? "#00000000" : colors.backgroundColor,
@@ -459,10 +463,11 @@ export class WindowManager {
     const colors = await this.getThemeColors();
 
     const primaryDisplay = screen.getPrimaryDisplay();
-    const windowHeight = Math.min(928, primaryDisplay.workAreaSize.height - 40);
+    // Match the compact main-window footprint.
+    const windowHeight = Math.min(680, primaryDisplay.workAreaSize.height - 40);
 
     this.onboardingWindow = new BrowserWindow({
-      width: 1160,
+      width: 980,
       height: windowHeight,
       backgroundColor: colors.backgroundColor,
       frame: true,
