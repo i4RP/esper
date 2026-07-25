@@ -111,10 +111,25 @@ describe("recording state machine", () => {
     ]);
   });
 
-  it("turns a quick PTT release into a double-tap hands-free session", () => {
+  it("latches a quick PTT release straight into hands-free", () => {
+    const [state, commands] = step(startPtt(), {
+      type: "pttRelease",
+      quick: true,
+      isDraft: false,
+    });
+
+    expect(state).toEqual({
+      tag: "REC_HF",
+      firstChunkReceived: false,
+    });
+    expect(commands).toEqual([]);
+  });
+
+  it("keeps the quick-release grace window for draft sessions", () => {
     const [quickState, quickCommands] = step(startPtt(), {
       type: "pttRelease",
       quick: true,
+      isDraft: true,
     });
 
     expect(quickState).toEqual({
@@ -135,10 +150,11 @@ describe("recording state machine", () => {
     expect(handsFreeCommands).toEqual([{ type: "clearQuickReleaseTimer" }]);
   });
 
-  it("cancels quick PTT release when the quick timer fires", () => {
+  it("cancels a quick draft release when the quick timer fires", () => {
     const [quickState] = step(startPtt(), {
       type: "pttRelease",
       quick: true,
+      isDraft: true,
     });
     const [state, commands] = step(quickState, {
       type: "quickReleaseTimeout",
@@ -182,6 +198,7 @@ describe("recording state machine", () => {
     const [quickState] = step(startPtt(), {
       type: "pttRelease",
       quick: true,
+      isDraft: true,
     });
     const [state, commands] = step(quickState, {
       type: "toggle",
@@ -441,7 +458,8 @@ describe("recording state machine", () => {
       { type: "start", mode: "hands-free", hasSpeechModel: false },
       { type: "startSessionReady" },
       { type: "pttPress", quick: true },
-      { type: "pttRelease", quick: true },
+      { type: "pttRelease", quick: true, isDraft: false },
+      { type: "pttRelease", quick: true, isDraft: true },
       { type: "toggle", quick: true },
       { type: "signalStop" },
       { type: "quickReleaseTimeout" },

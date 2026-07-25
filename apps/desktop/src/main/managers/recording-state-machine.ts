@@ -39,7 +39,7 @@ export type RecordingMachineEvent =
     }
   | { type: "startSessionReady" }
   | { type: "pttPress"; quick: boolean }
-  | { type: "pttRelease"; quick: boolean }
+  | { type: "pttRelease"; quick: boolean; isDraft: boolean }
   | { type: "toggle"; quick: boolean }
   | { type: "signalStop" }
   | { type: "dismiss" }
@@ -187,7 +187,18 @@ export function transitionRecordingMachine(
         return { state, commands: [] };
       }
 
-      return event.quick
+      if (!event.quick) {
+        return {
+          state: { tag: "STOP_N" },
+          commands: [{ type: "stopSession", code: null }],
+        };
+      }
+
+      // A quick tap latches straight into hands-free: recording continues
+      // until the next PTT press stops it. Draft sessions are push-to-talk
+      // only, so they keep the quick-release grace window instead (re-press
+      // resumes, timeout cancels).
+      return event.isDraft
         ? {
             state: {
               tag: "PTT_Q",
@@ -196,8 +207,11 @@ export function transitionRecordingMachine(
             commands: [{ type: "startQuickReleaseTimer" }],
           }
         : {
-            state: { tag: "STOP_N" },
-            commands: [{ type: "stopSession", code: null }],
+            state: {
+              tag: "REC_HF",
+              firstChunkReceived: state.firstChunkReceived,
+            },
+            commands: [],
           };
 
     case "toggle":

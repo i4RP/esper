@@ -345,11 +345,14 @@ export class RecordingManager extends EventEmitter {
     });
   }
 
-  // PTT key released
+  // PTT key released. A quick tap latches the session into hands-free (it
+  // keeps recording until the next press); draft sessions stay push-to-talk
+  // only, so the FSM needs to know whether this session is a draft.
   public async onPTTRelease() {
     await this.machine.handleEvent({
       type: "pttRelease",
       quick: this.isQuickAction(),
+      isDraft: this.currentIsInstruct,
     });
   }
 
