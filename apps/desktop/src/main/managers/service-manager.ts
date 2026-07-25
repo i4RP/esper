@@ -265,7 +265,10 @@ export class ServiceManager {
     await this.shortcutManager.initialize();
 
     // Connect shortcut events to recording manager
-    this.recordingManager.setupShortcutListeners(this.shortcutManager);
+    this.recordingManager.setupShortcutListeners(
+      this.shortcutManager,
+      this.settingsService,
+    );
 
     logger.main.info("Shortcut manager initialized");
   }

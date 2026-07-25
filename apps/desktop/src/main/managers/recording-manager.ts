@@ -5,6 +5,7 @@ import { logger, logPerformance } from "../logger";
 import type { ServiceManager } from "@/main/managers/service-manager";
 import type { RecordingState } from "../../types/recording";
 import type { ShortcutManager } from "./shortcut-manager";
+import type { SettingsService } from "@/services/settings-service";
 import { StreamingWavWriter } from "../../utils/streaming-wav-writer";
 import { AppError, ErrorCodes, type ErrorCode } from "../../types/error";
 import { getLatestTranscription } from "../../db/transcriptions";
@@ -151,32 +152,38 @@ export class RecordingManager extends EventEmitter {
     this.setupIPCHandlers();
   }
 
-  // Setup listeners for shortcut events
-  public setupShortcutListeners(shortcutManager: ShortcutManager) {
+  // Setup listeners for shortcut events. settingsService is passed directly
+  // (not resolved via serviceManager.getService) because this runs during
+  // ServiceManager.initialize, before the manager reports itself initialized.
+  public setupShortcutListeners(
+    shortcutManager: ShortcutManager,
+    settingsService?: SettingsService,
+  ) {
     this.shortcutManager = shortcutManager;
     let lastPTTState = false;
 
     // Prime and track the dictation key behavior preference.
-    const settingsService = this.serviceManager.getService("settingsService");
-    void settingsService
-      .getPreferences()
-      .then((preferences) => {
-        this.keyBehavior = preferences.dictationKeyBehavior;
-      })
-      .catch((error) => {
-        logger.main.warn("Failed to load dictation key behavior", { error });
-      });
-    settingsService.on(
-      "preferences-changed",
-      ({ changes }: { changes: { dictationKeyBehavior?: string } }) => {
-        if (changes.dictationKeyBehavior !== undefined) {
-          this.keyBehavior = changes.dictationKeyBehavior as
-            | "hold"
-            | "toggle"
-            | "both";
-        }
-      },
-    );
+    if (settingsService) {
+      void settingsService
+        .getPreferences()
+        .then((preferences) => {
+          this.keyBehavior = preferences.dictationKeyBehavior;
+        })
+        .catch((error) => {
+          logger.main.warn("Failed to load dictation key behavior", { error });
+        });
+      settingsService.on(
+        "preferences-changed",
+        ({ changes }: { changes: { dictationKeyBehavior?: string } }) => {
+          if (changes.dictationKeyBehavior !== undefined) {
+            this.keyBehavior = changes.dictationKeyBehavior as
+              | "hold"
+              | "toggle"
+              | "both";
+          }
+        },
+      );
+    }
 
     // Handle PTT state changes
     shortcutManager.on("ptt-state-changed", async (isPressed: boolean) => {
