@@ -115,7 +115,7 @@ describe("recording state machine", () => {
     const [state, commands] = step(startPtt(), {
       type: "pttRelease",
       quick: true,
-      isDraft: false,
+      quickAction: "handsFree",
     });
 
     expect(state).toEqual({
@@ -129,7 +129,7 @@ describe("recording state machine", () => {
     const [quickState, quickCommands] = step(startPtt(), {
       type: "pttRelease",
       quick: true,
-      isDraft: true,
+      quickAction: "grace",
     });
 
     expect(quickState).toEqual({
@@ -150,11 +150,22 @@ describe("recording state machine", () => {
     expect(handsFreeCommands).toEqual([{ type: "clearQuickReleaseTimer" }]);
   });
 
+  it("cancels a quick release immediately in hold-only key behavior", () => {
+    const [state, commands] = step(startPtt(), {
+      type: "pttRelease",
+      quick: true,
+      quickAction: "cancel",
+    });
+
+    expect(state).toEqual({ tag: "STOP_C", code: "quick_release" });
+    expect(commands).toEqual([{ type: "stopSession", code: "quick_release" }]);
+  });
+
   it("cancels a quick draft release when the quick timer fires", () => {
     const [quickState] = step(startPtt(), {
       type: "pttRelease",
       quick: true,
-      isDraft: true,
+      quickAction: "grace",
     });
     const [state, commands] = step(quickState, {
       type: "quickReleaseTimeout",
@@ -198,7 +209,7 @@ describe("recording state machine", () => {
     const [quickState] = step(startPtt(), {
       type: "pttRelease",
       quick: true,
-      isDraft: true,
+      quickAction: "grace",
     });
     const [state, commands] = step(quickState, {
       type: "toggle",
@@ -458,8 +469,9 @@ describe("recording state machine", () => {
       { type: "start", mode: "hands-free", hasSpeechModel: false },
       { type: "startSessionReady" },
       { type: "pttPress", quick: true },
-      { type: "pttRelease", quick: true, isDraft: false },
-      { type: "pttRelease", quick: true, isDraft: true },
+      { type: "pttRelease", quick: true, quickAction: "handsFree" },
+      { type: "pttRelease", quick: true, quickAction: "grace" },
+      { type: "pttRelease", quick: true, quickAction: "cancel" },
       { type: "toggle", quick: true },
       { type: "signalStop" },
       { type: "quickReleaseTimeout" },

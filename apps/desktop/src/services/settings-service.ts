@@ -94,6 +94,22 @@ export interface ShortcutsConfig {
   draftMode: number[];
 }
 
+export type DictationKeyBehavior = "hold" | "toggle" | "both";
+
+export const DICTATION_KEY_BEHAVIORS: DictationKeyBehavior[] = [
+  "hold",
+  "toggle",
+  "both",
+];
+
+function normalizeDictationKeyBehavior(
+  value: string | undefined,
+): DictationKeyBehavior {
+  return DICTATION_KEY_BEHAVIORS.includes(value as DictationKeyBehavior)
+    ? (value as DictationKeyBehavior)
+    : "both";
+}
+
 export type DictationSound = "default" | "soft" | "chime" | "none";
 
 export const DICTATION_SOUNDS: DictationSound[] = [
@@ -118,6 +134,7 @@ export interface AppPreferences {
   muteDictationSounds: boolean;
   dictationStartSound: DictationSound;
   dictationStopSound: DictationSound;
+  dictationKeyBehavior: DictationKeyBehavior;
   autoDictateOnNewNote: boolean;
   preserveClipboard: boolean;
   allowInjectedKeys: boolean;
@@ -467,6 +484,9 @@ export class SettingsService extends EventEmitter {
       ),
       dictationStopSound: normalizeDictationSound(
         preferences?.dictationStopSound,
+      ),
+      dictationKeyBehavior: normalizeDictationKeyBehavior(
+        preferences?.dictationKeyBehavior,
       ),
       autoDictateOnNewNote: preferences?.autoDictateOnNewNote ?? false,
       preserveClipboard: preferences?.preserveClipboard ?? true,

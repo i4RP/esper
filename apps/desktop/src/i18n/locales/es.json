@@ -826,7 +826,7 @@
     },
     "shortcuts": {
       "title": "Atajos",
-      "description": "Configura atajos de teclado para dictado y modos manos libres",
+      "description": "Configura los atajos de teclado para la entrada de voz",
       "toast": {
         "pushToTalkUpdated": "Atajo de pulsar para hablar actualizado",
         "handsFreeUpdated": "Atajo de modo manos libres actualizado",
@@ -835,8 +835,21 @@
         "draftModeUpdated": "Atajo de Borrador actualizado"
       },
       "pushToTalk": {
-        "label": "Pulsar para hablar",
-        "description": "Mantén presionado para dictar mientras la tecla está presionada"
+        "label": "Tecla de dictado",
+        "description": "La tecla utilizada para la entrada de voz"
+      },
+      "keyBehavior": {
+        "label": "Comportamiento de la tecla",
+        "descriptions": {
+          "both": "Mantén pulsada para grabar, o púlsala una vez para empezar y otra para detener",
+          "hold": "Graba solo mientras se mantiene pulsada; al soltar se inserta",
+          "toggle": "Pulsa una vez para empezar a grabar y otra vez para detener"
+        },
+        "options": {
+          "both": "Mantener + pulsar (recomendado)",
+          "hold": "Solo mantener",
+          "toggle": "Pulsar para alternar"
+        }
       },
       "handsFree": {
         "label": "Modo manos libres",

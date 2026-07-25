@@ -826,7 +826,7 @@
     },
     "shortcuts": {
       "title": "快捷鍵",
-      "description": "設定聽寫和免持模式的快捷鍵",
+      "description": "設定語音輸入的鍵盤快捷鍵",
       "toast": {
         "pushToTalkUpdated": "「按住說話」快捷鍵已更新",
         "handsFreeUpdated": "免持模式快捷鍵已更新",
@@ -835,8 +835,21 @@
         "draftModeUpdated": "草稿快捷鍵已更新"
       },
       "pushToTalk": {
-        "label": "按住說話",
-        "description": "按住按鍵的同時進行聽寫"
+        "label": "聽寫按鍵",
+        "description": "用於語音輸入的按鍵"
+      },
+      "keyBehavior": {
+        "label": "按鍵行為",
+        "descriptions": {
+          "both": "按住即錄音，或按一下開始、再按一下停止",
+          "hold": "僅在按住按鍵時錄音，放開即輸入",
+          "toggle": "按一下開始錄音，再按一下停止"
+        },
+        "options": {
+          "both": "按住 + 點按(建議)",
+          "hold": "僅按住",
+          "toggle": "點按切換"
+        }
       },
       "handsFree": {
         "label": "免持模式",

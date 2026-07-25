@@ -94,6 +94,12 @@ export class RecordingManager extends EventEmitter {
   // not re-read preferences) plays the sound configured when dictation began.
   private stopSound: string = "default";
 
+  // Dictation key behavior, cached so key events don't hit the settings DB.
+  // "hold": record only while held (tap cancels). "toggle": tap starts a
+  // hands-free session, tap stops. "both" (default): hold = PTT, tap = toggle.
+  // Kept fresh by the preferences-changed listener and each session start.
+  private keyBehavior: "hold" | "toggle" | "both" = "both";
+
   // Microphone name resolved from the renderer capture stream for the current session.
   private activeMicrophoneName: string | null = null;
 
@@ -149,6 +155,28 @@ export class RecordingManager extends EventEmitter {
   public setupShortcutListeners(shortcutManager: ShortcutManager) {
     this.shortcutManager = shortcutManager;
     let lastPTTState = false;
+
+    // Prime and track the dictation key behavior preference.
+    const settingsService = this.serviceManager.getService("settingsService");
+    void settingsService
+      .getPreferences()
+      .then((preferences) => {
+        this.keyBehavior = preferences.dictationKeyBehavior;
+      })
+      .catch((error) => {
+        logger.main.warn("Failed to load dictation key behavior", { error });
+      });
+    settingsService.on(
+      "preferences-changed",
+      ({ changes }: { changes: { dictationKeyBehavior?: string } }) => {
+        if (changes.dictationKeyBehavior !== undefined) {
+          this.keyBehavior = changes.dictationKeyBehavior as
+            | "hold"
+            | "toggle"
+            | "both";
+        }
+      },
+    );
 
     // Handle PTT state changes
     shortcutManager.on("ptt-state-changed", async (isPressed: boolean) => {
@@ -334,11 +362,13 @@ export class RecordingManager extends EventEmitter {
 
   // PTT key pressed. (During onboarding the shortcut source gate drops these
   // events entirely — see ShortcutManager.setCommandsSuppressed — so no
-  // onboarding awareness is needed here.)
+  // onboarding awareness is needed here.) In "toggle" key behavior the press
+  // starts a hands-free session directly (release is a no-op, the next press
+  // stops it).
   public async onPTTPress() {
     if (this.getState() === "idle") {
       this.recordingInitiatedAt = Date.now();
-      await this.doStart("ptt");
+      await this.doStart(this.keyBehavior === "toggle" ? "hands-free" : "ptt");
       return;
     }
 
@@ -348,14 +378,18 @@ export class RecordingManager extends EventEmitter {
     });
   }
 
-  // PTT key released. A quick tap latches the session into hands-free (it
-  // keeps recording until the next press); draft sessions stay push-to-talk
-  // only, so the FSM needs to know whether this session is a draft.
+  // PTT key released. What a quick tap does depends on the session and the
+  // key-behavior preference: draft sessions keep the push-to-talk grace
+  // window, hold-only cancels the tap, and both/default latches hands-free.
   public async onPTTRelease() {
     await this.machine.handleEvent({
       type: "pttRelease",
       quick: this.isQuickAction(),
-      isDraft: this.currentIsInstruct,
+      quickAction: this.currentIsInstruct
+        ? "grace"
+        : this.keyBehavior === "hold"
+          ? "cancel"
+          : "handsFree",
     });
   }
 
@@ -582,6 +616,7 @@ export class RecordingManager extends EventEmitter {
       const shouldMute = preferences.muteSystemAudio;
       this.soundsMuted = preferences.muteDictationSounds;
       this.stopSound = preferences.dictationStopSound;
+      this.keyBehavior = preferences.dictationKeyBehavior;
 
       const result = await nativeBridge.call("startRecording", {
         muteSystemAudio: shouldMute,

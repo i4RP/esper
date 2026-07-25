@@ -826,7 +826,7 @@
     },
     "shortcuts": {
       "title": "Tastenkürzel",
-      "description": "Tastaturkürzel für Diktat und Freisprechmodus konfigurieren",
+      "description": "Tastenkürzel für die Spracheingabe konfigurieren",
       "toast": {
         "pushToTalkUpdated": "Push-to-Talk-Tastenkürzel aktualisiert",
         "handsFreeUpdated": "Tastenkürzel für Freisprechmodus aktualisiert",
@@ -835,8 +835,21 @@
         "draftModeUpdated": "Entwurf-Tastenkürzel aktualisiert"
       },
       "pushToTalk": {
-        "label": "Push-to-Talk",
-        "description": "Halte die Taste gedrückt, um zu diktieren"
+        "label": "Diktiertaste",
+        "description": "Die Taste für die Spracheingabe"
+      },
+      "keyBehavior": {
+        "label": "Tastenverhalten",
+        "descriptions": {
+          "both": "Gedrückt halten zum Aufnehmen, oder einmal tippen zum Starten und erneut zum Stoppen",
+          "hold": "Nimmt nur auf, solange die Taste gehalten wird; loslassen fügt ein",
+          "toggle": "Einmal tippen startet die Aufnahme, erneutes Tippen stoppt sie"
+        },
+        "options": {
+          "both": "Halten + Tippen (empfohlen)",
+          "hold": "Nur halten",
+          "toggle": "Tippen zum Umschalten"
+        }
       },
       "handsFree": {
         "label": "Freisprechmodus",

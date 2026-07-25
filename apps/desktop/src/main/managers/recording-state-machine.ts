@@ -39,7 +39,15 @@ export type RecordingMachineEvent =
     }
   | { type: "startSessionReady" }
   | { type: "pttPress"; quick: boolean }
-  | { type: "pttRelease"; quick: boolean; isDraft: boolean }
+  // quickAction: what a quick (tap) release does — "handsFree" latches the
+  // session into hands-free (tap-to-toggle), "grace" enters the PTT_Q window
+  // (draft sessions: re-press resumes, timeout cancels), "cancel" discards
+  // immediately (hold-only key behavior).
+  | {
+      type: "pttRelease";
+      quick: boolean;
+      quickAction: "handsFree" | "grace" | "cancel";
+    }
   | { type: "toggle"; quick: boolean }
   | { type: "signalStop" }
   | { type: "dismiss" }
@@ -194,25 +202,33 @@ export function transitionRecordingMachine(
         };
       }
 
-      // A quick tap latches straight into hands-free: recording continues
-      // until the next PTT press stops it. Draft sessions are push-to-talk
-      // only, so they keep the quick-release grace window instead (re-press
-      // resumes, timeout cancels).
-      return event.isDraft
-        ? {
-            state: {
-              tag: "PTT_Q",
-              firstChunkReceived: state.firstChunkReceived,
-            },
-            commands: [{ type: "startQuickReleaseTimer" }],
-          }
-        : {
+      switch (event.quickAction) {
+        case "handsFree":
+          // Tap-to-toggle: recording continues until the next PTT press.
+          return {
             state: {
               tag: "REC_HF",
               firstChunkReceived: state.firstChunkReceived,
             },
             commands: [],
           };
+        case "grace":
+          // Draft sessions are push-to-talk only: re-press resumes, timeout
+          // cancels.
+          return {
+            state: {
+              tag: "PTT_Q",
+              firstChunkReceived: state.firstChunkReceived,
+            },
+            commands: [{ type: "startQuickReleaseTimer" }],
+          };
+        case "cancel":
+          // Hold-only key behavior: a tap is an accidental press — discard.
+          return {
+            state: { tag: "STOP_C", code: "quick_release" },
+            commands: [{ type: "stopSession", code: "quick_release" }],
+          };
+      }
 
     case "toggle":
       if (state.tag === "PTT_Q") {

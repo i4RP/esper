@@ -77,6 +77,7 @@ const AppPreferencesSchema = z.object({
   muteDictationSounds: z.boolean().optional(),
   dictationStartSound: z.enum(["default", "soft", "chime", "none"]).optional(),
   dictationStopSound: z.enum(["default", "soft", "chime", "none"]).optional(),
+  dictationKeyBehavior: z.enum(["hold", "toggle", "both"]).optional(),
   autoDictateOnNewNote: z.boolean().optional(),
   preserveClipboard: z.boolean().optional(),
   allowInjectedKeys: z.boolean().optional(),

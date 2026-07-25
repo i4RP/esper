@@ -211,6 +211,9 @@ export interface AppSettingsData {
     // Which recording sounds to play: "default" | "soft" | "chime" | "none"
     dictationStartSound?: string;
     dictationStopSound?: string;
+    // Dictation key behavior: "hold" (record only while held) | "toggle"
+    // (tap starts, tap stops) | "both" (hold = PTT, tap = toggle; default)
+    dictationKeyBehavior?: string;
     autoDictateOnNewNote?: boolean;
     preserveClipboard?: boolean;
     // Windows only: honor injected keystrokes (LLKHF_INJECTED) when matching

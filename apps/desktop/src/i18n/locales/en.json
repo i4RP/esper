@@ -823,7 +823,7 @@
     },
     "shortcuts": {
       "title": "Shortcuts",
-      "description": "Configure keyboard shortcuts for dictation and hands-free modes",
+      "description": "Configure the keyboard shortcuts for voice input",
       "toast": {
         "pushToTalkUpdated": "Push to talk shortcut updated",
         "handsFreeUpdated": "Hands-free mode shortcut updated",
@@ -832,8 +832,21 @@
         "draftModeUpdated": "Draft shortcut updated"
       },
       "pushToTalk": {
-        "label": "Push to talk",
-        "description": "Hold to dictate while key is pressed"
+        "label": "Dictation key",
+        "description": "The key used for voice input"
+      },
+      "keyBehavior": {
+        "label": "Key behavior",
+        "descriptions": {
+          "both": "Hold to record while pressed, or tap once to start and again to stop",
+          "hold": "Records only while the key is held; release to insert",
+          "toggle": "Tap once to start recording, tap again to stop"
+        },
+        "options": {
+          "both": "Hold + tap (recommended)",
+          "hold": "Hold only",
+          "toggle": "Tap to toggle"
+        }
       },
       "handsFree": {
         "label": "Hands-free mode",

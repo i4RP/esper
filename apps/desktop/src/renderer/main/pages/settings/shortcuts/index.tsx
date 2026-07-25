@@ -7,9 +7,24 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Info } from "lucide-react";
 import { ShortcutInput } from "@/components/shortcut-input";
 import { Separator } from "@/components/ui/separator";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { api } from "@/trpc/react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
+
+type DictationKeyBehavior = "hold" | "toggle" | "both";
+
+const DICTATION_KEY_BEHAVIORS: DictationKeyBehavior[] = [
+  "both",
+  "hold",
+  "toggle",
+];
 
 export function ShortcutsSettingsPage() {
   const { t } = useTranslation();
@@ -40,6 +55,8 @@ export function ShortcutsSettingsPage() {
   // Allow-injected-keys preference (Windows only, see isWindows above).
   const preferencesQuery = api.settings.getPreferences.useQuery();
   const allowInjectedKeys = preferencesQuery.data?.allowInjectedKeys ?? false;
+  const dictationKeyBehavior =
+    preferencesQuery.data?.dictationKeyBehavior ?? "both";
   const updatePreferencesMutation = api.settings.updatePreferences.useMutation({
     onSuccess: () => utils.settings.getPreferences.invalidate(),
     onError: () => {
@@ -49,6 +66,11 @@ export function ShortcutsSettingsPage() {
   });
   const handleAllowInjectedKeysChange = (checked: boolean) => {
     updatePreferencesMutation.mutate({ allowInjectedKeys: checked });
+  };
+  const handleDictationKeyBehaviorChange = (value: string) => {
+    updatePreferencesMutation.mutate({
+      dictationKeyBehavior: value as DictationKeyBehavior,
+    });
   };
   const handleOpenInjectedKeysDocs = () => {
     window.electronAPI.openExternal(
@@ -126,14 +148,6 @@ export function ShortcutsSettingsPage() {
     });
   };
 
-  const handleToggleRecordingChange = (shortcut: number[]) => {
-    setToggleRecordingShortcut(shortcut);
-    setShortcutMutation.mutate({
-      type: "toggleRecording",
-      shortcut: shortcut,
-    });
-  };
-
   const handlePasteLastTranscriptChange = (shortcut: number[]) => {
     setPasteLastTranscriptShortcut(shortcut);
     setShortcutMutation.mutate({
@@ -198,23 +212,36 @@ export function ShortcutsSettingsPage() {
               <div className="flex flex-col md:flex-row md:justify-between gap-4">
                 <div>
                   <Label className="text-base font-semibold text-foreground">
-                    {t("settings.shortcuts.handsFree.label")}
+                    {t("settings.shortcuts.keyBehavior.label")}
                   </Label>
                   <p className="text-xs text-muted-foreground mt-1 max-w-md">
-                    {t("settings.shortcuts.handsFree.description")}
+                    {t(
+                      `settings.shortcuts.keyBehavior.descriptions.${dictationKeyBehavior}`,
+                    )}
                   </p>
                 </div>
-                <div className="flex flex-col gap-2 items-end min-w-[260px]">
-                  <ShortcutInput
-                    value={toggleRecordingShortcut}
-                    onChange={handleToggleRecordingChange}
-                    isRecordingShortcut={
-                      recordingShortcut === "toggleRecording"
+                <div className="flex items-center min-w-[260px] md:justify-end">
+                  <Select
+                    value={dictationKeyBehavior}
+                    onValueChange={handleDictationKeyBehaviorChange}
+                    disabled={
+                      updatePreferencesMutation.isPending ||
+                      preferencesQuery.isLoading
                     }
-                    onRecordingShortcutChange={(recording) =>
-                      setRecordingShortcut(recording ? "toggleRecording" : null)
-                    }
-                  />
+                  >
+                    <SelectTrigger className="w-[240px]">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {DICTATION_KEY_BEHAVIORS.map((behavior) => (
+                        <SelectItem key={behavior} value={behavior}>
+                          {t(
+                            `settings.shortcuts.keyBehavior.options.${behavior}`,
+                          )}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
             </div>
