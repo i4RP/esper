@@ -11,7 +11,8 @@ import type { OnboardingFeatureFlags } from "../types/onboarding";
  */
 const BASE_ORDER: OnboardingScreen[] = [
   OnboardingScreen.DiscoverySource,
-  OnboardingScreen.ModelSelection,
+  // Esper is local-only: the cloud/local model choice screen is gone and the
+  // flow always takes the local branch (Download setup, local try-it).
   OnboardingScreen.SignIn, // cloud-only setup
   OnboardingScreen.Download, // local-only setup
   // Permissions open the Configure phase: both grants are exercised seconds

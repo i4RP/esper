@@ -21,7 +21,6 @@ describe("getActiveOnboardingScreens", () => {
     });
     expect(screens).toEqual([
       OnboardingScreen.DiscoverySource,
-      OnboardingScreen.ModelSelection,
       OnboardingScreen.SignIn,
       OnboardingScreen.Permissions,
       OnboardingScreen.MicTest,
@@ -45,7 +44,6 @@ describe("getActiveOnboardingScreens", () => {
     });
     expect(screens).toEqual([
       OnboardingScreen.DiscoverySource,
-      OnboardingScreen.ModelSelection,
       OnboardingScreen.Download,
       OnboardingScreen.Permissions,
       OnboardingScreen.MicTest,
@@ -97,10 +95,10 @@ describe("getActiveOnboardingScreens", () => {
     expect(screens).toContain(OnboardingScreen.MicTest);
   });
 
-  it("honors skipModels and the skipped list", () => {
+  it("honors the skipped list and never contains the removed model screen", () => {
     const screens = getActiveOnboardingScreens({
       modelType: ModelType.Cloud,
-      flags: { ...flags, skipModels: true },
+      flags,
       skipped: [OnboardingScreen.DiscoverySource],
     });
     expect(screens).not.toContain(OnboardingScreen.ModelSelection);

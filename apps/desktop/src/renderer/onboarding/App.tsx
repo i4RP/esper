@@ -8,7 +8,6 @@ import { useTranslation } from "react-i18next";
 // Screens
 import { PermissionsScreen } from "./components/screens/PermissionsScreen";
 import { DiscoverySourceScreen } from "./components/screens/DiscoverySourceScreen";
-import { ModelSelectionScreen } from "./components/screens/ModelSelectionScreen";
 import { SignInScreen } from "./components/screens/SignInScreen";
 import { DownloadScreen } from "./components/screens/DownloadScreen";
 import { MicTestScreen } from "./components/screens/MicTestScreen";
@@ -76,14 +75,9 @@ export function App() {
   const skippedScreensQuery = api.onboarding.getSkippedScreens.useQuery();
   const utils = api.useUtils();
 
-  // Effective model type: the in-progress selection, falling back to persisted
-  // state so a mid-flow resume still resolves the cloud-only steps. Defaults to
-  // Cloud (the longer, recommended path) until the user explicitly picks Local,
-  // so the progress bar's denominator stays stable across the model-selection
-  // boundary (it advances rather than regressing when Cloud is chosen).
-  const resolveModelType = (selected: ModelType | undefined) =>
-    selected ?? state?.selectedModelType ?? ModelType.Cloud;
-  const effectiveModelType = resolveModelType(preferences.selectedModelType);
+  // Esper is local-only: the model-selection screen is gone and the flow
+  // always takes the local branch (Download setup, local try-it).
+  const effectiveModelType = ModelType.Local;
 
   // Helper so navigation can compute screens from a freshly-merged model type
   // (React state from setPreferences is not visible synchronously).
@@ -240,15 +234,8 @@ export function App() {
     const updatedPreferences = { ...preferences, ...newPreferences };
     setPreferences(updatedPreferences);
 
-    // Navigate immediately for responsive UX. Compute from the freshly-merged
-    // model type — setPreferences is not visible to navigateNext synchronously,
-    // so selecting Cloud here must not be evaluated against the stale value
-    // (which would skip the cloud-only steps).
-    advance(
-      computeActiveScreens(
-        resolveModelType(updatedPreferences.selectedModelType),
-      ),
-    );
+    // Navigate immediately for responsive UX.
+    advance(computeActiveScreens(effectiveModelType));
 
     // Save to backend in background (non-blocking)
     // Preferences are already in React state, final completion will persist everything
@@ -263,18 +250,6 @@ export function App() {
     handleSaveAndContinue({
       discoverySource: source,
       discoveryDetails: details,
-    });
-  };
-
-  // Handle model selection (telemetry tracked in backend). The screen sends
-  // the full recommendation with `followed` resolved against the choice.
-  const handleModelSelection = (
-    modelType: ModelType,
-    recommendation?: OnboardingPreferences["modelRecommendation"],
-  ) => {
-    handleSaveAndContinue({
-      selectedModelType: modelType,
-      modelRecommendation: recommendation,
     });
   };
 
@@ -338,15 +313,6 @@ export function App() {
             onBack={navigateBack}
             initialSource={preferences.discoverySource}
             initialDetails={preferences.discoveryDetails ?? ""}
-          />
-        );
-
-      case OnboardingScreen.ModelSelection:
-        return (
-          <ModelSelectionScreen
-            onNext={handleModelSelection}
-            onBack={navigateBack}
-            initialSelection={preferences.selectedModelType}
           />
         );
 
