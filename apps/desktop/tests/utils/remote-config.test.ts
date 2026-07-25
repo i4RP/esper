@@ -111,7 +111,7 @@ describe("remote config helpers", () => {
 
   it("only allows CTA routes on the known-route allowlist", () => {
     expect(isSafeRemoteConfigRoute("/settings/vocabulary")).toBe(true);
-    expect(isSafeRemoteConfigRoute("/notes")).toBe(true);
+    expect(isSafeRemoteConfigRoute("/notes")).toBe(false);
     expect(isSafeRemoteConfigRoute("/settings/unknown")).toBe(false);
     expect(isSafeRemoteConfigRoute("https://evil.example")).toBe(false);
   });

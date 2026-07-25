@@ -14,8 +14,6 @@ import {
 } from "@/components/ui/command";
 import { SidebarMenuButton } from "@/components/ui/sidebar";
 import { api } from "@/trpc/react";
-import { FileTextIcon } from "lucide-react";
-import { formatDate } from "@/lib/utils";
 import { APP_NAV_ITEMS, SETTINGS_NAV_ITEMS } from "../lib/settings-navigation";
 
 // Detect platform for keyboard shortcuts
@@ -49,26 +47,9 @@ export function CommandSearchButton() {
     });
   }, [search, localizedSettings]);
 
-  const { data: noteResults = [] } = api.notes.searchNotes.useQuery(
-    { query: search },
-    {
-      enabled: open,
-      staleTime: 1000 * 60 * 5,
-    },
-  );
-
   const searchResults = React.useMemo(() => {
-    return [
-      ...settingsResults,
-      ...noteResults.map((n) => ({
-        ...n,
-        url: `/notes/${n.id}`,
-        description: formatDate(new Date(n.createdAt)),
-        type: "note" as const,
-        icon: n.icon || "file-text",
-      })),
-    ];
-  }, [settingsResults, noteResults]);
+    return [...settingsResults];
+  }, [settingsResults]);
 
   React.useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -110,9 +91,6 @@ export function CommandSearchButton() {
           <CommandEmpty>{t("settings.search.noResults")}</CommandEmpty>
           {(() => {
             // Separate results by type
-            const noteResults = searchResults.filter(
-              (item) => item.type === "note",
-            );
             const appResults = searchResults.filter(
               (item) => item.type === "app",
             );
@@ -164,30 +142,6 @@ export function CommandSearchButton() {
                           <span className="font-medium">{page.title}</span>
                           <span className="text-xs text-muted-foreground">
                             {page.description}
-                          </span>
-                        </div>
-                      </CommandItem>
-                    ))}
-                  </CommandGroup>
-                )}
-                {noteResults.length > 0 && (
-                  <CommandGroup heading={t("settings.search.notesHeading")}>
-                    {noteResults.map((note) => (
-                      <CommandItem
-                        key={note.url}
-                        value={note.title}
-                        onSelect={() => handleSelect(note.url)}
-                        className="cursor-pointer"
-                      >
-                        {note.icon ? (
-                          <FileTextIcon className="mr-2 h-4 w-4" />
-                        ) : (
-                          <span className="mr-2 text-xl">{note.icon}</span>
-                        )}
-                        <div className="flex flex-col">
-                          <span className="font-medium">{note.title}</span>
-                          <span className="text-xs text-muted-foreground">
-                            {note.description}
                           </span>
                         </div>
                       </CommandItem>

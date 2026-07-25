@@ -505,8 +505,8 @@
         },
         "preview": "試聽",
         "options": {
-          "default": "預設",
-          "soft": "柔和",
+          "default": "系統",
+          "soft": "柔和(預設)",
           "chime": "鈴聲",
           "none": "無"
         }

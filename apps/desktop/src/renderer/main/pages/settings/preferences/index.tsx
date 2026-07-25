@@ -31,8 +31,8 @@ import { matchSupportedLocale, type SupportedLocale } from "@/i18n/shared";
 type DictationSound = "default" | "soft" | "chime" | "none";
 
 const DICTATION_SOUND_OPTIONS: DictationSound[] = [
-  "default",
   "soft",
+  "default",
   "chime",
   "none",
 ];
@@ -176,12 +176,6 @@ export default function PreferencesSettingsPage() {
     updateUILocaleMutation.mutate({ locale: nextLocale });
   };
 
-  const handleAutoDictateOnNewNoteChange = (checked: boolean) => {
-    updatePreferencesMutation.mutate({
-      autoDictateOnNewNote: checked,
-    });
-  };
-
   const showWidgetWhileInactive =
     preferencesQuery.data?.showWidgetWhileInactive ?? true;
   const minimizeToTray = preferencesQuery.data?.minimizeToTray ?? false;
@@ -190,12 +184,10 @@ export default function PreferencesSettingsPage() {
   const muteSystemAudio = preferencesQuery.data?.muteSystemAudio ?? true;
   const muteDictationSounds =
     preferencesQuery.data?.muteDictationSounds ?? false;
-  const autoDictateOnNewNote =
-    preferencesQuery.data?.autoDictateOnNewNote ?? false;
   const dictationStartSound =
-    preferencesQuery.data?.dictationStartSound ?? "default";
+    preferencesQuery.data?.dictationStartSound ?? "soft";
   const dictationStopSound =
-    preferencesQuery.data?.dictationStopSound ?? "default";
+    preferencesQuery.data?.dictationStopSound ?? "soft";
   const isMac = window.electronAPI.platform === "darwin";
   const localeDisabled =
     uiSettingsQuery.isLoading || updateUILocaleMutation.isPending;
@@ -395,25 +387,6 @@ export default function PreferencesSettingsPage() {
                 </div>
               );
             })}
-
-            {/* Auto-dictate on new note */}
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <Label className="text-base font-medium text-foreground">
-                  {t("settings.preferences.autoDictateOnNewNote.label")}
-                </Label>
-                <p className="text-xs text-muted-foreground">
-                  {t("settings.preferences.autoDictateOnNewNote.description")}
-                </p>
-              </div>
-              <Switch
-                checked={autoDictateOnNewNote}
-                onCheckedChange={handleAutoDictateOnNewNoteChange}
-                disabled={updatePreferencesMutation.isPending}
-              />
-            </div>
-
-            <Separator />
 
             {/* Language */}
             <div className="flex items-center justify-between">

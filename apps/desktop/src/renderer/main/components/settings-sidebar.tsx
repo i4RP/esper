@@ -30,7 +30,6 @@ import {
   SIDEBAR_CTA_FEATURE_FLAG,
 } from "@/utils/feature-flags";
 import { CommandSearchButton } from "./command-search-button";
-import { CreateNoteButton } from "./create-note-button";
 import { NavCloud } from "./nav-cloud";
 import { RemoteConfigSidebarSlot } from "./remote-config-surfaces";
 import { SettingsNavigationControls } from "./settings-navigation-controls";
@@ -131,9 +130,6 @@ export function SettingsSidebar({
               </span>
             </div>
           </SidebarMenuButton>
-        </SidebarMenuItem>
-        <SidebarMenuItem>
-          <CreateNoteButton />
         </SidebarMenuItem>
         <SidebarMenuItem>
           <CommandSearchButton />

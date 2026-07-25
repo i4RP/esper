@@ -156,14 +156,6 @@ export function ShortcutsSettingsPage() {
     });
   };
 
-  const handleNewNoteChange = (shortcut: number[]) => {
-    setNewNoteShortcut(shortcut);
-    setShortcutMutation.mutate({
-      type: "newNote",
-      shortcut: shortcut,
-    });
-  };
-
   const handleDraftModeChange = (shortcut: number[]) => {
     setDraftModeShortcut(shortcut);
     setShortcutMutation.mutate({
@@ -268,30 +260,6 @@ export function ShortcutsSettingsPage() {
                       setRecordingShortcut(
                         recording ? "pasteLastTranscript" : null,
                       )
-                    }
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <Separator className="my-4" />
-              <div className="flex flex-col md:flex-row md:justify-between gap-4">
-                <div>
-                  <Label className="text-base font-semibold text-foreground">
-                    {t("settings.shortcuts.newNote.label")}
-                  </Label>
-                  <p className="text-xs text-muted-foreground mt-1 max-w-md">
-                    {t("settings.shortcuts.newNote.description")}
-                  </p>
-                </div>
-                <div className="flex flex-col gap-2 items-end min-w-[260px]">
-                  <ShortcutInput
-                    value={newNoteShortcut}
-                    onChange={handleNewNoteChange}
-                    isRecordingShortcut={recordingShortcut === "newNote"}
-                    onRecordingShortcutChange={(recording) =>
-                      setRecordingShortcut(recording ? "newNote" : null)
                     }
                   />
                 </div>

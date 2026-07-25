@@ -8,7 +8,6 @@ import {
   IconInfoCircle,
   IconKeyboard,
   IconAdjustments,
-  IconNotes,
   type Icon,
 } from "@tabler/icons-react";
 
@@ -21,13 +20,6 @@ export interface SettingsNavItem {
 }
 
 export const APP_NAV_ITEMS: SettingsNavItem[] = [
-  {
-    titleKey: "settings.nav.notes.title",
-    url: "/notes",
-    descriptionKey: "settings.nav.notes.description",
-    icon: IconNotes,
-    type: "app",
-  },
   {
     titleKey: "settings.nav.history.title",
     url: "/history",

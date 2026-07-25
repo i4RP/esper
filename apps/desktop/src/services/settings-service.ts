@@ -119,10 +119,11 @@ export const DICTATION_SOUNDS: DictationSound[] = [
   "none",
 ];
 
+// "default" is the upstream system sound; Esper defaults to "soft".
 function normalizeDictationSound(value: string | undefined): DictationSound {
   return DICTATION_SOUNDS.includes(value as DictationSound)
     ? (value as DictationSound)
-    : "default";
+    : "soft";
 }
 
 export interface AppPreferences {

@@ -502,8 +502,8 @@
         },
         "preview": "Preview",
         "options": {
-          "default": "Default",
-          "soft": "Soft",
+          "default": "System",
+          "soft": "Soft (default)",
           "chime": "Chime",
           "none": "None"
         }

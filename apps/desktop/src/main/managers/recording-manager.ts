@@ -93,7 +93,7 @@ export class RecordingManager extends EventEmitter {
   private soundsMuted: boolean = false;
   // Stop-sound choice captured at session start, so the stop RPC (which does
   // not re-read preferences) plays the sound configured when dictation began.
-  private stopSound: string = "default";
+  private stopSound: string = "soft";
 
   // Dictation key behavior, cached so key events don't hit the settings DB.
   // "hold": record only while held (tap cancels). "toggle": tap starts a
