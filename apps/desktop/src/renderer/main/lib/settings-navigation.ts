@@ -5,7 +5,6 @@ import {
   IconBrain,
   IconScissors,
   IconHistory,
-  IconInfoCircle,
   IconKeyboard,
   IconAdjustments,
   type Icon,
@@ -77,13 +76,6 @@ export const SETTINGS_NAV_ITEMS: SettingsNavItem[] = [
     url: "/settings/advanced",
     descriptionKey: "settings.nav.advanced.description",
     icon: IconAdjustments,
-    type: "settings",
-  },
-  {
-    titleKey: "settings.nav.about.title",
-    url: "/settings/about",
-    descriptionKey: "settings.nav.about.description",
-    icon: IconInfoCircle,
     type: "settings",
   },
 ];

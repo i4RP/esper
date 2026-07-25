@@ -222,7 +222,7 @@
         "title": "Probiere dein erstes Diktat",
         "subtitle": "Halte das Tastenkürzel gedrückt und sprich natürlich – oder tippe es einmal zum Starten und erneut zum Stoppen.",
         "tip": "KI-Formatierung ist später verfügbar, indem du in den Einstellungen ein KI-Modell verbindest.",
-        "cta": "Halte {{keys}} gedrückt und sprich – oder tippe einmal zum Starten, erneut zum Stoppen",
+        "cta": "{{keys}} drücken – zum Beenden erneut drücken.",
         "mockHeader": "Notizen",
         "ghost": "Auf dem Heimweg Wasser, Milch, Brot und Toast besorgen."
       }

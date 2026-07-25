@@ -219,7 +219,7 @@
         "title": "Try your first dictation",
         "subtitle": "Hold the shortcut and speak naturally, or tap it once to start and again to stop.",
         "tip": "AI formatting is available later by connecting an AI model in Settings.",
-        "cta": "Hold {{keys}} and speak — or tap once to start, again to stop",
+        "cta": "Press {{keys}} — press again when done.",
         "mockHeader": "Notes",
         "ghost": "Pick up water, milk, bread, and toast on the way home."
       }
