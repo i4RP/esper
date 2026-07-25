@@ -47,7 +47,7 @@ describe("main entry", () => {
 
     expect(appModuleLoaded).toBe(false);
     expect(dialog.showErrorBox).toHaveBeenCalledWith(
-      "Amical failed to start",
+      "Esper failed to start",
       expect.any(String),
     );
     expect(app.exit).toHaveBeenCalledWith(1);

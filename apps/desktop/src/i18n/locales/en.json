@@ -1,6 +1,6 @@
 {
   "app": {
-    "loading": "Loading Amical..."
+    "loading": "Loading Esper..."
   },
   "errors": {
     "generic": "Something went wrong. Please try again."
@@ -19,7 +19,7 @@
     "version": "Version {{version}}"
   },
   "tray": {
-    "tooltip": "Amical",
+    "tooltip": "Esper",
     "openConsole": "Open Console",
     "about": "About",
     "quit": "Quit"
@@ -59,7 +59,7 @@
       "supportNote": "If this keeps happening, contact support."
     },
     "welcome": {
-      "title": "How will you use Amical?",
+      "title": "How will you use Esper?",
       "subtitle": "Select all that apply.",
       "toast": {
         "selectAtLeastOne": "Pick at least one to continue"
@@ -78,7 +78,7 @@
     },
     "permissions": {
       "title": "Enable core features",
-      "subtitle": "Amical needs a couple of permissions to listen and type.",
+      "subtitle": "Esper needs a couple of permissions to listen and type.",
       "status": {
         "granted": "Permission granted"
       },
@@ -89,16 +89,16 @@
       },
       "microphone": {
         "title": "Microphone",
-        "description": "So Amical can hear your dictation"
+        "description": "So Esper can hear your dictation"
       },
       "accessibility": {
         "title": "Accessibility",
-        "description": "So Amical can paste text into any app"
+        "description": "So Esper can paste text into any app"
       }
     },
     "discovery": {
       "title": "How did you hear about us?",
-      "subtitle": "It helps Amical reach more people like you.",
+      "subtitle": "It helps Esper reach more people like you.",
       "sources": {
         "searchEngine": "Search engine (Google, Bing, etc.)",
         "reddit": "Reddit",
@@ -125,7 +125,7 @@
       "cards": {
         "cloud": {
           "name": "Cloud",
-          "tag": "The full Amical experience",
+          "tag": "The full Esper experience",
           "bullets": [
             "Most accurate transcription",
             "AI formatting built in",
@@ -144,12 +144,12 @@
           "caveatLead": "AI formatting needs extra setup"
         }
       },
-      "title": "Choose how Amical runs",
+      "title": "Choose how Esper runs",
       "subtitle": "Most people start with Cloud. You can switch anytime in Settings."
     },
     "signIn": {
-      "title": "Sign in to Amical",
-      "subtitle": "An account is needed to use Amical Cloud.",
+      "title": "Sign in to Esper",
+      "subtitle": "An account is needed to use Esper Cloud.",
       "button": "Sign in",
       "fine": "Sign-in opens in your browser · Free plan included · no card required",
       "waiting": "Waiting for sign-in to finish in your browser…",
@@ -165,7 +165,7 @@
     },
     "download": {
       "title": "Getting your model ready",
-      "subtitle": "Amical is downloading a speech model. This happens once, then dictation runs fully offline.",
+      "subtitle": "Esper is downloading a speech model. This happens once, then dictation runs fully offline.",
       "modelTag": "Fast, accurate, runs on-device",
       "ready": "Model ready",
       "alreadyInstalled": "Already installed",
@@ -199,7 +199,7 @@
       "email": {
         "title": "Dictate your first message",
         "subtitle": "Hold your shortcut, speak naturally, and release when you're done.",
-        "tip": "Speak as if you're talking to a colleague. Amical handles the punctuation.",
+        "tip": "Speak as if you're talking to a colleague. Esper handles the punctuation.",
         "cta": "Hold {{keys}} and speak",
         "mockHeader": "Email",
         "to": "To: John Doe",
@@ -208,7 +208,7 @@
       },
       "notes": {
         "title": "Try whispering",
-        "subtitle": "Hold your shortcut and whisper. Amical still catches every word.",
+        "subtitle": "Hold your shortcut and whisper. Esper still catches every word.",
         "tip": "Great for open offices, late nights, or anywhere you'd rather keep it quiet.",
         "cta": "Hold {{keys}} and whisper",
         "mockHeader": "Notes",
@@ -218,7 +218,7 @@
       "simple": {
         "title": "Try your first dictation",
         "subtitle": "Hold your shortcut, speak naturally, and release when you're done.",
-        "tip": "You can set up AI formatting by connecting an AI model in Settings later or switching to Amical Cloud.",
+        "tip": "You can set up AI formatting by connecting an AI model in Settings later or switching to Esper Cloud.",
         "cta": "Hold {{keys}} and speak",
         "mockHeader": "Notes",
         "ghost": "Pick up water, milk, bread, and toast on the way home."
@@ -232,7 +232,7 @@
         "contrast1Rest": "types what you say.",
         "contrast2Lead": "Draft",
         "contrast2Rest": "writes what you mean.",
-        "howTo": "Tell Amical what you want to communicate, and it writes the message for you in the right tone and context.",
+        "howTo": "Tell Esper what you want to communicate, and it writes the message for you in the right tone and context.",
         "demoPlaceholder": "You say…",
         "demoInstruction": "Write a polite follow-up to John about the proposal",
         "demoDraft": "Hi John,\n\nJust following up on the proposal I sent over last week. Have you had a chance to take a look?\n\nBest,\nAlex",
@@ -247,7 +247,7 @@
       "compose": {
         "title": "Draft your first email",
         "subtitle": "Hold your Draft shortcut, say what you want, and release.",
-        "tip": "Try: “Tell Sarah the timeline slipped a week and the updated plan lands Friday.” Amical writes the email. You just approve it.",
+        "tip": "Try: “Tell Sarah the timeline slipped a week and the updated plan lands Friday.” Esper writes the email. You just approve it.",
         "cta": "Hold {{keys}} and say what you want",
         "mockHeader": "Email",
         "to": "To: Sarah Chen",
@@ -269,12 +269,12 @@
     "completion": {
       "title": "You're all set",
       "subtitle": "Hold your shortcut anywhere to start. You can change any of this in Settings.",
-      "start": "Start using Amical",
+      "start": "Start using Esper",
       "summary": {
         "speechModel": "Speech model",
         "shortcut": "Dictation shortcut",
         "microphone": "Microphone",
-        "cloudModel": "Amical Cloud",
+        "cloudModel": "Esper Cloud",
         "localModel": "{{model}}",
         "shortcutValue": "Hold {{key}}"
       }
@@ -307,7 +307,7 @@
         "noAudio": "No audio from \"{{microphone}}\"",
         "emptyTranscript": "No speech detected from \"{{microphone}}\"",
         "transcriptionFailed": "An error occurred during transcription",
-        "recordingDurationWarning": "Amical supports up to {{maxMinutes}} minutes of continuous dictation. Start a new dictation if needed.",
+        "recordingDurationWarning": "Esper supports up to {{maxMinutes}} minutes of continuous dictation. Start a new dictation if needed.",
         "recordingAutoStopped": "Max dictation duration reached. Start a new dictation if needed."
       },
       "action": {
@@ -331,7 +331,7 @@
         },
         "recordingDurationWarning": {
           "title": "Dictation will auto-stop in {{minutes}} minutes",
-          "description": "Amical supports up to {{maxMinutes}} minutes of continuous dictation. Start a new dictation if needed."
+          "description": "Esper supports up to {{maxMinutes}} minutes of continuous dictation. Start a new dictation if needed."
         },
         "recordingAutoStopped": {
           "title": "Dictation auto-stopped",
@@ -385,7 +385,7 @@
         },
         "localTranscriptionUnsupported": {
           "title": "Local transcription unavailable",
-          "description": "On-device models require macOS 15 or later. Switch to Amical Cloud."
+          "description": "On-device models require macOS 15 or later. Switch to Esper Cloud."
         }
       }
     }
@@ -438,15 +438,15 @@
       },
       "about": {
         "title": "About",
-        "description": "About Amical and version information"
+        "description": "About Esper and version information"
       }
     },
     "sidebar": {
       "docs": "Docs",
       "community": "Community",
       "discordAlt": "Discord",
-      "logoAlt": "Amical Logo",
-      "brand": "Amical",
+      "logoAlt": "Esper Logo",
+      "brand": "Esper",
       "backToApp": "Back to app"
     },
     "search": {
@@ -491,7 +491,7 @@
       },
       "language": {
         "label": "Display language",
-        "description": "Amical's interface language, not your dictation language.",
+        "description": "Esper's interface language, not your dictation language.",
         "options": {
           "system": "System",
           "en": "English",
@@ -502,7 +502,7 @@
         },
         "restartDialog": {
           "title": "Restart required",
-          "description": "Restart Amical to apply language changes. You can also apply on next start.",
+          "description": "Restart Esper to apply language changes. You can also apply on next start.",
           "restartNow": "Restart now",
           "later": "Apply on next start"
         },
@@ -527,7 +527,7 @@
         "label": "Self correction",
         "description": "Applies spoken corrections and revisions so your final dictation reflects what you meant.",
         "cloudOnly": "Cloud only",
-        "cloudTooltip": "Applies to Amical Cloud dictation only. Local dictation is unchanged.",
+        "cloudTooltip": "Applies to Esper Cloud dictation only. Local dictation is unchanged.",
         "ariaLabel": "Toggle self correction"
       }
     },
@@ -573,7 +573,7 @@
       },
       "telemetry": {
         "label": "Anonymous Telemetry",
-        "description": "Help improve Amical by sharing anonymous usage data.",
+        "description": "Help improve Esper by sharing anonymous usage data.",
         "learnMore": "Learn more"
       },
       "dataLocation": {
@@ -758,10 +758,10 @@
         "reorder": "Reorder",
         "reorderDone": "Done",
         "reorderHandle": "Drag to reorder",
-        "reorderHint": "Drag to set the order Amical falls back through.",
+        "reorderHint": "Drag to set the order Esper falls back through.",
         "dialog": {
           "title": "Configure microphone",
-          "description": "Amical records with the highest-ranked microphone that's connected."
+          "description": "Esper records with the highest-ranked microphone that's connected."
         },
         "toast": {
           "changed": "Microphone changed to {{deviceName}}",
@@ -773,22 +773,22 @@
         "label": "Formatting",
         "badge": "Alpha",
         "description": "Apply punctuation and structure to your transcriptions.",
-        "cloudOptionLabel": "Amical Cloud (Amical)",
-        "disabledTooltip": "Sync a language model or select Amical Cloud transcription to enable formatting.",
+        "cloudOptionLabel": "Esper Cloud (Esper)",
+        "disabledTooltip": "Sync a language model or select Esper Cloud transcription to enable formatting.",
         "disabledReason": {
-          "cloudAndSignIn": "Requires Amical Cloud transcription and sign in",
-          "cloud": "Requires Amical Cloud transcription",
+          "cloudAndSignIn": "Requires Esper Cloud transcription and sign in",
+          "cloud": "Requires Esper Cloud transcription",
           "signIn": "Requires sign in"
         },
         "manageLanguageModels": "Manage language models",
         "modelLabel": "Formatting model",
         "modelDescription": "Choose the model used to format your transcription.",
         "modelPlaceholder": "Select a model...",
-        "requiresCloudSpeech": "Requires Amical Cloud transcription.",
+        "requiresCloudSpeech": "Requires Esper Cloud transcription.",
         "switchSpeechModel": "Switch speech model",
-        "signInCloud": "Sign in to use Amical Cloud formatting.",
+        "signInCloud": "Sign in to use Esper Cloud formatting.",
         "signIn": "Sign in",
-        "cloudReady": "Using Amical Cloud formatting.",
+        "cloudReady": "Using Esper Cloud formatting.",
         "noLanguageModels": "Formatting won't run - no language model available.",
         "syncLanguageModels": "Sync language models",
         "toast": {
@@ -831,7 +831,7 @@
       "allowInjectedKeys": {
         "label": "Allow injected keystrokes",
         "description": "Let injected keystrokes trigger your shortcuts.",
-        "callout": "By default, Amical only responds to physical key presses, to prevent unexpected interference from key-injecting tools like remote desktop, KVM switches, or key remappers. Turn it on if that's keeping your shortcuts from firing.",
+        "callout": "By default, Esper only responds to physical key presses, to prevent unexpected interference from key-injecting tools like remote desktop, KVM switches, or key remappers. Turn it on if that's keeping your shortcuts from firing.",
         "learnMore": "Learn more"
       },
       "validation": {
@@ -1130,7 +1130,7 @@
         },
         "loginDialog": {
           "title": "Sign In Required",
-          "description": "To use Amical Cloud transcription, you need to sign in with your Amical account. This enables secure cloud-based transcription with high accuracy.",
+          "description": "To use Esper Cloud transcription, you need to sign in with your Esper account. This enables secure cloud-based transcription with high accuracy.",
           "browserNotice": "After clicking \"Sign In\", you'll be redirected to your browser to complete the login process.",
           "cloudBenefit": "Fast, accurate cloud transcription",
           "cancel": "Cancel",
@@ -1141,7 +1141,7 @@
           "downloadStartFailed": "Failed to start download",
           "downloadCancelFailed": "Failed to cancel download",
           "deleteFailed": "Failed to delete model",
-          "cloudSelected": "Amical Cloud selected. Cloud formatting enabled.",
+          "cloudSelected": "Esper Cloud selected. Cloud formatting enabled.",
           "selectFailed": "Failed to select model",
           "loginInBrowser": "Please complete login in your browser",
           "loginStartFailed": "Failed to start login process",

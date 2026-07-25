@@ -27,7 +27,7 @@ if (started) {
   import("./app").catch((error: unknown) => {
     console.error("Failed to load application", error);
     dialog.showErrorBox(
-      "Amical failed to start",
+      "Esper failed to start",
       error instanceof Error ? (error.stack ?? error.message) : String(error),
     );
     app.exit(1);

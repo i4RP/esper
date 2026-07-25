@@ -5,7 +5,7 @@
  * these exact values. Constants, never localized copy — the visible sheet
  * headers are separate i18n strings.
  */
-export const ONBOARDING_WINDOW_TITLE = "Amical - Setup";
+export const ONBOARDING_WINDOW_TITLE = "Esper - Setup";
 
 /** Set while a dictation try-it step is on screen, so the emulated surface
  *  formats like the app it depicts (email prose / notes list). */

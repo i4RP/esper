@@ -1,6 +1,6 @@
 {
   "app": {
-    "loading": "Amical wird geladen..."
+    "loading": "Esper wird geladen..."
   },
   "errors": {
     "generic": "Etwas ist schiefgelaufen. Bitte versuche es erneut."
@@ -19,7 +19,7 @@
     "version": "Version {{version}}"
   },
   "tray": {
-    "tooltip": "Amical",
+    "tooltip": "Esper",
     "openConsole": "Konsole öffnen",
     "about": "Über",
     "quit": "Beenden"
@@ -59,7 +59,7 @@
       "supportNote": "Falls das immer wieder passiert, wende dich an den Support."
     },
     "welcome": {
-      "title": "Wie wirst du Amical nutzen?",
+      "title": "Wie wirst du Esper nutzen?",
       "subtitle": "Wähle alles Zutreffende aus.",
       "toast": {
         "selectAtLeastOne": "Wähle mindestens eine Option aus, um fortzufahren"
@@ -78,7 +78,7 @@
     },
     "permissions": {
       "title": "Kernfunktionen aktivieren",
-      "subtitle": "Amical braucht ein paar Berechtigungen, um zuzuhören und zu tippen.",
+      "subtitle": "Esper braucht ein paar Berechtigungen, um zuzuhören und zu tippen.",
       "status": {
         "granted": "Berechtigung erteilt"
       },
@@ -89,16 +89,16 @@
       },
       "microphone": {
         "title": "Mikrofon",
-        "description": "Damit Amical dein Diktat hören kann"
+        "description": "Damit Esper dein Diktat hören kann"
       },
       "accessibility": {
         "title": "Bedienungshilfen",
-        "description": "Damit Amical Text in jede App einfügen kann"
+        "description": "Damit Esper Text in jede App einfügen kann"
       }
     },
     "discovery": {
       "title": "Wie hast du von uns erfahren?",
-      "subtitle": "Das hilft Amical, mehr Menschen wie dich zu erreichen.",
+      "subtitle": "Das hilft Esper, mehr Menschen wie dich zu erreichen.",
       "sources": {
         "searchEngine": "Suchmaschine (Google, Bing usw.)",
         "reddit": "Reddit",
@@ -111,7 +111,7 @@
         "other": "Sonstiges"
       },
       "toast": {
-        "selectSource": "Bitte wähle aus, wie du Amical entdeckt hast",
+        "selectSource": "Bitte wähle aus, wie du Esper entdeckt hast",
         "otherDetailsRequired": "Bitte gib Details für \"Sonstiges\" an"
       },
       "other": {
@@ -125,7 +125,7 @@
       "cards": {
         "cloud": {
           "name": "Cloud",
-          "tag": "Das volle Amical-Erlebnis",
+          "tag": "Das volle Esper-Erlebnis",
           "bullets": [
             "Präziseste Transkription",
             "KI-Formatierung integriert",
@@ -147,12 +147,12 @@
           "caveatLead": "KI-Formatierung erfordert zusätzliche Einrichtung"
         }
       },
-      "title": "Wähle, wie Amical läuft",
+      "title": "Wähle, wie Esper läuft",
       "subtitle": "Die meisten starten mit Cloud. Du kannst jederzeit in den Einstellungen wechseln."
     },
     "signIn": {
-      "title": "Bei Amical anmelden",
-      "subtitle": "Für Amical Cloud wird ein Konto benötigt.",
+      "title": "Bei Esper anmelden",
+      "subtitle": "Für Esper Cloud wird ein Konto benötigt.",
       "button": "Anmelden",
       "fine": "Anmeldung im Browser · Kostenloser Tarif inklusive · keine Kreditkarte nötig",
       "waiting": "Warten auf Abschluss der Anmeldung im Browser…",
@@ -168,7 +168,7 @@
     },
     "download": {
       "title": "Dein Modell wird vorbereitet",
-      "subtitle": "Amical lädt ein Spracherkennungsmodell herunter. Das passiert nur einmal, danach funktioniert das Diktat komplett offline.",
+      "subtitle": "Esper lädt ein Spracherkennungsmodell herunter. Das passiert nur einmal, danach funktioniert das Diktat komplett offline.",
       "modelTag": "Schnell, präzise, läuft auf dem Gerät",
       "ready": "Modell bereit",
       "alreadyInstalled": "Bereits installiert",
@@ -202,7 +202,7 @@
       "email": {
         "title": "Diktiere deine erste Nachricht",
         "subtitle": "Halte dein Tastenkürzel gedrückt, sprich ganz natürlich und lass los, wenn du fertig bist.",
-        "tip": "Sprich, als würdest du mit einem Kollegen reden. Amical kümmert sich um die Zeichensetzung.",
+        "tip": "Sprich, als würdest du mit einem Kollegen reden. Esper kümmert sich um die Zeichensetzung.",
         "cta": "Halte {{keys}} und sprich",
         "mockHeader": "E-Mail",
         "to": "An: John Doe",
@@ -211,7 +211,7 @@
       },
       "notes": {
         "title": "Probiere es mit Flüstern",
-        "subtitle": "Halte dein Tastenkürzel gedrückt und flüstere. Amical versteht trotzdem jedes Wort.",
+        "subtitle": "Halte dein Tastenkürzel gedrückt und flüstere. Esper versteht trotzdem jedes Wort.",
         "tip": "Perfekt für Großraumbüros, späte Abende oder überall dort, wo du leise sein möchtest.",
         "cta": "Halte {{keys}} und flüstere",
         "mockHeader": "Notizen",
@@ -221,7 +221,7 @@
       "simple": {
         "title": "Probiere dein erstes Diktat",
         "subtitle": "Halte dein Tastenkürzel gedrückt, sprich ganz natürlich und lass los, wenn du fertig bist.",
-        "tip": "KI-Formatierung kannst du später einrichten, indem du in den Einstellungen ein KI-Modell verbindest oder zu Amical Cloud wechselst.",
+        "tip": "KI-Formatierung kannst du später einrichten, indem du in den Einstellungen ein KI-Modell verbindest oder zu Esper Cloud wechselst.",
         "cta": "Halte {{keys}} und sprich",
         "mockHeader": "Notizen",
         "ghost": "Auf dem Heimweg Wasser, Milch, Brot und Toast besorgen."
@@ -235,7 +235,7 @@
         "contrast1Rest": "tippt, was du sagst.",
         "contrast2Lead": "Entwurf",
         "contrast2Rest": "schreibt, was du meinst.",
-        "howTo": "Sag Amical, was du mitteilen willst, und es schreibt die Nachricht für dich, im passenden Ton und Kontext.",
+        "howTo": "Sag Esper, was du mitteilen willst, und es schreibt die Nachricht für dich, im passenden Ton und Kontext.",
         "demoPlaceholder": "Du sagst…",
         "demoInstruction": "Schreib ein freundliches Follow-up an John zum Angebot",
         "demoDraft": "Hi John,\n\nich wollte nur kurz zum Angebot von letzter Woche nachfassen. Hattest du schon Zeit, es dir anzuschauen?\n\nViele Grüße\nAlex",
@@ -250,7 +250,7 @@
       "compose": {
         "title": "Entwirf deine erste E-Mail",
         "subtitle": "Halte dein Entwurf-Tastenkürzel, sag, was du willst, und lass los.",
-        "tip": "Probiere: „Sag Sarah, dass sich der Zeitplan um eine Woche verschiebt und der neue Plan am Freitag kommt.“ Amical schreibt die E-Mail. Du gibst sie nur frei.",
+        "tip": "Probiere: „Sag Sarah, dass sich der Zeitplan um eine Woche verschiebt und der neue Plan am Freitag kommt.“ Esper schreibt die E-Mail. Du gibst sie nur frei.",
         "cta": "Halte {{keys}} und sag, was du willst",
         "mockHeader": "E-Mail",
         "to": "An: Sarah Chen",
@@ -272,12 +272,12 @@
     "completion": {
       "title": "Alles bereit",
       "subtitle": "Halte dein Tastenkürzel in jeder App gedrückt, um loszulegen. Alles davon kannst du in den Einstellungen ändern.",
-      "start": "Amical jetzt verwenden",
+      "start": "Esper jetzt verwenden",
       "summary": {
         "speechModel": "Spracherkennungsmodell",
         "shortcut": "Diktat-Tastenkürzel",
         "microphone": "Mikrofon",
-        "cloudModel": "Amical Cloud",
+        "cloudModel": "Esper Cloud",
         "localModel": "{{model}}",
         "shortcutValue": "{{key}} halten"
       }
@@ -310,7 +310,7 @@
         "noAudio": "Kein Audio von \"{{microphone}}\"",
         "emptyTranscript": "Keine Spracheingabe über \"{{microphone}}\" erkannt",
         "transcriptionFailed": "Bei der Transkription ist ein Fehler aufgetreten",
-        "recordingDurationWarning": "Amical unterstützt bis zu {{maxMinutes}} Minuten kontinuierliches Diktieren. Starte bei Bedarf ein neues Diktat.",
+        "recordingDurationWarning": "Esper unterstützt bis zu {{maxMinutes}} Minuten kontinuierliches Diktieren. Starte bei Bedarf ein neues Diktat.",
         "recordingAutoStopped": "Maximale Diktatdauer erreicht. Starte bei Bedarf ein neues Diktat."
       },
       "action": {
@@ -334,7 +334,7 @@
         },
         "recordingDurationWarning": {
           "title": "Diktat wird in {{minutes}} Minuten automatisch beendet",
-          "description": "Amical unterstützt bis zu {{maxMinutes}} Minuten kontinuierliches Diktieren. Starte bei Bedarf ein neues Diktat."
+          "description": "Esper unterstützt bis zu {{maxMinutes}} Minuten kontinuierliches Diktieren. Starte bei Bedarf ein neues Diktat."
         },
         "recordingAutoStopped": {
           "title": "Diktat automatisch beendet",
@@ -388,7 +388,7 @@
         },
         "localTranscriptionUnsupported": {
           "title": "Lokale Transkription nicht verfügbar",
-          "description": "On-Device-Modelle erfordern macOS 15 oder neuer. Wechsle zu Amical Cloud."
+          "description": "On-Device-Modelle erfordern macOS 15 oder neuer. Wechsle zu Esper Cloud."
         }
       }
     }
@@ -441,15 +441,15 @@
       },
       "about": {
         "title": "Über",
-        "description": "Über Amical und Versionsinformationen"
+        "description": "Über Esper und Versionsinformationen"
       }
     },
     "sidebar": {
       "docs": "Dokumentation",
       "community": "Community",
       "discordAlt": "Discord",
-      "logoAlt": "Amical-Logo",
-      "brand": "Amical",
+      "logoAlt": "Esper-Logo",
+      "brand": "Esper",
       "backToApp": "Zurück zur App"
     },
     "search": {
@@ -494,7 +494,7 @@
       },
       "language": {
         "label": "Anzeigesprache",
-        "description": "Amicals Oberflächensprache, nicht deine Diktiersprache.",
+        "description": "Espers Oberflächensprache, nicht deine Diktiersprache.",
         "options": {
           "system": "System",
           "en": "English",
@@ -505,7 +505,7 @@
         },
         "restartDialog": {
           "title": "Neustart erforderlich",
-          "description": "Starte Amical neu, um die Sprachänderungen anzuwenden. Du kannst sie auch beim nächsten Start anwenden.",
+          "description": "Starte Esper neu, um die Sprachänderungen anzuwenden. Du kannst sie auch beim nächsten Start anwenden.",
           "restartNow": "Jetzt neu starten",
           "later": "Beim nächsten Start anwenden"
         },
@@ -530,7 +530,7 @@
         "label": "Selbstkorrektur",
         "description": "Übernimmt gesprochene Korrekturen und Überarbeitungen, damit dein fertiges Diktat ausdrückt, was du gemeint hast.",
         "cloudOnly": "Nur Cloud",
-        "cloudTooltip": "Gilt nur für Amical Cloud-Diktat. Lokales Diktat bleibt unverändert.",
+        "cloudTooltip": "Gilt nur für Esper Cloud-Diktat. Lokales Diktat bleibt unverändert.",
         "ariaLabel": "Selbstkorrektur umschalten"
       }
     },
@@ -576,7 +576,7 @@
       },
       "telemetry": {
         "label": "Anonyme Telemetrie",
-        "description": "Hilf, Amical zu verbessern, indem du anonyme Nutzungsdaten teilst.",
+        "description": "Hilf, Esper zu verbessern, indem du anonyme Nutzungsdaten teilst.",
         "learnMore": "Mehr erfahren"
       },
       "dataLocation": {
@@ -761,10 +761,10 @@
         "reorder": "Neu anordnen",
         "reorderDone": "Fertig",
         "reorderHandle": "Zum Neuanordnen ziehen",
-        "reorderHint": "Ziehen, um die Ausweichreihenfolge festzulegen, die Amical verwendet.",
+        "reorderHint": "Ziehen, um die Ausweichreihenfolge festzulegen, die Esper verwendet.",
         "dialog": {
           "title": "Mikrofon konfigurieren",
-          "description": "Amical nimmt mit dem verbundenen Mikrofon mit der höchsten Priorität auf."
+          "description": "Esper nimmt mit dem verbundenen Mikrofon mit der höchsten Priorität auf."
         },
         "toast": {
           "changed": "Mikrofon zu {{deviceName}} gewechselt",
@@ -776,22 +776,22 @@
         "label": "Formatierung",
         "badge": "Alpha",
         "description": "Wende Zeichensetzung und Struktur auf deine Transkriptionen an.",
-        "cloudOptionLabel": "Amical Cloud (Amical)",
-        "disabledTooltip": "Synchronisiere ein Sprachmodell oder wähle Amical Cloud-Transkription, um die Formatierung zu aktivieren.",
+        "cloudOptionLabel": "Esper Cloud (Esper)",
+        "disabledTooltip": "Synchronisiere ein Sprachmodell oder wähle Esper Cloud-Transkription, um die Formatierung zu aktivieren.",
         "disabledReason": {
-          "cloudAndSignIn": "Erfordert Amical Cloud-Transkription und Anmeldung",
-          "cloud": "Erfordert Amical Cloud-Transkription",
+          "cloudAndSignIn": "Erfordert Esper Cloud-Transkription und Anmeldung",
+          "cloud": "Erfordert Esper Cloud-Transkription",
           "signIn": "Erfordert Anmeldung"
         },
         "manageLanguageModels": "Sprachmodelle verwalten",
         "modelLabel": "Formatierungsmodell",
         "modelDescription": "Wähle das Modell, das zum Formatieren deiner Transkription verwendet wird.",
         "modelPlaceholder": "Modell auswählen...",
-        "requiresCloudSpeech": "Erfordert Amical Cloud-Transkription.",
+        "requiresCloudSpeech": "Erfordert Esper Cloud-Transkription.",
         "switchSpeechModel": "Spracherkennungsmodell wechseln",
-        "signInCloud": "Melde dich an, um die Amical Cloud-Formatierung zu nutzen.",
+        "signInCloud": "Melde dich an, um die Esper Cloud-Formatierung zu nutzen.",
         "signIn": "Anmelden",
-        "cloudReady": "Amical Cloud-Formatierung wird verwendet.",
+        "cloudReady": "Esper Cloud-Formatierung wird verwendet.",
         "noLanguageModels": "Formatierung wird nicht ausgeführt – kein Sprachmodell verfügbar.",
         "syncLanguageModels": "Sprachmodelle synchronisieren",
         "toast": {
@@ -834,7 +834,7 @@
       "allowInjectedKeys": {
         "label": "Injizierte Tastenanschläge zulassen",
         "description": "Lass injizierte Tastenanschläge deine Tastenkürzel auslösen.",
-        "callout": "Standardmäßig reagiert Amical nur auf physische Tastendrücke, um unerwartete Störungen durch Tools zu vermeiden, die Tastenanschläge einspeisen – etwa Remotedesktop, KVM-Switches oder Tasten-Remapper. Aktiviere die Option, wenn dadurch deine Tastenkürzel nicht ausgelöst werden.",
+        "callout": "Standardmäßig reagiert Esper nur auf physische Tastendrücke, um unerwartete Störungen durch Tools zu vermeiden, die Tastenanschläge einspeisen – etwa Remotedesktop, KVM-Switches oder Tasten-Remapper. Aktiviere die Option, wenn dadurch deine Tastenkürzel nicht ausgelöst werden.",
         "learnMore": "Mehr erfahren"
       },
       "validation": {
@@ -1133,7 +1133,7 @@
         },
         "loginDialog": {
           "title": "Anmeldung erforderlich",
-          "description": "Um die Amical Cloud-Transkription zu nutzen, musst du dich mit deinem Amical-Konto anmelden. Dies ermöglicht eine sichere, cloudbasierte Transkription mit hoher Genauigkeit.",
+          "description": "Um die Esper Cloud-Transkription zu nutzen, musst du dich mit deinem Esper-Konto anmelden. Dies ermöglicht eine sichere, cloudbasierte Transkription mit hoher Genauigkeit.",
           "browserNotice": "Nach dem Klick auf \"Anmelden\" wirst du zu deinem Browser weitergeleitet, um den Anmeldevorgang abzuschließen.",
           "cloudBenefit": "Schnelle, genaue Cloud-Transkription",
           "cancel": "Abbrechen",
@@ -1144,7 +1144,7 @@
           "downloadStartFailed": "Download konnte nicht gestartet werden",
           "downloadCancelFailed": "Download konnte nicht abgebrochen werden",
           "deleteFailed": "Modell konnte nicht gelöscht werden",
-          "cloudSelected": "Amical Cloud ausgewählt. Cloud-Formatierung aktiviert.",
+          "cloudSelected": "Esper Cloud ausgewählt. Cloud-Formatierung aktiviert.",
           "selectFailed": "Modell konnte nicht ausgewählt werden",
           "loginInBrowser": "Bitte schließe die Anmeldung in deinem Browser ab",
           "loginStartFailed": "Anmeldevorgang konnte nicht gestartet werden",

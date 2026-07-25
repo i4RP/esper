@@ -1,6 +1,6 @@
 {
   "app": {
-    "loading": "載入 Amical 中..."
+    "loading": "載入 Esper 中..."
   },
   "errors": {
     "generic": "發生錯誤，請再試一次。"
@@ -19,7 +19,7 @@
     "version": "版本 {{version}}"
   },
   "tray": {
-    "tooltip": "Amical",
+    "tooltip": "Esper",
     "openConsole": "開啟主控台",
     "about": "關於",
     "quit": "結束"
@@ -59,7 +59,7 @@
       "supportNote": "如果問題持續發生，請聯絡支援團隊。"
     },
     "welcome": {
-      "title": "您會如何使用 Amical？",
+      "title": "您會如何使用 Esper？",
       "subtitle": "請選擇所有符合的項目。",
       "toast": {
         "selectAtLeastOne": "請至少選擇一項才能繼續"
@@ -78,7 +78,7 @@
     },
     "permissions": {
       "title": "啟用核心功能",
-      "subtitle": "Amical 需要幾項權限才能聆聽與輸入文字。",
+      "subtitle": "Esper 需要幾項權限才能聆聽與輸入文字。",
       "status": {
         "granted": "已授權"
       },
@@ -89,16 +89,16 @@
       },
       "microphone": {
         "title": "麥克風",
-        "description": "讓 Amical 能接收您的聽寫語音"
+        "description": "讓 Esper 能接收您的聽寫語音"
       },
       "accessibility": {
         "title": "輔助使用",
-        "description": "讓 Amical 能將文字貼到任何應用程式"
+        "description": "讓 Esper 能將文字貼到任何應用程式"
       }
     },
     "discovery": {
       "title": "您是如何得知我們的？",
-      "subtitle": "這能幫助 Amical 接觸更多像您一樣的使用者。",
+      "subtitle": "這能幫助 Esper 接觸更多像您一樣的使用者。",
       "sources": {
         "searchEngine": "搜尋引擎（Google、Bing 等）",
         "reddit": "Reddit",
@@ -111,7 +111,7 @@
         "other": "其他"
       },
       "toast": {
-        "selectSource": "請選擇您如何發現 Amical",
+        "selectSource": "請選擇您如何發現 Esper",
         "otherDetailsRequired": "請為「其他」提供詳細資訊"
       },
       "other": {
@@ -125,7 +125,7 @@
       "cards": {
         "cloud": {
           "name": "雲端",
-          "tag": "完整的 Amical 體驗",
+          "tag": "完整的 Esper 體驗",
           "bullets": [
             "最準確的轉錄",
             "內建 AI 格式化",
@@ -147,12 +147,12 @@
           "caveatLead": "AI 格式化需要額外設定"
         }
       },
-      "title": "選擇 Amical 的運作方式",
+      "title": "選擇 Esper 的運作方式",
       "subtitle": "大多數人從雲端開始，您隨時可以在設定中切換。"
     },
     "signIn": {
-      "title": "登入 Amical",
-      "subtitle": "使用 Amical Cloud 需要帳戶。",
+      "title": "登入 Esper",
+      "subtitle": "使用 Esper Cloud 需要帳戶。",
       "button": "登入",
       "fine": "登入頁面會在您的瀏覽器中開啟 · 含免費方案 · 無需信用卡",
       "waiting": "正在等待您在瀏覽器中完成登入…",
@@ -168,7 +168,7 @@
     },
     "download": {
       "title": "正在準備您的模型",
-      "subtitle": "Amical 正在下載語音模型。只需下載一次，之後聽寫即可完全離線運作。",
+      "subtitle": "Esper 正在下載語音模型。只需下載一次，之後聽寫即可完全離線運作。",
       "modelTag": "快速、準確、在裝置上運作",
       "ready": "模型已就緒",
       "alreadyInstalled": "已安裝",
@@ -202,7 +202,7 @@
       "email": {
         "title": "聽寫您的第一則訊息",
         "subtitle": "按住快捷鍵，自然地說話，說完後放開。",
-        "tip": "就像跟同事說話一樣自然。標點符號交給 Amical。",
+        "tip": "就像跟同事說話一樣自然。標點符號交給 Esper。",
         "cta": "按住 {{keys}} 說話",
         "mockHeader": "電子郵件",
         "to": "收件人：John Doe",
@@ -211,7 +211,7 @@
       },
       "notes": {
         "title": "試試小聲說話",
-        "subtitle": "按住快捷鍵小聲說話，Amical 仍能聽清每個字。",
+        "subtitle": "按住快捷鍵小聲說話，Esper 仍能聽清每個字。",
         "tip": "適合開放式辦公室、深夜，或任何您想保持安靜的場合。",
         "cta": "按住 {{keys}} 小聲說",
         "mockHeader": "筆記",
@@ -221,7 +221,7 @@
       "simple": {
         "title": "試試您的第一次聽寫",
         "subtitle": "按住快捷鍵，自然地說話，說完後放開。",
-        "tip": "您之後可以在設定中連接 AI 模型，或切換到 Amical Cloud，來啟用 AI 格式化。",
+        "tip": "您之後可以在設定中連接 AI 模型，或切換到 Esper Cloud，來啟用 AI 格式化。",
         "cta": "按住 {{keys}} 說話",
         "mockHeader": "筆記",
         "ghost": "回家路上買水、牛奶、麵包和吐司。"
@@ -235,7 +235,7 @@
         "contrast1Rest": "逐字輸入您說的話。",
         "contrast2Lead": "草稿",
         "contrast2Rest": "寫出您想表達的意思。",
-        "howTo": "告訴 Amical 您想傳達的內容，它就會以合適的語氣和情境為您寫好訊息。",
+        "howTo": "告訴 Esper 您想傳達的內容，它就會以合適的語氣和情境為您寫好訊息。",
         "demoPlaceholder": "您說…",
         "demoInstruction": "幫我寫一封有禮貌的追蹤信給 John，關於那份提案",
         "demoDraft": "嗨 John，\n\n想跟進一下我上週寄出的提案，請問您有機會看過了嗎？\n\n祝好\nAlex",
@@ -250,7 +250,7 @@
       "compose": {
         "title": "草擬您的第一封郵件",
         "subtitle": "按住草稿快捷鍵，說出您想要的內容，然後放開。",
-        "tip": "試試說：「告訴 Sarah 時程延後一週，更新的計畫週五提供」。Amical 會寫好郵件，您只需確認。",
+        "tip": "試試說：「告訴 Sarah 時程延後一週，更新的計畫週五提供」。Esper 會寫好郵件，您只需確認。",
         "cta": "按住 {{keys}} 說出您想要的內容",
         "mockHeader": "電子郵件",
         "to": "收件人：Sarah Chen",
@@ -272,12 +272,12 @@
     "completion": {
       "title": "一切就緒",
       "subtitle": "在任何地方按住快捷鍵即可開始。這些都可以在設定中更改。",
-      "start": "開始使用 Amical",
+      "start": "開始使用 Esper",
       "summary": {
         "speechModel": "語音模型",
         "shortcut": "聽寫快捷鍵",
         "microphone": "麥克風",
-        "cloudModel": "Amical Cloud",
+        "cloudModel": "Esper Cloud",
         "localModel": "{{model}}",
         "shortcutValue": "按住 {{key}}"
       }
@@ -310,7 +310,7 @@
         "noAudio": "「{{microphone}}」沒有音訊",
         "emptyTranscript": "「{{microphone}}」未偵測到語音",
         "transcriptionFailed": "轉錄過程中發生錯誤",
-        "recordingDurationWarning": "Amical 支援最長 {{maxMinutes}} 分鐘的連續聽寫，如有需要請開始新的聽寫。",
+        "recordingDurationWarning": "Esper 支援最長 {{maxMinutes}} 分鐘的連續聽寫，如有需要請開始新的聽寫。",
         "recordingAutoStopped": "達到聽寫時間上限，如有需要請開始新的聽寫。"
       },
       "action": {
@@ -334,7 +334,7 @@
         },
         "recordingDurationWarning": {
           "title": "聽寫將在 {{minutes}} 分鐘後自動停止",
-          "description": "Amical 支援最長 {{maxMinutes}} 分鐘的連續聽寫，如有需要請開始新的聽寫。"
+          "description": "Esper 支援最長 {{maxMinutes}} 分鐘的連續聽寫，如有需要請開始新的聽寫。"
         },
         "recordingAutoStopped": {
           "title": "聽寫已自動停止",
@@ -388,7 +388,7 @@
         },
         "localTranscriptionUnsupported": {
           "title": "本機轉錄無法使用",
-          "description": "裝置端模型需要 macOS 15 或更新版本。請切換至 Amical Cloud。"
+          "description": "裝置端模型需要 macOS 15 或更新版本。請切換至 Esper Cloud。"
         }
       }
     }
@@ -441,15 +441,15 @@
       },
       "about": {
         "title": "關於",
-        "description": "關於 Amical 和版本資訊"
+        "description": "關於 Esper 和版本資訊"
       }
     },
     "sidebar": {
       "docs": "說明文件",
       "community": "社群",
       "discordAlt": "Discord",
-      "logoAlt": "Amical 標誌",
-      "brand": "Amical",
+      "logoAlt": "Esper 標誌",
+      "brand": "Esper",
       "backToApp": "返回應用程式"
     },
     "search": {
@@ -494,7 +494,7 @@
       },
       "language": {
         "label": "顯示語言",
-        "description": "Amical 介面的語言，而非您的聽寫語言。",
+        "description": "Esper 介面的語言，而非您的聽寫語言。",
         "options": {
           "system": "系統預設",
           "en": "English",
@@ -505,7 +505,7 @@
         },
         "restartDialog": {
           "title": "需要重啟",
-          "description": "請重新啟動 Amical 以套用語言變更，也可選擇下次啟動時再套用。",
+          "description": "請重新啟動 Esper 以套用語言變更，也可選擇下次啟動時再套用。",
           "restartNow": "立即重啟",
           "later": "下次啟動時套用"
         },
@@ -530,7 +530,7 @@
         "label": "自我修正",
         "description": "套用口述中的更正與改述，讓最終聽寫內容反映您的原意。",
         "cloudOnly": "僅限雲端",
-        "cloudTooltip": "僅適用於 Amical Cloud 聽寫。本機聽寫不受影響。",
+        "cloudTooltip": "僅適用於 Esper Cloud 聽寫。本機聽寫不受影響。",
         "ariaLabel": "切換自我修正"
       }
     },
@@ -576,7 +576,7 @@
       },
       "telemetry": {
         "label": "匿名遙測資料回傳",
-        "description": "分享匿名使用資料，幫助我們改進 Amical。",
+        "description": "分享匿名使用資料，幫助我們改進 Esper。",
         "learnMore": "了解更多"
       },
       "dataLocation": {
@@ -761,10 +761,10 @@
         "reorder": "重新排序",
         "reorderDone": "完成",
         "reorderHandle": "拖曳以重新排序",
-        "reorderHint": "拖曳以設定 Amical 依序使用的備援順序。",
+        "reorderHint": "拖曳以設定 Esper 依序使用的備援順序。",
         "dialog": {
           "title": "設定麥克風",
-          "description": "Amical 會使用已連接且優先順序最高的麥克風進行錄音。"
+          "description": "Esper 會使用已連接且優先順序最高的麥克風進行錄音。"
         },
         "toast": {
           "changed": "麥克風變更為 {{deviceName}}",
@@ -776,22 +776,22 @@
         "label": "格式化",
         "badge": "Alpha 測試",
         "description": "為您的轉錄內容加入標點符號與結構。",
-        "cloudOptionLabel": "Amical Cloud (Amical)",
-        "disabledTooltip": "同步語言模型或選擇 Amical Cloud 轉錄以啟用格式化。",
+        "cloudOptionLabel": "Esper Cloud (Esper)",
+        "disabledTooltip": "同步語言模型或選擇 Esper Cloud 轉錄以啟用格式化。",
         "disabledReason": {
-          "cloudAndSignIn": "需要 Amical Cloud 轉錄並登入",
-          "cloud": "需要 Amical Cloud 轉錄",
+          "cloudAndSignIn": "需要 Esper Cloud 轉錄並登入",
+          "cloud": "需要 Esper Cloud 轉錄",
           "signIn": "需要登入"
         },
         "manageLanguageModels": "管理語言模型",
         "modelLabel": "格式化模型",
         "modelDescription": "選擇用於格式化轉錄內容的模型。",
         "modelPlaceholder": "選擇一個模型...",
-        "requiresCloudSpeech": "需要 Amical Cloud 轉錄。",
+        "requiresCloudSpeech": "需要 Esper Cloud 轉錄。",
         "switchSpeechModel": "切換語音模型",
-        "signInCloud": "登入以使用 Amical Cloud 格式化。",
+        "signInCloud": "登入以使用 Esper Cloud 格式化。",
         "signIn": "登入",
-        "cloudReady": "正在使用 Amical Cloud 格式化。",
+        "cloudReady": "正在使用 Esper Cloud 格式化。",
         "noLanguageModels": "缺少可用的語言模型，無法進行格式化。",
         "syncLanguageModels": "同步語言模型",
         "toast": {
@@ -834,7 +834,7 @@
       "allowInjectedKeys": {
         "label": "允許注入的按鍵",
         "description": "讓注入的按鍵觸發您的快速鍵。",
-        "callout": "預設情況下，Amical 只會回應實體按鍵，以避免遠端桌面、KVM 切換器或按鍵重新對應工具等注入按鍵的工具造成非預期的干擾。如果這導致您的快速鍵無法觸發，請開啟此選項。",
+        "callout": "預設情況下，Esper 只會回應實體按鍵，以避免遠端桌面、KVM 切換器或按鍵重新對應工具等注入按鍵的工具造成非預期的干擾。如果這導致您的快速鍵無法觸發，請開啟此選項。",
         "learnMore": "了解更多"
       },
       "validation": {
@@ -1133,7 +1133,7 @@
         },
         "loginDialog": {
           "title": "需要登入",
-          "description": "如要體驗 Amical Cloud 轉錄，需使用您的 Amical 帳號登入，才能啟用高準確度的轉錄功能。",
+          "description": "如要體驗 Esper Cloud 轉錄，需使用您的 Esper 帳號登入，才能啟用高準確度的轉錄功能。",
           "browserNotice": "點擊「登入」後，系統會將您引導至瀏覽器以完成登入程序。",
           "cloudBenefit": "快速、高準確度的雲端轉錄",
           "cancel": "取消",
@@ -1144,7 +1144,7 @@
           "downloadStartFailed": "無法開始下載",
           "downloadCancelFailed": "無法取消下載",
           "deleteFailed": "無法刪除模型",
-          "cloudSelected": "已選取 Amical Cloud 模型並啟用了雲端格式化。",
+          "cloudSelected": "已選取 Esper Cloud 模型並啟用了雲端格式化。",
           "selectFailed": "選擇模型時發生錯誤",
           "loginInBrowser": "請在您的網頁中完成登入程序",
           "loginStartFailed": "啟動登入程序時發生錯誤",

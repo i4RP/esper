@@ -356,7 +356,7 @@ export default function SpeechTab() {
   const handleSelectModel = async (modelId: string) => {
     // Check if this is a cloud model
     const model = availableModels.find((m) => m.id === modelId);
-    const isCloudModel = model?.provider === "Amical Cloud";
+    const isCloudModel = model?.provider === "Esper Cloud";
 
     // If cloud model and not authenticated, show login dialog
     if (isCloudModel && !isAuthenticated) {
@@ -450,7 +450,7 @@ export default function SpeechTab() {
                         const progress = downloadProgress[model.id];
                         const isDownloading =
                           progress?.status === "downloading";
-                        const isCloudModel = model.provider === "Amical Cloud";
+                        const isCloudModel = model.provider === "Esper Cloud";
 
                         // Cloud models can be selected if authenticated, local models need to be
                         // downloaded — and local requires macOS 15+.

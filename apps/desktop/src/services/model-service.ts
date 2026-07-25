@@ -1543,7 +1543,7 @@ class ModelService extends EventEmitter {
         const availableModel = AVAILABLE_MODELS.find(
           (m) => m.id === speechModelId,
         );
-        const isAmicalModel = availableModel?.provider === "Amical Cloud";
+        const isAmicalModel = availableModel?.provider === "Esper Cloud";
         const existsInDb = await modelExists(
           getSystemProviderInstanceId(PROVIDER_TYPES.localWhisper),
           "speech",

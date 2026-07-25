@@ -143,7 +143,7 @@ app.whenReady().then(async () => {
       stage: "app_initialize",
     });
     dialog.showErrorBox(
-      "Amical failed to start",
+      "Esper failed to start",
       error instanceof Error ? (error.stack ?? error.message) : String(error),
     );
     app.quit();

@@ -10,7 +10,6 @@ import type { OnboardingFeatureFlags } from "../types/onboarding";
  * across both branches (see getActiveOnboardingScreens).
  */
 const BASE_ORDER: OnboardingScreen[] = [
-  OnboardingScreen.Welcome,
   OnboardingScreen.DiscoverySource,
   OnboardingScreen.ModelSelection,
   OnboardingScreen.SignIn, // cloud-only setup

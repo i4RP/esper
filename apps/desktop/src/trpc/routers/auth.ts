@@ -153,6 +153,6 @@ export const authRouter = createRouter({
     const { AVAILABLE_MODELS } = await import("../../constants/models");
     const model = AVAILABLE_MODELS.find((m) => m.id === selectedModelId);
 
-    return model?.provider === "Amical Cloud";
+    return model?.provider === "Esper Cloud";
   }),
 });

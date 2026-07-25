@@ -381,7 +381,8 @@ export function detectApplicationType(
   // own app is "Amical"; dev runs are "electron" and fall through to "default".
   const isOwnApp =
     bundleId === "ai.amical.desktop" ||
-    bundleId.toLowerCase() === "amical";
+    bundleId.toLowerCase() === "amical" ||
+    bundleId.toLowerCase() === "esper";
   if (isOwnApp) {
     const title = accessibilityContext.context?.windowInfo?.title ?? "";
     if (title === TRY_IT_WINDOW_TITLES.email) return "email";

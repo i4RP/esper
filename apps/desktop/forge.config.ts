@@ -568,8 +568,8 @@ const config: ForgeConfig = {
       unpack:
         "{*.node,*.dylib,*.so,*.dll,*.metal,**/node_modules/@amical/whisper-wrapper/**,**/whisper.cpp/**,**/.vite/build/whisper-worker-fork.js,**/node_modules/jest-worker/**,**/onnxruntime-node/bin/**}",
     },
-    name: "Amical",
-    executableName: "Amical",
+    name: "Esper",
+    executableName: "Esper",
     icon: "./assets/logo", // Path to your icon file
     appBundleId: "ai.amical.desktop", // Proper bundle ID
     extraResource: [
@@ -594,7 +594,7 @@ const config: ForgeConfig = {
     },
     protocols: [
       {
-        name: "Amical",
+        name: "Esper",
         schemes: ["amical"],
       },
     ],
@@ -727,7 +727,7 @@ const config: ForgeConfig = {
   rebuildConfig: {},
   makers: [
     new MakerSquirrel({
-      name: "Amical",
+      name: "Esper",
       setupIcon: "./assets/logo.ico",
       // Squirrel generates the app-launcher stub (Amical_ExecutionStub.exe →
       // installed root Amical.exe) and Squirrel.exe (→ installed Update.exe)

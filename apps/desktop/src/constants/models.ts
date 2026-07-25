@@ -119,7 +119,7 @@ export interface ModelManagerState {
 export const AVAILABLE_MODELS: AvailableWhisperModel[] = [
   {
     id: "amical-cloud",
-    name: "Amical Cloud",
+    name: "Esper Cloud",
     type: "whisper",
     description: "Fast cloud-based transcription with high accuracy.",
     checksum: "", // No checksum for cloud model
@@ -145,7 +145,7 @@ export const AVAILABLE_MODELS: AvailableWhisperModel[] = [
     speed: 4.5,
     accuracy: 4.5,
     setup: "cloud",
-    provider: "Amical Cloud",
+    provider: "Esper Cloud",
     providerIcon: "/assets/icon_logo.svg",
   },
   {

@@ -20,7 +20,6 @@ describe("getActiveOnboardingScreens", () => {
       skipped: [],
     });
     expect(screens).toEqual([
-      OnboardingScreen.Welcome,
       OnboardingScreen.DiscoverySource,
       OnboardingScreen.ModelSelection,
       OnboardingScreen.SignIn,
@@ -45,7 +44,6 @@ describe("getActiveOnboardingScreens", () => {
       skipped: [],
     });
     expect(screens).toEqual([
-      OnboardingScreen.Welcome,
       OnboardingScreen.DiscoverySource,
       OnboardingScreen.ModelSelection,
       OnboardingScreen.Download,

@@ -6,7 +6,6 @@ import { OnboardingErrorBoundary } from "./components/ErrorBoundary";
 import { useTranslation } from "react-i18next";
 
 // Screens
-import { WelcomeScreen } from "./components/screens/WelcomeScreen";
 import { PermissionsScreen } from "./components/screens/PermissionsScreen";
 import { DiscoverySourceScreen } from "./components/screens/DiscoverySourceScreen";
 import { ModelSelectionScreen } from "./components/screens/ModelSelectionScreen";
@@ -34,7 +33,6 @@ import {
   ModelType,
   type OnboardingState,
   type OnboardingPreferences,
-  type FeatureInterest,
   type DiscoverySource,
 } from "../../types/onboarding";
 
@@ -51,7 +49,7 @@ export function App() {
   const { t } = useTranslation();
   // State management
   const [currentScreen, setCurrentScreen] = useState<OnboardingScreen>(
-    OnboardingScreen.Welcome,
+    OnboardingScreen.DiscoverySource,
   );
   const [permissions, setPermissions] = useState<PermissionStatus>({
     microphone: "not-determined",
@@ -179,7 +177,7 @@ export function App() {
         } else {
           // Resume from the last visited screen — but only if it's still part
           // of the active flow (the model branch or feature flags may have
-          // changed since it was saved). Otherwise stay on Welcome.
+          // changed since it was saved). Otherwise stay on the first screen.
           const resumeScreen = state.lastVisitedScreen as OnboardingScreen;
           if (getActiveScreens().includes(resumeScreen)) {
             setCurrentScreen(resumeScreen);
@@ -199,8 +197,8 @@ export function App() {
 
   // Save current screen for resume capability (telemetry tracked in backend)
   useEffect(() => {
-    if (currentScreen !== OnboardingScreen.Welcome) {
-      // Don't save Welcome screen, start from there if no progress
+    if (currentScreen !== OnboardingScreen.DiscoverySource) {
+      // Don't save the first screen; start from there if no progress
       // Use ref to avoid dependency on savePreferences which changes identity on mutation state
       savePreferencesRef.current({
         lastVisitedScreen: currentScreen,
@@ -257,17 +255,6 @@ export function App() {
     savePreferences(newPreferences).catch((error) => {
       console.error("Failed to save preferences:", error);
       // Error is already handled by the hook with toast
-    });
-  };
-
-  // Handle feature interests selection (telemetry tracked in backend)
-  const handleFeatureInterests = (
-    interests: FeatureInterest[],
-    details?: string,
-  ) => {
-    handleSaveAndContinue({
-      featureInterests: interests,
-      featureInterestsDetails: details,
     });
   };
 
@@ -333,14 +320,6 @@ export function App() {
   // Render current screen
   const renderScreen = () => {
     switch (currentScreen) {
-      case OnboardingScreen.Welcome:
-        return (
-          <WelcomeScreen
-            onNext={handleFeatureInterests}
-            initialInterests={preferences.featureInterests}
-          />
-        );
-
       case OnboardingScreen.Permissions:
         return (
           <PermissionsScreen

@@ -107,7 +107,7 @@ export default function DefaultModelCombobox({
       // Speech models: cloud (Amical Cloud) + local whisper. Local requires
       // macOS 15+, so disable local entries when unsupported.
       return modelsQuery.data.map((m) => {
-        const isLocal = m.provider !== "Amical Cloud";
+        const isLocal = m.provider !== "Esper Cloud";
         const disabled = isLocal && !localSupported;
         return {
           value: m.id,

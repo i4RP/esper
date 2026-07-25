@@ -214,7 +214,7 @@ export class TranscriptionService {
     const model = AVAILABLE_MODELS.find((m) => m.id === selectedModelId);
 
     // Use cloud provider for Amical Cloud models
-    if (model?.provider === "Amical Cloud") {
+    if (model?.provider === "Esper Cloud") {
       this.currentProvider = this.cloudProvider;
       return this.cloudProvider;
     }
@@ -230,7 +230,7 @@ export class TranscriptionService {
     const model = selectedModelId
       ? AVAILABLE_MODELS.find((m) => m.id === selectedModelId)
       : null;
-    const isCloudModel = model?.provider === "Amical Cloud";
+    const isCloudModel = model?.provider === "Esper Cloud";
 
     // Only preload for local models
     if (!isCloudModel) {
@@ -309,7 +309,7 @@ export class TranscriptionService {
       const selectedModelId = await this.modelService.getSelectedModel();
       if (selectedModelId) {
         const model = AVAILABLE_MODELS.find((m) => m.id === selectedModelId);
-        if (model?.provider === "Amical Cloud") {
+        if (model?.provider === "Esper Cloud") {
           return true;
         }
       }

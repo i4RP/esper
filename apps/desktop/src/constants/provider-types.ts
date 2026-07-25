@@ -49,7 +49,7 @@ export function getSystemProviderInstanceId(
 export function getProviderDisplayName(providerType: ProviderType): string {
   switch (providerType) {
     case PROVIDER_TYPES.amical:
-      return "Amical";
+      return "Esper";
     case PROVIDER_TYPES.localWhisper:
       return "Local";
     case PROVIDER_TYPES.openRouter:
