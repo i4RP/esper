@@ -4,6 +4,9 @@ import { z } from "zod";
 export const StartRecordingParamsSchema = z.object({
   muteSystemAudio: z.boolean(),
   muteSounds: z.boolean().optional(),
+  // Which start sound to play: "default" | "soft" | "chime" | "none".
+  // Omitted/unknown values fall back to the default sound.
+  sound: z.string().optional(),
 });
 export type StartRecordingParams = z.infer<typeof StartRecordingParamsSchema>;
 

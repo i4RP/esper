@@ -246,6 +246,7 @@ describe("recording manager FSM interpreter", () => {
     expect(nativeBridge.call).toHaveBeenCalledWith("stopRecording", {
       wasMuted: false,
       muteSounds: false,
+      sound: "default",
     });
     expect(transcriptionService.cancelStreamingSession).toHaveBeenCalledWith(
       "session-1",
@@ -388,6 +389,7 @@ describe("recording manager FSM interpreter", () => {
       expect(nativeBridge.call).toHaveBeenCalledWith("stopRecording", {
         wasMuted: false,
         muteSounds: false,
+        sound: "default",
       });
       expect(transcriptionService.cancelStreamingSession).toHaveBeenCalledWith(
         "session-1",
@@ -432,6 +434,7 @@ describe("recording manager FSM interpreter", () => {
       expect(nativeBridge.call).toHaveBeenCalledWith("stopRecording", {
         wasMuted: true,
         muteSounds: true,
+        sound: "default",
       });
       expect(internals.machine.currentPendingStopSession).toBeNull();
       expect(manager.getState()).toBe("idle");
@@ -475,6 +478,7 @@ describe("recording manager FSM interpreter", () => {
     expect(nativeBridge.call).toHaveBeenCalledWith("stopRecording", {
       wasMuted: true,
       muteSounds: true,
+      sound: "default",
     });
     expect(manager.getState()).toBe("idle");
   });
@@ -510,6 +514,7 @@ describe("recording manager FSM interpreter", () => {
       expect(nativeBridge.call).toHaveBeenCalledWith("stopRecording", {
         wasMuted: true,
         muteSounds: true,
+        sound: "default",
       });
       expect(manager.getState()).toBe("idle");
     } finally {

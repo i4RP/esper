@@ -94,6 +94,21 @@ export interface ShortcutsConfig {
   draftMode: number[];
 }
 
+export type DictationSound = "default" | "soft" | "chime" | "none";
+
+export const DICTATION_SOUNDS: DictationSound[] = [
+  "default",
+  "soft",
+  "chime",
+  "none",
+];
+
+function normalizeDictationSound(value: string | undefined): DictationSound {
+  return DICTATION_SOUNDS.includes(value as DictationSound)
+    ? (value as DictationSound)
+    : "default";
+}
+
 export interface AppPreferences {
   launchAtLogin: boolean;
   minimizeToTray: boolean;
@@ -101,6 +116,8 @@ export interface AppPreferences {
   showInDock: boolean;
   muteSystemAudio: boolean;
   muteDictationSounds: boolean;
+  dictationStartSound: DictationSound;
+  dictationStopSound: DictationSound;
   autoDictateOnNewNote: boolean;
   preserveClipboard: boolean;
   allowInjectedKeys: boolean;
@@ -445,6 +462,12 @@ export class SettingsService extends EventEmitter {
       showInDock: preferences?.showInDock ?? true,
       muteSystemAudio: preferences?.muteSystemAudio ?? true,
       muteDictationSounds: preferences?.muteDictationSounds ?? false,
+      dictationStartSound: normalizeDictationSound(
+        preferences?.dictationStartSound,
+      ),
+      dictationStopSound: normalizeDictationSound(
+        preferences?.dictationStopSound,
+      ),
       autoDictateOnNewNote: preferences?.autoDictateOnNewNote ?? false,
       preserveClipboard: preferences?.preserveClipboard ?? true,
       allowInjectedKeys: preferences?.allowInjectedKeys ?? false,

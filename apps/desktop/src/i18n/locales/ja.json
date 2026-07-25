@@ -488,6 +488,23 @@
         "label": "ディクテーション音をミュート",
         "description": "録音開始・終了時のサウンドを無効にする"
       },
+      "dictationSounds": {
+        "start": {
+          "label": "録音開始音",
+          "description": "録音開始時に鳴らすサウンド"
+        },
+        "stop": {
+          "label": "録音停止音",
+          "description": "録音停止時に鳴らすサウンド"
+        },
+        "preview": "試聴",
+        "options": {
+          "default": "デフォルト",
+          "soft": "ソフト",
+          "chime": "チャイム",
+          "none": "なし"
+        }
+      },
       "autoDictateOnNewNote": {
         "label": "新しいノートで自動音声入力",
         "description": "新しいノートを作成した時に自動的に音声入力を開始"

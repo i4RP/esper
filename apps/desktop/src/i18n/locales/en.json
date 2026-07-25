@@ -485,6 +485,23 @@
         "label": "Mute dictation sounds",
         "description": "Disable the start and stop sounds when recording"
       },
+      "dictationSounds": {
+        "start": {
+          "label": "Recording start sound",
+          "description": "Sound played when recording starts"
+        },
+        "stop": {
+          "label": "Recording stop sound",
+          "description": "Sound played when recording stops"
+        },
+        "preview": "Preview",
+        "options": {
+          "default": "Default",
+          "soft": "Soft",
+          "chime": "Chime",
+          "none": "None"
+        }
+      },
       "autoDictateOnNewNote": {
         "label": "Auto-dictate on new note",
         "description": "Automatically start dictation when creating a new note"

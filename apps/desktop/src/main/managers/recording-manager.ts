@@ -90,6 +90,9 @@ export class RecordingManager extends EventEmitter {
   private systemAudioMuted: boolean = false;
   // Sound muting for current session
   private soundsMuted: boolean = false;
+  // Stop-sound choice captured at session start, so the stop RPC (which does
+  // not re-read preferences) plays the sound configured when dictation began.
+  private stopSound: string = "default";
 
   // Microphone name resolved from the renderer capture stream for the current session.
   private activeMicrophoneName: string | null = null;
@@ -578,10 +581,12 @@ export class RecordingManager extends EventEmitter {
       const preferences = await settingsService.getPreferences();
       const shouldMute = preferences.muteSystemAudio;
       this.soundsMuted = preferences.muteDictationSounds;
+      this.stopSound = preferences.dictationStopSound;
 
       const result = await nativeBridge.call("startRecording", {
         muteSystemAudio: shouldMute,
         muteSounds: this.soundsMuted,
+        sound: preferences.dictationStartSound,
       });
       this.systemAudioMuted = shouldMute && !!result?.success;
     } catch (error) {
@@ -766,6 +771,7 @@ export class RecordingManager extends EventEmitter {
           await nativeBridge.call("stopRecording", {
             wasMuted: this.systemAudioMuted,
             muteSounds: this.soundsMuted,
+            sound: this.stopSound,
           });
           this.systemAudioMuted = false;
         } catch (error) {
@@ -1398,6 +1404,7 @@ export class RecordingManager extends EventEmitter {
       await nativeBridge.call("stopRecording", {
         wasMuted: this.systemAudioMuted,
         muteSounds: this.soundsMuted,
+        sound: this.stopSound,
       });
     } catch (error) {
       logger.main.warn(

@@ -488,6 +488,23 @@
         "label": "Diktiergeräusche stummschalten",
         "description": "Start- und Stopp-Geräusche während der Aufnahme deaktivieren"
       },
+      "dictationSounds": {
+        "start": {
+          "label": "Startton der Aufnahme",
+          "description": "Ton, der beim Start der Aufnahme abgespielt wird"
+        },
+        "stop": {
+          "label": "Stoppton der Aufnahme",
+          "description": "Ton, der beim Beenden der Aufnahme abgespielt wird"
+        },
+        "preview": "Vorhören",
+        "options": {
+          "default": "Standard",
+          "soft": "Sanft",
+          "chime": "Glockenspiel",
+          "none": "Kein Ton"
+        }
+      },
       "autoDictateOnNewNote": {
         "label": "Automatisch diktieren bei neuer Notiz",
         "description": "Diktat automatisch starten, wenn eine neue Notiz erstellt wird"

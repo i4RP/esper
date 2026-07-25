@@ -21,10 +21,56 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import { Volume2 } from "lucide-react";
 import { api } from "@/trpc/react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { matchSupportedLocale, type SupportedLocale } from "@/i18n/shared";
+
+type DictationSound = "default" | "soft" | "chime" | "none";
+
+const DICTATION_SOUND_OPTIONS: DictationSound[] = [
+  "default",
+  "soft",
+  "chime",
+  "none",
+];
+
+// Preview samples bundled with the renderer; the actual dictation sounds are
+// embedded in the native helper under the same names.
+const DICTATION_SOUND_FILES: Record<
+  "start" | "stop",
+  Record<DictationSound, string | null>
+> = {
+  start: {
+    default: new URL("../../../assets/sounds/rec-start.mp3", import.meta.url)
+      .href,
+    soft: new URL("../../../assets/sounds/rec-start-soft.wav", import.meta.url)
+      .href,
+    chime: new URL(
+      "../../../assets/sounds/rec-start-chime.wav",
+      import.meta.url,
+    ).href,
+    none: null,
+  },
+  stop: {
+    default: new URL("../../../assets/sounds/rec-stop.mp3", import.meta.url)
+      .href,
+    soft: new URL("../../../assets/sounds/rec-stop-soft.wav", import.meta.url)
+      .href,
+    chime: new URL("../../../assets/sounds/rec-stop-chime.wav", import.meta.url)
+      .href,
+    none: null,
+  },
+};
+
+function playDictationSoundPreview(kind: "start" | "stop", sound: string) {
+  const url = DICTATION_SOUND_FILES[kind][sound as DictationSound];
+  if (url) {
+    void new Audio(url).play().catch(() => {});
+  }
+}
 
 export default function PreferencesSettingsPage() {
   const { t } = useTranslation();
@@ -102,6 +148,15 @@ export default function PreferencesSettingsPage() {
     });
   };
 
+  const handleDictationSoundChange = (kind: "start" | "stop", value: string) => {
+    updatePreferencesMutation.mutate(
+      kind === "start"
+        ? { dictationStartSound: value as DictationSound }
+        : { dictationStopSound: value as DictationSound },
+    );
+    playDictationSoundPreview(kind, value);
+  };
+
   const handleLanguageChange = (value: string) => {
     let nextLocale: SupportedLocale | null = null;
     if (value !== "system") {
@@ -137,6 +192,10 @@ export default function PreferencesSettingsPage() {
     preferencesQuery.data?.muteDictationSounds ?? false;
   const autoDictateOnNewNote =
     preferencesQuery.data?.autoDictateOnNewNote ?? false;
+  const dictationStartSound =
+    preferencesQuery.data?.dictationStartSound ?? "default";
+  const dictationStopSound =
+    preferencesQuery.data?.dictationStopSound ?? "default";
   const isMac = window.electronAPI.platform === "darwin";
   const localeDisabled =
     uiSettingsQuery.isLoading || updateUILocaleMutation.isPending;
@@ -278,6 +337,64 @@ export default function PreferencesSettingsPage() {
             </div>
 
             <Separator />
+
+            {/* Dictation start/stop sounds */}
+            {(["start", "stop"] as const).map((kind) => {
+              const value =
+                kind === "start" ? dictationStartSound : dictationStopSound;
+              return (
+                <div key={kind}>
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-1">
+                      <Label className="text-base font-medium text-foreground">
+                        {t(`settings.preferences.dictationSounds.${kind}.label`)}
+                      </Label>
+                      <p className="text-xs text-muted-foreground">
+                        {t(
+                          `settings.preferences.dictationSounds.${kind}.description`,
+                        )}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        title={t("settings.preferences.dictationSounds.preview")}
+                        onClick={() => playDictationSoundPreview(kind, value)}
+                        disabled={value === "none" || muteDictationSounds}
+                      >
+                        <Volume2 className="h-4 w-4" />
+                      </Button>
+                      <Select
+                        value={value}
+                        onValueChange={(next) =>
+                          handleDictationSoundChange(kind, next)
+                        }
+                        disabled={
+                          updatePreferencesMutation.isPending ||
+                          preferencesQuery.isLoading ||
+                          muteDictationSounds
+                        }
+                      >
+                        <SelectTrigger className="w-[180px]">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {DICTATION_SOUND_OPTIONS.map((option) => (
+                            <SelectItem key={option} value={option}>
+                              {t(
+                                `settings.preferences.dictationSounds.options.${option}`,
+                              )}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  <Separator className="mt-4" />
+                </div>
+              );
+            })}
 
             {/* Auto-dictate on new note */}
             <div className="flex items-center justify-between">

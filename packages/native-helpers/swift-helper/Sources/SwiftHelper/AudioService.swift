@@ -18,6 +18,11 @@ class AudioService: NSObject, AVAudioPlayerDelegate {
         preloadedAudio["rec-stop"] = Data(PackageResources.rec_stop_mp3)
         logToStderr("[AudioService] Preloaded rec-stop.mp3 (\(preloadedAudio["rec-stop"]?.count ?? 0) bytes)")
 
+        preloadedAudio["rec-start-soft"] = Data(PackageResources.rec_start_soft_wav)
+        preloadedAudio["rec-stop-soft"] = Data(PackageResources.rec_stop_soft_wav)
+        preloadedAudio["rec-start-chime"] = Data(PackageResources.rec_start_chime_wav)
+        preloadedAudio["rec-stop-chime"] = Data(PackageResources.rec_stop_chime_wav)
+
         logToStderr("[AudioService] Audio files preloaded at startup")
     }
 
@@ -49,6 +54,14 @@ class AudioService: NSObject, AVAudioPlayerDelegate {
                 soundData = Data(PackageResources.rec_start_mp3)
             case "rec-stop":
                 soundData = Data(PackageResources.rec_stop_mp3)
+            case "rec-start-soft":
+                soundData = Data(PackageResources.rec_start_soft_wav)
+            case "rec-stop-soft":
+                soundData = Data(PackageResources.rec_stop_soft_wav)
+            case "rec-start-chime":
+                soundData = Data(PackageResources.rec_start_chime_wav)
+            case "rec-stop-chime":
+                soundData = Data(PackageResources.rec_stop_chime_wav)
             default:
                 logToStderr("[AudioService] Error: Unknown sound name '\(soundName)'. Completion will not be called.")
                 audioCompletionHandler = nil

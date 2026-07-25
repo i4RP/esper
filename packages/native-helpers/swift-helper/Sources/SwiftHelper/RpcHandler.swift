@@ -30,6 +30,21 @@ class IOBridge: NSObject {
         HelperLogger.logToStderr(message)
     }
 
+    /// Resolve the recording sound choice ("default" | "soft" | "chime" | "none")
+    /// to a preloaded sound name. Returns nil for "none" (skip playback); unknown
+    /// or missing choices fall back to the default sound so a bad value can never
+    /// leave the start RPC waiting on a playback completion that never fires.
+    static func resolveSoundName(base: String, choice: String?) -> String? {
+        switch choice {
+        case "none":
+            return nil
+        case "soft", "chime":
+            return "\(base)-\(choice!)"
+        default:
+            return base
+        }
+    }
+
     // Handles a single RPC Request
     func handleRpcRequest(_ request: RPCRequestSchema) {
         var rpcResponse: RPCResponseSchema
@@ -100,9 +115,10 @@ class IOBridge: NSObject {
         case .startRecording:
             logToStderr("[IOBridge] Handling startRecording for ID: \(request.id)")
 
-            // Parse params to get muteSystemAudio and muteSounds flags
+            // Parse params to get muteSystemAudio, muteSounds and sound choice
             var shouldMute = false
             var muteSounds = false
+            var soundChoice: String? = nil
             if let paramsAnyCodable = request.params {
                 do {
                     let paramsData = try jsonEncoder.encode(paramsAnyCodable)
@@ -110,12 +126,14 @@ class IOBridge: NSObject {
                         StartRecordingParamsSchema.self, from: paramsData)
                     shouldMute = startParams.muteSystemAudio
                     muteSounds = startParams.muteSounds ?? false
+                    soundChoice = startParams.sound
                 } catch {
                     logToStderr(
                         "[IOBridge] Error decoding startRecording params: \(error.localizedDescription) for ID: \(request.id)"
                     )
                 }
             }
+            let startSoundName = IOBridge.resolveSoundName(base: "rec-start", choice: soundChoice)
 
             // Helper to send startRecording response after optional sound + mute
             let sendStartResponse: (Bool) -> Void = { [weak self] muteSuccess in
@@ -144,7 +162,7 @@ class IOBridge: NSObject {
                 self.sendRpcResponse(responseToSend)
             }
 
-            if muteSounds {
+            if muteSounds || startSoundName == nil {
                 // Skip sound, mute system audio immediately if needed
                 var success = true
                 if shouldMute {
@@ -155,8 +173,8 @@ class IOBridge: NSObject {
                 }
                 sendStartResponse(success)
             } else {
-                // Play rec-start sound; conditionally mute in completion handler
-                audioService.playSound(named: "rec-start") { [weak self] in
+                // Play the start sound; conditionally mute in completion handler
+                audioService.playSound(named: startSoundName!) { [weak self] in
                     guard let self = self else {
                         HelperLogger.logToStderr(
                             "[IOBridge] self is nil in playSound completion for startRecording. ID: \(request.id)"
@@ -183,9 +201,10 @@ class IOBridge: NSObject {
         case .stopRecording:
             logToStderr("[IOBridge] Handling stopRecording for ID: \(request.id)")
 
-            // Parse params to get wasMuted and muteSounds flags
+            // Parse params to get wasMuted, muteSounds and sound choice
             var wasMuted = false
             var muteSounds = false
+            var soundChoice: String? = nil
             if let paramsAnyCodable = request.params {
                 do {
                     let paramsData = try jsonEncoder.encode(paramsAnyCodable)
@@ -193,6 +212,7 @@ class IOBridge: NSObject {
                         StopRecordingParamsSchema.self, from: paramsData)
                     wasMuted = stopParams.wasMuted
                     muteSounds = stopParams.muteSounds ?? false
+                    soundChoice = stopParams.sound
                 } catch {
                     logToStderr(
                         "[IOBridge] Error decoding stopRecording params: \(error.localizedDescription) for ID: \(request.id)"
@@ -206,9 +226,9 @@ class IOBridge: NSObject {
                 success = accessibilityService.restoreSystemAudio()
             }
 
-            // Play rec-stop sound unless muted (fire-and-forget)
-            if !muteSounds {
-                audioService.playSound(named: "rec-stop")
+            // Play the stop sound unless muted or set to none (fire-and-forget)
+            if !muteSounds, let stopSoundName = IOBridge.resolveSoundName(base: "rec-stop", choice: soundChoice) {
+                audioService.playSound(named: stopSoundName)
             }
 
             let resultPayload = StopRecordingResultSchema(

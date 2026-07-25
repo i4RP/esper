@@ -208,6 +208,9 @@ export interface AppSettingsData {
     showInDock?: boolean;
     muteSystemAudio?: boolean;
     muteDictationSounds?: boolean;
+    // Which recording sounds to play: "default" | "soft" | "chime" | "none"
+    dictationStartSound?: string;
+    dictationStopSound?: string;
     autoDictateOnNewNote?: boolean;
     preserveClipboard?: boolean;
     // Windows only: honor injected keystrokes (LLKHF_INJECTED) when matching

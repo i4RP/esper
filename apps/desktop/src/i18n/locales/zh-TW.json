@@ -488,6 +488,23 @@
         "label": "將聽寫音效靜音",
         "description": "停用錄音開始和停止的音效"
       },
+      "dictationSounds": {
+        "start": {
+          "label": "錄音開始音效",
+          "description": "開始錄音時播放的音效"
+        },
+        "stop": {
+          "label": "錄音停止音效",
+          "description": "停止錄音時播放的音效"
+        },
+        "preview": "試聽",
+        "options": {
+          "default": "預設",
+          "soft": "柔和",
+          "chime": "鈴聲",
+          "none": "無"
+        }
+      },
       "autoDictateOnNewNote": {
         "label": "新筆記自動聽寫",
         "description": "建立新筆記時自動開始聽寫"

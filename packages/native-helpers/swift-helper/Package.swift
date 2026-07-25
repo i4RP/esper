@@ -24,6 +24,10 @@ let package = Package(
             resources: [
                 .embedInCode("Resources/rec-start.mp3"),
                 .embedInCode("Resources/rec-stop.mp3"),
+                .embedInCode("Resources/rec-start-soft.wav"),
+                .embedInCode("Resources/rec-stop-soft.wav"),
+                .embedInCode("Resources/rec-start-chime.wav"),
+                .embedInCode("Resources/rec-stop-chime.wav"),
                 .embedInCode("Resources/error-chime.mp3")
             ]
         )

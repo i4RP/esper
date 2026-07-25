@@ -488,6 +488,23 @@
         "label": "Silenciar sonidos de dictado",
         "description": "Desactivar los sonidos de inicio y fin al grabar"
       },
+      "dictationSounds": {
+        "start": {
+          "label": "Sonido de inicio de grabación",
+          "description": "Sonido reproducido al iniciar la grabación"
+        },
+        "stop": {
+          "label": "Sonido de fin de grabación",
+          "description": "Sonido reproducido al detener la grabación"
+        },
+        "preview": "Escuchar",
+        "options": {
+          "default": "Predeterminado",
+          "soft": "Suave",
+          "chime": "Campanilla",
+          "none": "Ninguno"
+        }
+      },
       "autoDictateOnNewNote": {
         "label": "Dictar automáticamente en nota nueva",
         "description": "Iniciar el dictado automáticamente al crear una nueva nota"
