@@ -743,6 +743,12 @@
       "search": {
         "placeholder": "搜尋轉錄內容..."
       },
+      "getStarted": {
+        "heading": "開始使用",
+        "startTitle": "開始錄音",
+        "stopTitle": "停止錄音",
+        "subtitle": "一鍵將語音轉為文字。"
+      },
       "stats": {
         "wordsDictated": "已口述字詞數"
       },

@@ -740,6 +740,12 @@
       "search": {
         "placeholder": "Search transcriptions..."
       },
+      "getStarted": {
+        "heading": "Get started",
+        "startTitle": "Start recording",
+        "stopTitle": "Stop recording",
+        "subtitle": "Turn your voice to text with a single click."
+      },
       "stats": {
         "wordsDictated": "Words Dictated"
       },

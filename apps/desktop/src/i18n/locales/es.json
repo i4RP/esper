@@ -743,6 +743,12 @@
       "search": {
         "placeholder": "Buscar transcripciones..."
       },
+      "getStarted": {
+        "heading": "Empezar",
+        "startTitle": "Iniciar grabación",
+        "stopTitle": "Detener grabación",
+        "subtitle": "Convierte tu voz en texto con un solo clic."
+      },
       "stats": {
         "wordsDictated": "Palabras dictadas"
       },

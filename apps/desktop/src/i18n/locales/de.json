@@ -743,6 +743,12 @@
       "search": {
         "placeholder": "Transkriptionen durchsuchen..."
       },
+      "getStarted": {
+        "heading": "Erste Schritte",
+        "startTitle": "Aufnahme starten",
+        "stopTitle": "Aufnahme beenden",
+        "subtitle": "Verwandle deine Stimme mit einem Klick in Text."
+      },
       "stats": {
         "wordsDictated": "Diktierte Wörter"
       },

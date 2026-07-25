@@ -689,6 +689,12 @@
       }
     },
     "history": {
+      "getStarted": {
+        "heading": "はじめる",
+        "startTitle": "録音を開始",
+        "stopTitle": "録音を停止",
+        "subtitle": "ワンクリックで音声をテキストに。"
+      },
       "title": "履歴",
       "description": "最近の文字起こし履歴",
       "item": {

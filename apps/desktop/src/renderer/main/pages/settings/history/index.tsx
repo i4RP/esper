@@ -56,6 +56,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { api } from "@/trpc/react";
 import { useAudioPlayer } from "@/hooks/useAudioPlayer";
+import { StartRecordingCard } from "./components/StartRecordingCard";
 import { format } from "date-fns";
 import { useTranslation } from "react-i18next";
 
@@ -579,6 +580,8 @@ export default function HistorySettingsPage() {
       </div>
 
       <div className="space-y-6">
+        <StartRecordingCard />
+
         <Card className="max-w-xs bg-gradient-to-t from-primary/5 to-card py-4 shadow-xs dark:bg-card">
           <CardHeader className="pb-0">
             <CardDescription>
