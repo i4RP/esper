@@ -39,4 +39,6 @@ codesign --force --deep --sign - /Applications/Esper.app
 
 Esper is a fork of [Amical](https://github.com/amicalhq/amical) by Naomi Chopra and Haritabh Singh. Huge thanks to the upstream authors and contributors.
 
-Released under the [MIT License](./LICENSE). The original copyright notice is retained as required by the license.
+Released under the [MIT License](./LICENSE). The original Amical copyright notice is retained as the license requires; Esper-specific modifications are (c) i4RP under the same license. Bundled third-party components keep their own licenses — notably [whisper.cpp](https://github.com/ggerganov/whisper.cpp) (MIT) and the Whisper models (MIT, OpenAI).
+
+"Amical" is the upstream project's name; this fork is distributed as "Esper" to avoid confusion with the official Amical releases.
