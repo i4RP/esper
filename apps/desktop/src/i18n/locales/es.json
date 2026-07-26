@@ -21,6 +21,12 @@
   "tray": {
     "tooltip": "Esper",
     "openConsole": "Abrir consola",
+    "startRecording": "Iniciar grabación",
+    "stopRecording": "Detener grabación",
+    "history": "Historial…",
+    "settings": "Ajustes…",
+    "microphone": "Micrófono: {{name}}",
+    "systemDefaultMic": "Predeterminado del sistema",
     "about": "Acerca de",
     "quit": "Salir"
   },

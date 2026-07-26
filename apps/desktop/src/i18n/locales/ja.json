@@ -21,6 +21,12 @@
   "tray": {
     "tooltip": "Esper",
     "openConsole": "コンソールを開く",
+    "startRecording": "録音を開始",
+    "stopRecording": "録音を停止",
+    "history": "履歴…",
+    "settings": "設定…",
+    "microphone": "マイク: {{name}}",
+    "systemDefaultMic": "システムデフォルト",
     "about": "Esperについて",
     "quit": "終了"
   },

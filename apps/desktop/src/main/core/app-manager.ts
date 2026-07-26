@@ -141,7 +141,11 @@ export class AppManager {
     const locale = await this.setupMenu();
 
     // Initialize tray
-    await this.trayManager.initialize(this.windowManager, locale);
+    await this.trayManager.initialize(
+      this.windowManager,
+      locale,
+      this.serviceManager,
+    );
 
     // Tray dot mirrors the Caps Lock sleep-guard state (green while the
     // guard keeps the Mac awake, red on pmset errors, gray otherwise).

@@ -21,6 +21,12 @@
   "tray": {
     "tooltip": "Esper",
     "openConsole": "開啟主控台",
+    "startRecording": "開始錄音",
+    "stopRecording": "停止錄音",
+    "history": "歷史記錄…",
+    "settings": "設定…",
+    "microphone": "麥克風:{{name}}",
+    "systemDefaultMic": "系統預設",
     "about": "關於",
     "quit": "結束"
   },

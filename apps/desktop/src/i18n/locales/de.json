@@ -21,6 +21,12 @@
   "tray": {
     "tooltip": "Esper",
     "openConsole": "Konsole öffnen",
+    "startRecording": "Aufnahme starten",
+    "stopRecording": "Aufnahme beenden",
+    "history": "Verlauf…",
+    "settings": "Einstellungen…",
+    "microphone": "Mikrofon: {{name}}",
+    "systemDefaultMic": "Systemstandard",
     "about": "Über",
     "quit": "Beenden"
   },
