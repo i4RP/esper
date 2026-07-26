@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Esper — ローカル完結のAI音声入力 for Mac</title>
+  <meta name="description" content="Esperは完全ローカルで動くmacOS向けAIディクテーションアプリ。Whisperによる高精度文字起こしをオフライン・無料・プライベートに。" />
+  <link rel="icon" href="icon.png" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #0b0b10;
+      --panel: #15151d;
+      --text: #f4f4f6;
+      --muted: #9a9aa6;
+      --brand: #7c5cf6;
+      --brand2: #4a34d9;
+      --led: #b3f53d;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Helvetica Neue", sans-serif;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+    .wrap { max-width: 780px; margin: 0 auto; padding: 0 24px; }
+    header {
+      padding: 96px 0 64px;
+      text-align: center;
+      background: radial-gradient(900px 480px at 50% -10%, rgba(124, 92, 246, 0.22) 0%, transparent 65%);
+    }
+    .logo { width: 96px; height: 96px; border-radius: 22px; box-shadow: 0 12px 40px rgba(124, 92, 246, 0.35); }
+    h1 { font-size: 44px; font-weight: 800; margin-top: 24px; letter-spacing: -0.02em; }
+    .tagline { font-size: 19px; color: var(--muted); margin-top: 12px; }
+    .cta {
+      display: inline-flex; align-items: center; gap: 10px;
+      margin-top: 32px; padding: 15px 34px;
+      background: linear-gradient(135deg, var(--brand2), var(--brand));
+      color: #fff; font-size: 17px; font-weight: 700;
+      border-radius: 999px; text-decoration: none;
+      box-shadow: 0 10px 32px rgba(124, 92, 246, 0.4);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .cta:hover { transform: translateY(-2px); box-shadow: 0 14px 40px rgba(124, 92, 246, 0.5); }
+    .cta-sub { margin-top: 12px; font-size: 13px; color: var(--muted); }
+    .cta-sub a { color: var(--muted); }
+    section { padding: 40px 0; }
+    h2 { font-size: 22px; font-weight: 700; margin-bottom: 18px; }
+    .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; }
+    .card {
+      background: var(--panel); border: 1px solid #23232e;
+      border-radius: 14px; padding: 20px;
+    }
+    .card b { display: block; font-size: 15px; margin-bottom: 6px; }
+    .card p { font-size: 13.5px; color: var(--muted); }
+    .led { color: var(--led); }
+    ol { padding-left: 1.4em; font-size: 14.5px; color: #c9c9d2; }
+    ol li { margin-bottom: 10px; }
+    code {
+      background: #1d1d27; border: 1px solid #2a2a36; border-radius: 6px;
+      padding: 2px 7px; font-size: 12.5px; font-family: ui-monospace, "SF Mono", monospace;
+    }
+    .note {
+      background: rgba(124, 92, 246, 0.08); border: 1px solid rgba(124, 92, 246, 0.25);
+      border-radius: 12px; padding: 16px 18px; font-size: 13.5px; color: #c9c9d2; margin-top: 16px;
+    }
+    footer { padding: 48px 0 64px; text-align: center; font-size: 13px; color: var(--muted); }
+    footer a { color: var(--muted); }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <img class="logo" src="icon.png" alt="Esper" width="96" height="96" />
+      <h1>Esper</h1>
+      <p class="tagline">完全ローカルで動くAI音声入力 for Mac。<br />Whisperによる高精度文字起こしを、オフライン・無料・プライベートに。</p>
+      <a class="cta" href="https://github.com/i4RP/esper/releases/latest/download/Esper.dmg">⬇ Esperをダウンロード (macOS / Apple Silicon)</a>
+      <p class="cta-sub">無料・アカウント不要 · <a href="https://github.com/i4RP/esper/releases/latest">その他の形式(ZIP)と過去のバージョン</a></p>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <section>
+      <h2>特徴</h2>
+      <div class="features">
+        <div class="card"><b>🔐 完全ローカル</b><p>音声はMacの外に出ません。Whisper(whisper.cpp / Metal GPU)がオンデバイスで文字起こし。ネット接続も課金も不要。</p></div>
+        <div class="card"><b>⚡ ワンキー入力</b><p>fnキーを押しながら話す、またはタップで開始・もう一度押して停止。文字起こし結果はカーソル位置に自動ペースト。</p></div>
+        <div class="card"><b>📍 ノッチ常駐ウィジェット</b><p>カメラノッチ直下に小さく常駐。ホバーで展開、クリックで録音開始、話すと波形がリアルタイムに反応。</p></div>
+        <div class="card"><b><span class="led">●</span> CapsLockスリープ防止</b><p>CapsLockをオンにするとメニューバーのLEDが緑に点灯し、MacBookを閉じてもスリープしません。長時間処理やリモート作業に。</p></div>
+        <div class="card"><b>🈶 日本語ファースト</b><p>デフォルト言語は日本語。多言語の追加もワンタップ。カスタム辞書・スニペットにも対応。</p></div>
+        <div class="card"><b>🛠 オープンソース</b><p>MITライセンス。<a href="https://github.com/i4RP/esper" style="color:#a78bfa">GitHubでソースコードを公開</a>しています。</p></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>インストール</h2>
+      <ol>
+        <li>上のボタンから <code>Esper.dmg</code> をダウンロードし、開いて <code>Esper.app</code> を「アプリケーション」フォルダへドラッグします。</li>
+        <li>初回起動時に「開発元を確認できない」と表示された場合は、<b>システム設定 → プライバシーとセキュリティ</b> の下部にある「このまま開く」をクリックしてください。</li>
+        <li>初回セットアップで、マイク・アクセシビリティ・入力監視の権限を許可します(音声入力とfnキー検知、自動ペーストに必要です)。</li>
+        <li>Whisperモデル(約1.5GB)を初回のみダウンロードすれば準備完了。fnキーを押して話してみてください。</li>
+      </ol>
+      <div class="note">
+        ⚠️ 現在の配布ビルドはAppleの公証(notarization)を受けていない開発版です。上記の手順2はそのために必要です。署名済みビルドへの移行を予定しています。
+      </div>
+    </section>
+
+    <section>
+      <h2>動作環境</h2>
+      <ol>
+        <li>Apple Silicon搭載Mac (M1以降)</li>
+        <li>macOS 14 Sonoma 以降を推奨</li>
+        <li>ローカルWhisperモデル用に約2GBの空き容量</li>
+      </ol>
+    </section>
+  </div>
+
+  <footer>
+    <div class="wrap">
+      Esper は <a href="https://github.com/amicalhq/amical">Amical</a> (MIT License) のフォークです ·
+      <a href="https://github.com/i4RP/esper">GitHub</a> ·
+      <a href="https://github.com/i4RP/esper/blob/main/LICENSE">License</a><br />
+      © 2026 i4RP — MIT Licensed
+    </div>
+  </footer>
+</body>
+</html>
