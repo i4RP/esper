@@ -7,7 +7,7 @@ import {
   type MenuItemConstructorOptions,
 } from "electron";
 import { createHash } from "node:crypto";
-import { spawn } from "node:child_process";
+import { spawn, execFileSync } from "node:child_process";
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { v4 as uuid } from "uuid";
@@ -26,6 +26,8 @@ interface HistoryEntry {
   type: "text" | "image";
   text?: string;
   imagePath?: string;
+  /** md5 of the PNG bytes — dedupes clipboard captures vs. file screenshots */
+  hash?: string;
   at: number;
 }
 
@@ -45,6 +47,8 @@ export class ClipboardHistoryService {
   private lastImageHash: string | null = null;
   private suppressUntil = 0;
   private pollTimer: NodeJS.Timeout | null = null;
+  private screenshotWatcher: fs.FSWatcher | null = null;
+  private pendingScreenshots = new Map<string, NodeJS.Timeout>();
   private t: ((key: string, options?: Record<string, unknown>) => string) | null =
     null;
 
@@ -72,6 +76,7 @@ export class ClipboardHistoryService {
     this.lastImageHash = image.isEmpty() ? null : this.hashImage(image.toPNG());
 
     this.pollTimer = setInterval(() => this.poll(), POLL_INTERVAL_MS);
+    this.startScreenshotWatcher();
 
     const ok = globalShortcut.register("CommandOrControl+Shift+V", () => {
       void this.showMenu();
@@ -88,6 +93,8 @@ export class ClipboardHistoryService {
       this.pollTimer = null;
     }
     globalShortcut.unregister("CommandOrControl+Shift+V");
+    this.screenshotWatcher?.close();
+    for (const timer of this.pendingScreenshots.values()) clearTimeout(timer);
     this.saveHistory();
   }
 
@@ -104,7 +111,7 @@ export class ClipboardHistoryService {
         if (hash !== this.lastImageHash) {
           this.lastImageHash = hash;
           this.lastText = clipboard.readText() || null;
-          this.addImageEntry(png);
+          this.addImageEntry(png, hash);
         }
         return;
       }
@@ -124,7 +131,10 @@ export class ClipboardHistoryService {
     return createHash("md5").update(png).digest("hex");
   }
 
-  private addImageEntry(png: Buffer): void {
+  private addImageEntry(png: Buffer, hash: string): void {
+    // Dedupe: the same image may arrive twice (e.g. a screenshot saved to a
+    // file AND copied to the clipboard).
+    if (this.history.some((entry) => entry.hash === hash)) return;
     const id = uuid();
     const imagePath = path.join(this.storageDir, `img-${id}.png`);
     try {
@@ -133,7 +143,77 @@ export class ClipboardHistoryService {
       logger.main.warn("Failed to persist clipboard image", { error });
       return;
     }
-    this.addEntry({ id, type: "image", imagePath, at: Date.now() });
+    this.addEntry({ id, type: "image", imagePath, hash, at: Date.now() });
+  }
+
+  // ── screenshot watching ────────────────────────────────────────────
+  // Normal screenshots (Cmd+Shift+3/4 without Ctrl) are saved as files, not
+  // put on the clipboard — watch the configured screencapture folder and pull
+  // new screenshot files into the history.
+
+  private screencaptureLocation(): string {
+    try {
+      const raw = execFileSync(
+        "/usr/bin/defaults",
+        ["read", "com.apple.screencapture", "location"],
+        { timeout: 2000 },
+      )
+        .toString()
+        .trim();
+      if (raw) {
+        const expanded = raw.startsWith("~")
+          ? path.join(app.getPath("home"), raw.slice(1))
+          : raw;
+        if (fs.existsSync(expanded)) return expanded;
+      }
+    } catch {
+      // default location
+    }
+    return app.getPath("desktop");
+  }
+
+  private startScreenshotWatcher(): void {
+    if (process.platform !== "darwin") return;
+    const location = this.screencaptureLocation();
+    try {
+      this.screenshotWatcher = fs.watch(location, (_event, filename) => {
+        if (!filename) return;
+        this.handleScreenshotCandidate(location, filename.toString());
+      });
+      logger.main.info("Watching screenshot folder", { location });
+    } catch (error) {
+      logger.main.warn("Screenshot folder watch failed", { error, location });
+    }
+  }
+
+  private handleScreenshotCandidate(dir: string, filename: string): void {
+    // screencapture writes to a dotted temp name, then renames to the final
+    // localized name ("スクリーンショット …", "Screenshot …", "Screen Shot …").
+    if (filename.startsWith(".")) return;
+    if (!/\.(png|jpg|jpeg)$/i.test(filename)) return;
+    if (!/^(スクリーンショット|screen ?shot)/i.test(filename)) return;
+
+    // Debounce per file: wait for the write to settle before reading.
+    const existing = this.pendingScreenshots.get(filename);
+    if (existing) clearTimeout(existing);
+    this.pendingScreenshots.set(
+      filename,
+      setTimeout(() => {
+        this.pendingScreenshots.delete(filename);
+        try {
+          const fullPath = path.join(dir, filename);
+          const stat = fs.statSync(fullPath);
+          if (!stat.isFile() || stat.size === 0) return;
+          // Only ingest freshly created screenshots, not old files touched by
+          // e.g. a folder sync.
+          if (Date.now() - stat.birthtimeMs > 30_000) return;
+          const png = fs.readFileSync(fullPath);
+          this.addImageEntry(png, this.hashImage(png));
+        } catch {
+          // file vanished mid-write; the next event retries
+        }
+      }, 800),
+    );
   }
 
   private addEntry(entry: HistoryEntry): void {
@@ -252,7 +332,7 @@ export class ClipboardHistoryService {
     if (entry.type === "image" && entry.imagePath) {
       const thumbnail = nativeImage
         .createFromPath(entry.imagePath)
-        .resize({ height: 20 });
+        .resize({ height: 22 });
       return {
         label: this.t ? this.t("clipboardMenu.image") : "Image",
         icon: thumbnail,
