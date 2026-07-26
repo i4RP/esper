@@ -176,35 +176,87 @@ export default function SnippetEditorPage() {
     });
   };
 
+  // Export in Clipy-compatible snippets.xml format so libraries can move
+  // between Clipy and Esper freely.
   const exportLibrary = () => {
-    const blob = new Blob([JSON.stringify(library, null, 2)], {
-      type: "application/json",
-    });
+    const escapeXml = (value: string) =>
+      value
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    const xml =
+      '<?xml version="1.0" encoding="utf-8" standalone="no"?>\n<folders>\n' +
+      library.folders
+        .map(
+          (folder) =>
+            `\t<folder>\n\t\t<title>${escapeXml(folder.name)}</title>\n\t\t<snippets>\n` +
+            folder.snippets
+              .map(
+                (snippet) =>
+                  `\t\t\t<snippet>\n\t\t\t\t<title>${escapeXml(snippet.title)}</title>\n\t\t\t\t<content>${escapeXml(snippet.content)}</content>\n\t\t\t</snippet>\n`,
+              )
+              .join("") +
+            "\t\t</snippets>\n\t</folder>\n",
+        )
+        .join("") +
+      "</folders>\n";
+    const blob = new Blob([xml], { type: "application/xml" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "esper-snippets.json";
+    a.download = "snippets.xml";
     a.click();
     URL.revokeObjectURL(url);
   };
 
+  const parseClipyXml = (text: string): SnippetFolder[] => {
+    const doc = new DOMParser().parseFromString(text, "text/xml");
+    if (doc.querySelector("parsererror")) throw new Error("invalid xml");
+    return Array.from(doc.querySelectorAll("folders > folder")).map(
+      (folderEl) => ({
+        id: uuid(),
+        name:
+          folderEl.querySelector(":scope > title")?.textContent?.trim() ?? "",
+        enabled: true,
+        snippets: Array.from(
+          folderEl.querySelectorAll(":scope > snippets > snippet"),
+        ).map((snippetEl) => ({
+          id: uuid(),
+          title:
+            snippetEl.querySelector(":scope > title")?.textContent ?? "",
+          content:
+            snippetEl.querySelector(":scope > content")?.textContent ?? "",
+          enabled: true,
+        })),
+      }),
+    );
+  };
+
+  // Import accepts both the Clipy snippets.xml format and Esper's JSON.
   const importLibrary = (file: File) => {
     void file.text().then((text) => {
       try {
-        const parsed = JSON.parse(text) as Library;
-        if (!Array.isArray(parsed.folders)) throw new Error("bad format");
-        // Re-key ids so imports never collide with existing entries.
-        const folders = parsed.folders.map((folder) => ({
-          id: uuid(),
-          name: String(folder.name ?? ""),
-          enabled: folder.enabled !== false,
-          snippets: (folder.snippets ?? []).map((snippet) => ({
+        let folders: SnippetFolder[];
+        if (text.trimStart().startsWith("<")) {
+          folders = parseClipyXml(text);
+        } else {
+          const parsed = JSON.parse(text) as Library;
+          if (!Array.isArray(parsed.folders)) throw new Error("bad format");
+          // Re-key ids so imports never collide with existing entries.
+          folders = parsed.folders.map((folder) => ({
             id: uuid(),
-            title: String(snippet.title ?? ""),
-            content: String(snippet.content ?? ""),
-            enabled: snippet.enabled !== false,
-          })),
-        }));
+            name: String(folder.name ?? ""),
+            enabled: folder.enabled !== false,
+            snippets: (folder.snippets ?? []).map((snippet) => ({
+              id: uuid(),
+              title: String(snippet.title ?? ""),
+              content: String(snippet.content ?? ""),
+              enabled: snippet.enabled !== false,
+            })),
+          }));
+        }
+        if (folders.length === 0) throw new Error("empty");
         persist({ folders: [...library.folders, ...folders] });
         toast.success(t("settings.snippetEditor.toast.imported"));
       } catch {
@@ -280,7 +332,7 @@ export default function SnippetEditorPage() {
         <input
           ref={fileInputRef}
           type="file"
-          accept="application/json"
+          accept=".json,.xml,application/json,application/xml,text/xml"
           className="hidden"
           onChange={(e) => {
             const file = e.target.files?.[0];

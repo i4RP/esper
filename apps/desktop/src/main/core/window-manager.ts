@@ -28,6 +28,7 @@ export class WindowManager {
   private widgetDisplayId: number | null = null;
   private cursorPollingInterval: NodeJS.Timeout | null = null;
   private themeListenerSetup: boolean = false;
+  private isQuitting = false;
 
   // On Windows, inset from all edges to allow taskbar auto-hide detection
   private readonly widgetEdgeInset = process.platform === "win32" ? 4 : 0;
@@ -116,6 +117,12 @@ export class WindowManager {
         `../renderer/${NOTES_WIDGET_WINDOW_VITE_NAME}/notes-widget.html`,
       ),
       mainWindowViteDevServerUrl: MAIN_WINDOW_VITE_DEV_SERVER_URL || undefined,
+    });
+
+    // Closing the main window hides it (the app stays resident in the menu
+    // bar); an actual quit must still let the window close for real.
+    app.on("before-quit", () => {
+      this.isQuitting = true;
     });
 
     logger.main.info("WindowManager created with dependencies");
@@ -308,7 +315,14 @@ export class WindowManager {
       );
     }
 
-    this.mainWindow.on("close", () => {
+    this.mainWindow.on("close", (event) => {
+      // The ✗ button hides the window instead of destroying it, so the app
+      // stays resident and reopening from the tray/Dock is instant.
+      if (!this.isQuitting) {
+        event.preventDefault();
+        this.mainWindow?.hide();
+        return;
+      }
       // Detach window before it's destroyed
       this.trpcHandler.detachWindow(this.mainWindow!);
     });
