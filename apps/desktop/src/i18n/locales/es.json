@@ -30,6 +30,13 @@
     "about": "Acerca de",
     "quit": "Salir"
   },
+  "clipboardMenu": {
+    "history": "Historial",
+    "snippets": "Fragmentos",
+    "clear": "Borrar historial",
+    "empty": "(sin historial)",
+    "image": "Imagen"
+  },
   "updater": {
     "updateAvailable": "Actualización disponible",
     "requiredUpdate": "Actualización requerida",
@@ -411,6 +418,30 @@
     }
   },
   "settings": {
+    "snippetEditor": {
+      "title": "Editor de fragmentos",
+      "description": "Gestiona los fragmentos del menú de pegado ⌘⇧V",
+      "toolbar": {
+        "addSnippet": "Añadir fragmento",
+        "addFolder": "Añadir carpeta",
+        "remove": "Eliminar",
+        "toggle": "Activar/Desactivar",
+        "import": "Importar",
+        "export": "Exportar"
+      },
+      "newFolder": "Nueva carpeta",
+      "newSnippet": "Nuevo fragmento",
+      "untitled": "(sin título)",
+      "folderName": "Nombre de la carpeta",
+      "titlePlaceholder": "Título",
+      "contentPlaceholder": "Contenido del fragmento…",
+      "emptyHint": "Empieza con «Añadir carpeta»",
+      "selectHint": "Selecciona una carpeta o fragmento de la lista",
+      "toast": {
+        "imported": "Importado",
+        "importFailed": "Error al importar (JSON no válido)"
+      }
+    },
     "nav": {
       "notes": {
         "title": "Notas",
@@ -435,6 +466,10 @@
       "snippets": {
         "title": "Fragmentos",
         "description": "Expande disparadores cortos en texto más largo al dictar"
+      },
+      "snippetEditor": {
+        "title": "Editor de fragmentos",
+        "description": "Gestiona los fragmentos del menú ⌘⇧V"
       },
       "formatting": {
         "title": "Personalización",

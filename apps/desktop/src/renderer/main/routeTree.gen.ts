@@ -17,6 +17,7 @@ import { Route as AppSettingsIndexRouteImport } from './routes/_app/settings/ind
 import { Route as AppNotesIndexRouteImport } from './routes/_app/notes.index'
 import { Route as AppSettingsVocabularyRouteImport } from './routes/_app/settings/vocabulary'
 import { Route as AppSettingsSnippetsRouteImport } from './routes/_app/settings/snippets'
+import { Route as AppSettingsSnippetEditorRouteImport } from './routes/_app/settings/snippet-editor'
 import { Route as AppSettingsShortcutsRouteImport } from './routes/_app/settings/shortcuts'
 import { Route as AppSettingsPreferencesRouteImport } from './routes/_app/settings/preferences'
 import { Route as AppSettingsLabsRouteImport } from './routes/_app/settings/labs'
@@ -66,6 +67,12 @@ const AppSettingsSnippetsRoute = AppSettingsSnippetsRouteImport.update({
   path: '/settings/snippets',
   getParentRoute: () => AppRouteRoute,
 } as any)
+const AppSettingsSnippetEditorRoute =
+  AppSettingsSnippetEditorRouteImport.update({
+    id: '/settings/snippet-editor',
+    path: '/settings/snippet-editor',
+    getParentRoute: () => AppRouteRoute,
+  } as any)
 const AppSettingsShortcutsRoute = AppSettingsShortcutsRouteImport.update({
   id: '/settings/shortcuts',
   path: '/settings/shortcuts',
@@ -125,6 +132,7 @@ export interface FileRoutesByFullPath {
   '/settings/labs': typeof AppSettingsLabsRoute
   '/settings/preferences': typeof AppSettingsPreferencesRoute
   '/settings/shortcuts': typeof AppSettingsShortcutsRoute
+  '/settings/snippet-editor': typeof AppSettingsSnippetEditorRoute
   '/settings/snippets': typeof AppSettingsSnippetsRoute
   '/settings/vocabulary': typeof AppSettingsVocabularyRoute
   '/notes/': typeof AppNotesIndexRoute
@@ -142,6 +150,7 @@ export interface FileRoutesByTo {
   '/settings/labs': typeof AppSettingsLabsRoute
   '/settings/preferences': typeof AppSettingsPreferencesRoute
   '/settings/shortcuts': typeof AppSettingsShortcutsRoute
+  '/settings/snippet-editor': typeof AppSettingsSnippetEditorRoute
   '/settings/snippets': typeof AppSettingsSnippetsRoute
   '/settings/vocabulary': typeof AppSettingsVocabularyRoute
   '/notes': typeof AppNotesIndexRoute
@@ -162,6 +171,7 @@ export interface FileRoutesById {
   '/_app/settings/labs': typeof AppSettingsLabsRoute
   '/_app/settings/preferences': typeof AppSettingsPreferencesRoute
   '/_app/settings/shortcuts': typeof AppSettingsShortcutsRoute
+  '/_app/settings/snippet-editor': typeof AppSettingsSnippetEditorRoute
   '/_app/settings/snippets': typeof AppSettingsSnippetsRoute
   '/_app/settings/vocabulary': typeof AppSettingsVocabularyRoute
   '/_app/notes/': typeof AppNotesIndexRoute
@@ -182,6 +192,7 @@ export interface FileRouteTypes {
     | '/settings/labs'
     | '/settings/preferences'
     | '/settings/shortcuts'
+    | '/settings/snippet-editor'
     | '/settings/snippets'
     | '/settings/vocabulary'
     | '/notes/'
@@ -199,6 +210,7 @@ export interface FileRouteTypes {
     | '/settings/labs'
     | '/settings/preferences'
     | '/settings/shortcuts'
+    | '/settings/snippet-editor'
     | '/settings/snippets'
     | '/settings/vocabulary'
     | '/notes'
@@ -218,6 +230,7 @@ export interface FileRouteTypes {
     | '/_app/settings/labs'
     | '/_app/settings/preferences'
     | '/_app/settings/shortcuts'
+    | '/_app/settings/snippet-editor'
     | '/_app/settings/snippets'
     | '/_app/settings/vocabulary'
     | '/_app/notes/'
@@ -285,6 +298,13 @@ declare module '@tanstack/react-router' {
       path: '/settings/snippets'
       fullPath: '/settings/snippets'
       preLoaderRoute: typeof AppSettingsSnippetsRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/_app/settings/snippet-editor': {
+      id: '/_app/settings/snippet-editor'
+      path: '/settings/snippet-editor'
+      fullPath: '/settings/snippet-editor'
+      preLoaderRoute: typeof AppSettingsSnippetEditorRouteImport
       parentRoute: typeof AppRouteRoute
     }
     '/_app/settings/shortcuts': {
@@ -378,6 +398,7 @@ interface AppRouteRouteChildren {
   AppSettingsLabsRoute: typeof AppSettingsLabsRoute
   AppSettingsPreferencesRoute: typeof AppSettingsPreferencesRoute
   AppSettingsShortcutsRoute: typeof AppSettingsShortcutsRoute
+  AppSettingsSnippetEditorRoute: typeof AppSettingsSnippetEditorRoute
   AppSettingsSnippetsRoute: typeof AppSettingsSnippetsRoute
   AppSettingsVocabularyRoute: typeof AppSettingsVocabularyRoute
   AppSettingsIndexRoute: typeof AppSettingsIndexRoute
@@ -394,6 +415,7 @@ const AppRouteRouteChildren: AppRouteRouteChildren = {
   AppSettingsLabsRoute: AppSettingsLabsRoute,
   AppSettingsPreferencesRoute: AppSettingsPreferencesRoute,
   AppSettingsShortcutsRoute: AppSettingsShortcutsRoute,
+  AppSettingsSnippetEditorRoute: AppSettingsSnippetEditorRoute,
   AppSettingsSnippetsRoute: AppSettingsSnippetsRoute,
   AppSettingsVocabularyRoute: AppSettingsVocabularyRoute,
   AppSettingsIndexRoute: AppSettingsIndexRoute,

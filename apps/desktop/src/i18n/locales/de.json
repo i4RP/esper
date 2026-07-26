@@ -30,6 +30,13 @@
     "about": "Über",
     "quit": "Beenden"
   },
+  "clipboardMenu": {
+    "history": "Verlauf",
+    "snippets": "Snippets",
+    "clear": "Verlauf löschen",
+    "empty": "(kein Verlauf)",
+    "image": "Bild"
+  },
   "updater": {
     "updateAvailable": "Update verfügbar",
     "requiredUpdate": "Erforderliches Update",
@@ -411,6 +418,30 @@
     }
   },
   "settings": {
+    "snippetEditor": {
+      "title": "Snippet-Editor",
+      "description": "Verwalte die Snippets im ⌘⇧V-Einfügemenü",
+      "toolbar": {
+        "addSnippet": "Snippet hinzufügen",
+        "addFolder": "Ordner hinzufügen",
+        "remove": "Löschen",
+        "toggle": "Aktivieren/Deaktivieren",
+        "import": "Importieren",
+        "export": "Exportieren"
+      },
+      "newFolder": "Neuer Ordner",
+      "newSnippet": "Neues Snippet",
+      "untitled": "(ohne Titel)",
+      "folderName": "Ordnername",
+      "titlePlaceholder": "Titel",
+      "contentPlaceholder": "Snippet-Inhalt…",
+      "emptyHint": "Beginne mit „Ordner hinzufügen“",
+      "selectHint": "Wähle links einen Ordner oder ein Snippet",
+      "toast": {
+        "imported": "Importiert",
+        "importFailed": "Import fehlgeschlagen (ungültiges JSON)"
+      }
+    },
     "nav": {
       "notes": {
         "title": "Notizen",
@@ -435,6 +466,10 @@
       "snippets": {
         "title": "Textbausteine",
         "description": "Kurze Auslöser beim Diktieren in längeren Text umwandeln"
+      },
+      "snippetEditor": {
+        "title": "Snippet-Editor",
+        "description": "Snippets für das ⌘⇧V-Menü verwalten"
       },
       "formatting": {
         "title": "Personalisierung",

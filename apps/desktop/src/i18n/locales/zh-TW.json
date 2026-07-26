@@ -30,6 +30,13 @@
     "about": "關於",
     "quit": "結束"
   },
+  "clipboardMenu": {
+    "history": "歷史記錄",
+    "snippets": "程式片段",
+    "clear": "清除歷史記錄",
+    "empty": "(無歷史記錄)",
+    "image": "圖片"
+  },
   "updater": {
     "updateAvailable": "有可用更新",
     "requiredUpdate": "需要更新",
@@ -411,6 +418,30 @@
     }
   },
   "settings": {
+    "snippetEditor": {
+      "title": "片段編輯器",
+      "description": "管理 ⌘⇧V 貼上選單中顯示的片段",
+      "toolbar": {
+        "addSnippet": "新增片段",
+        "addFolder": "新增資料夾",
+        "remove": "刪除",
+        "toggle": "啟用/停用",
+        "import": "匯入",
+        "export": "匯出"
+      },
+      "newFolder": "新資料夾",
+      "newSnippet": "新片段",
+      "untitled": "(未命名)",
+      "folderName": "資料夾名稱",
+      "titlePlaceholder": "標題",
+      "contentPlaceholder": "片段內容…",
+      "emptyHint": "請先「新增資料夾」",
+      "selectHint": "從左側清單選擇資料夾或片段",
+      "toast": {
+        "imported": "已匯入",
+        "importFailed": "匯入失敗(JSON 格式無效)"
+      }
+    },
     "nav": {
       "notes": {
         "title": "筆記",
@@ -435,6 +466,10 @@
       "snippets": {
         "title": "片段",
         "description": "在聽寫時將簡短的觸發詞展開為更長的文字"
+      },
+      "snippetEditor": {
+        "title": "片段編輯器",
+        "description": "管理 ⌘⇧V 選單的片段"
       },
       "formatting": {
         "title": "個人化",

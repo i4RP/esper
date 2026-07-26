@@ -170,6 +170,16 @@ export class AppManager {
       logger.main.warn("Sleep guard tray wiring skipped", { error });
     }
 
+    // Cmd+Shift+V clipboard history / snippet paste menu
+    try {
+      const clipboardHistoryService = this.serviceManager.getService(
+        "clipboardHistoryService",
+      );
+      await clipboardHistoryService?.initialize(locale);
+    } catch (error) {
+      logger.main.warn("Clipboard history service init skipped", { error });
+    }
+
     // Setup IPC handlers
     ipcMain.handle("open-external", async (_event, url: string) => {
       await shell.openExternal(url);

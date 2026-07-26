@@ -30,6 +30,13 @@
     "about": "About",
     "quit": "Quit"
   },
+  "clipboardMenu": {
+    "history": "History",
+    "snippets": "Snippets",
+    "clear": "Clear History",
+    "empty": "(no history)",
+    "image": "Image"
+  },
   "updater": {
     "updateAvailable": "Update Available",
     "requiredUpdate": "Required Update",
@@ -408,6 +415,30 @@
     }
   },
   "settings": {
+    "snippetEditor": {
+      "title": "Snippet Editor",
+      "description": "Manage the snippets shown in the ⌘⇧V paste menu",
+      "toolbar": {
+        "addSnippet": "Add Snippet",
+        "addFolder": "Add Folder",
+        "remove": "Delete",
+        "toggle": "Enable/Disable",
+        "import": "Import",
+        "export": "Export"
+      },
+      "newFolder": "New Folder",
+      "newSnippet": "New Snippet",
+      "untitled": "(untitled)",
+      "folderName": "Folder name",
+      "titlePlaceholder": "Title",
+      "contentPlaceholder": "Snippet content…",
+      "emptyHint": "Start with \"Add Folder\"",
+      "selectHint": "Select a folder or snippet from the list",
+      "toast": {
+        "imported": "Imported",
+        "importFailed": "Import failed (invalid JSON)"
+      }
+    },
     "nav": {
       "notes": {
         "title": "Notes",
@@ -432,6 +463,10 @@
       "snippets": {
         "title": "Snippets",
         "description": "Expand short triggers into longer text while dictating"
+      },
+      "snippetEditor": {
+        "title": "Snippet Editor",
+        "description": "Manage snippets for the ⌘⇧V menu"
       },
       "formatting": {
         "title": "Personalization",

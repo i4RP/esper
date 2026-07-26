@@ -30,6 +30,13 @@
     "about": "Esperについて",
     "quit": "終了"
   },
+  "clipboardMenu": {
+    "history": "履歴",
+    "snippets": "スニペット",
+    "clear": "履歴をクリア",
+    "empty": "(履歴なし)",
+    "image": "画像"
+  },
   "updater": {
     "updateAvailable": "アップデートがあります",
     "requiredUpdate": "必須アップデート",
@@ -411,6 +418,30 @@
     }
   },
   "settings": {
+    "snippetEditor": {
+      "title": "スニペット編集",
+      "description": "⌘⇧Vのペーストメニューに表示されるスニペットを管理します",
+      "toolbar": {
+        "addSnippet": "スニペット追加",
+        "addFolder": "フォルダ追加",
+        "remove": "削除",
+        "toggle": "有効/無効",
+        "import": "インポート",
+        "export": "エクスポート"
+      },
+      "newFolder": "新規フォルダ",
+      "newSnippet": "新規スニペット",
+      "untitled": "(無題)",
+      "folderName": "フォルダ名",
+      "titlePlaceholder": "タイトル",
+      "contentPlaceholder": "スニペットの内容…",
+      "emptyHint": "「フォルダ追加」からはじめてください",
+      "selectHint": "左のリストからフォルダまたはスニペットを選択してください",
+      "toast": {
+        "imported": "インポートしました",
+        "importFailed": "インポートに失敗しました(JSON形式が不正です)"
+      }
+    },
     "nav": {
       "notes": {
         "title": "ノート",
@@ -435,6 +466,10 @@
       "snippets": {
         "title": "スニペット",
         "description": "音声入力中に短いトリガーを長いテキストに展開"
+      },
+      "snippetEditor": {
+        "title": "スニペット編集",
+        "description": "⌘⇧Vメニューのスニペットを管理"
       },
       "formatting": {
         "title": "パーソナライズ",

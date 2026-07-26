@@ -524,6 +524,22 @@ export class SettingsService extends EventEmitter {
   }
 
   /**
+   * Snippet library (Cmd+Shift+V paste menu). Stored as a settings section.
+   */
+  async getSnippetLibrary(): Promise<
+    NonNullable<AppSettingsData["snippetLibrary"]>
+  > {
+    return (await getSettingsSection("snippetLibrary")) ?? { folders: [] };
+  }
+
+  async setSnippetLibrary(
+    library: NonNullable<AppSettingsData["snippetLibrary"]>,
+  ): Promise<void> {
+    await updateSettingsSection("snippetLibrary", library);
+    this.emit("snippet-library-changed", library);
+  }
+
+  /**
    * Get history settings
    */
   async getHistorySettings(): Promise<HistorySettings> {

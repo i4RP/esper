@@ -170,6 +170,20 @@ export interface AppSettingsData {
      * then clears it. Remove with the heal hook once it has aged out. */
     pendingMicrophoneName?: string;
   };
+  // Clipy-style snippet library shown in the Cmd+Shift+V paste menu.
+  snippetLibrary?: {
+    folders: Array<{
+      id: string;
+      name: string;
+      enabled: boolean;
+      snippets: Array<{
+        id: string;
+        title: string;
+        content: string;
+        enabled: boolean;
+      }>;
+    }>;
+  };
   shortcuts?: {
     pushToTalk?: number[];
     toggleRecording?: number[];

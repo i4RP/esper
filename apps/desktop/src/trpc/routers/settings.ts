@@ -739,6 +739,38 @@ export const settingsRouter = createRouter({
     return await settingsService.getPreferences();
   }),
 
+  // Snippet library (Cmd+Shift+V paste menu)
+  getSnippetLibrary: procedure.query(async ({ ctx }) => {
+    const settingsService = ctx.serviceManager.getService("settingsService");
+    return await settingsService.getSnippetLibrary();
+  }),
+
+  setSnippetLibrary: procedure
+    .input(
+      z.object({
+        folders: z.array(
+          z.object({
+            id: z.string(),
+            name: z.string(),
+            enabled: z.boolean(),
+            snippets: z.array(
+              z.object({
+                id: z.string(),
+                title: z.string(),
+                content: z.string(),
+                enabled: z.boolean(),
+              }),
+            ),
+          }),
+        ),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const settingsService = ctx.serviceManager.getService("settingsService");
+      await settingsService.setSnippetLibrary(input);
+      return true;
+    }),
+
   // Update app preferences
   updatePreferences: procedure
     .input(AppPreferencesSchema)

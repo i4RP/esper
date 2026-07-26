@@ -17,6 +17,7 @@ import { FeatureFlagService } from "../../services/feature-flag-service";
 import { RemoteConfigService } from "../../services/remote-config-service";
 import { HistoryCleanupService } from "../../services/history-cleanup-service";
 import { SleepGuardService } from "../../services/sleep-guard-service";
+import { ClipboardHistoryService } from "../../services/clipboard-history-service";
 import { setApplicationLocale } from "../../i18n/application-locale";
 
 /**
@@ -39,6 +40,7 @@ export interface ServiceMap {
   windowManager: WindowManager;
   onboardingService: OnboardingService;
   sleepGuardService: SleepGuardService;
+  clipboardHistoryService: ClipboardHistoryService;
 }
 
 /**
@@ -60,6 +62,7 @@ export class ServiceManager {
   private onboardingService: OnboardingService | null = null;
   private historyCleanupService: HistoryCleanupService | null = null;
   private sleepGuardService: SleepGuardService | null = null;
+  private clipboardHistoryService: ClipboardHistoryService | null = null;
 
   private nativeBridge: NativeBridge | null = null;
   private autoUpdaterService: AutoUpdaterService | null = null;
@@ -250,6 +253,9 @@ export class ServiceManager {
       // Caps Lock keep-awake (macOS only; no-ops elsewhere)
       this.sleepGuardService = new SleepGuardService(this.nativeBridge);
       this.sleepGuardService.initialize();
+      // Cmd+Shift+V clipboard history / snippet paste menu (initialized by
+      // AppManager once windows and the locale are ready)
+      this.clipboardHistoryService = new ClipboardHistoryService(this);
     }
   }
 
@@ -317,12 +323,17 @@ export class ServiceManager {
       windowManager: this.windowManager!,
       onboardingService: this.onboardingService!,
       sleepGuardService: this.sleepGuardService!,
+      clipboardHistoryService: this.clipboardHistoryService!,
     };
 
     return services[serviceName];
   }
 
   async cleanup(): Promise<void> {
+    if (this.clipboardHistoryService) {
+      this.clipboardHistoryService.cleanup();
+    }
+
     if (this.sleepGuardService) {
       logger.main.info("Restoring sleep state (sleep guard)...");
       await this.sleepGuardService.cleanup();

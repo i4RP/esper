@@ -4,6 +4,7 @@ import {
   IconBook,
   IconBrain,
   IconScissors,
+  IconClipboard,
   IconHistory,
   IconKeyboard,
   IconAdjustments,
@@ -62,6 +63,13 @@ export const SETTINGS_NAV_ITEMS: SettingsNavItem[] = [
     url: "/settings/snippets",
     descriptionKey: "settings.nav.snippets.description",
     icon: IconScissors,
+    type: "settings",
+  },
+  {
+    titleKey: "settings.nav.snippetEditor.title",
+    url: "/settings/snippet-editor",
+    descriptionKey: "settings.nav.snippetEditor.description",
+    icon: IconClipboard,
     type: "settings",
   },
   {
