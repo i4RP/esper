@@ -31,6 +31,8 @@
     "quit": "Quit"
   },
   "clipboardMenu": {
+    "editSnippets": "Edit Snippets…",
+    "preferences": "Preferences…",
     "history": "History",
     "snippets": "Snippets",
     "clear": "Clear History",

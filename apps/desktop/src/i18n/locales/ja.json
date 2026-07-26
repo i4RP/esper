@@ -31,6 +31,8 @@
     "quit": "終了"
   },
   "clipboardMenu": {
+    "editSnippets": "スニペットを編集…",
+    "preferences": "環境設定…",
     "history": "履歴",
     "snippets": "スニペット",
     "clear": "履歴をクリア",

@@ -739,6 +739,22 @@ export const settingsRouter = createRouter({
     return await settingsService.getPreferences();
   }),
 
+  // Widget renderer reports the connected audio input devices so the main
+  // process (tray menu) can offer a microphone picker.
+  reportAudioInputDevices: procedure
+    .input(
+      z.object({
+        devices: z.array(
+          z.object({ deviceId: z.string(), label: z.string() }),
+        ),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const settingsService = ctx.serviceManager.getService("settingsService");
+      settingsService.reportAudioInputDevices(input.devices);
+      return true;
+    }),
+
   // Snippet library (Cmd+Shift+V paste menu)
   getSnippetLibrary: procedure.query(async ({ ctx }) => {
     const settingsService = ctx.serviceManager.getService("settingsService");

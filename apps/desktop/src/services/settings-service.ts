@@ -523,6 +523,22 @@ export class SettingsService extends EventEmitter {
     });
   }
 
+  // In-memory list of audio input devices, reported by the widget renderer
+  // (the main process cannot enumerate microphones itself). Feeds the tray's
+  // microphone submenu.
+  private audioInputDevices: { deviceId: string; label: string }[] = [];
+
+  reportAudioInputDevices(
+    devices: { deviceId: string; label: string }[],
+  ): void {
+    this.audioInputDevices = devices;
+    this.emit("audio-devices-changed", devices);
+  }
+
+  getAudioInputDevices(): { deviceId: string; label: string }[] {
+    return this.audioInputDevices;
+  }
+
   /**
    * Snippet library (Cmd+Shift+V paste menu). Stored as a settings section.
    */

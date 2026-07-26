@@ -225,6 +225,14 @@ export class ClipboardHistoryService {
       label: t("clipboardMenu.clear"),
       click: () => this.clearHistory(),
     });
+    template.push({
+      label: t("clipboardMenu.editSnippets"),
+      click: () => void this.openMainWindowAt("/settings/snippet-editor"),
+    });
+    template.push({
+      label: t("clipboardMenu.preferences"),
+      click: () => void this.openMainWindowAt("/settings/preferences"),
+    });
 
     const menu = Menu.buildFromTemplate(template);
     try {
@@ -255,6 +263,17 @@ export class ClipboardHistoryService {
       label: this.truncate(entry.text ?? ""),
       click: () => void this.pasteText(entry.text ?? ""),
     };
+  }
+
+  private async openMainWindowAt(route: string): Promise<void> {
+    try {
+      const windowManager = this.serviceManager.getService("windowManager");
+      await windowManager?.navigateMainWindow(route);
+    } catch (error) {
+      logger.main.warn("Failed to open main window from clipboard menu", {
+        error,
+      });
+    }
   }
 
   private truncate(text: string): string {

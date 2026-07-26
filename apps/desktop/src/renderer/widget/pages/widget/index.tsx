@@ -3,6 +3,7 @@ import { DraftReview } from "./components/DraftReview";
 import { useWidgetNotifications } from "../../hooks/useWidgetNotifications";
 import { useRecordingSettingsSync } from "../../hooks/useRecordingSettingsSync";
 import { useHealPendingMicrophone } from "../../hooks/useHealPendingMicrophone";
+import { useAudioDeviceReporter } from "../../hooks/useAudioDeviceReporter";
 import { useDraftReview } from "../../hooks/useDraftReview";
 import { useRecording } from "@/hooks/useRecording";
 
@@ -18,6 +19,7 @@ export function WidgetPage() {
   useWidgetNotifications(recording.recordingStatus.state);
   useRecordingSettingsSync();
   useHealPendingMicrophone();
+  useAudioDeviceReporter();
 
   if (draft.review) {
     return (

@@ -31,6 +31,8 @@
     "quit": "結束"
   },
   "clipboardMenu": {
+    "editSnippets": "編輯片段…",
+    "preferences": "偏好設定…",
     "history": "歷史記錄",
     "snippets": "程式片段",
     "clear": "清除歷史記錄",

@@ -59,6 +59,9 @@ export class TrayManager {
         settingsService?.on("recording-settings-changed", () => {
           void this.rebuildMenu();
         });
+        settingsService?.on("audio-devices-changed", () => {
+          void this.rebuildMenu();
+        });
       } catch (error) {
         logger.main.warn("Tray dynamic menu wiring skipped", { error });
       }
@@ -82,7 +85,7 @@ export class TrayManager {
     const isRecordingActive =
       recordingState === "recording" || recordingState === "starting";
 
-    const micName = await this.getPreferredMicrophoneName();
+    const micMenu = await this.buildMicrophoneMenu();
 
     const openMainAt = async (route: string) => {
       if (!this.windowManager) return;
@@ -120,10 +123,7 @@ export class TrayManager {
         click: () => void openMainAt("/settings/preferences"),
       },
       { type: "separator" as const },
-      {
-        label: t("tray.microphone", { name: micName }),
-        click: () => void openMainAt("/settings/dictation"),
-      },
+      micMenu,
       { type: "separator" as const },
       {
         label: t("tray.openConsole"),
@@ -157,17 +157,77 @@ export class TrayManager {
     this.tray.setContextMenu(contextMenu);
   }
 
-  /** Highest-priority configured microphone, or the system default label. */
-  private async getPreferredMicrophoneName(): Promise<string> {
-    const fallback = this.t ? this.t("tray.systemDefaultMic") : "Default";
+  /**
+   * Microphone picker submenu: the connected input devices (reported by the
+   * widget renderer), with the active one checked. Picking a device makes it
+   * the top of the microphone priority chain; picking the system default
+   * clears the chain. Falls back to a plain "open settings" item until the
+   * device list has been reported.
+   */
+  private async buildMicrophoneMenu(): Promise<
+    Electron.MenuItemConstructorOptions
+  > {
+    const t = this.t!;
+    const fallbackLabel = t("tray.systemDefaultMic");
     try {
       const settingsService = this.serviceManager?.getService("settingsService");
-      if (!settingsService) return fallback;
+      if (!settingsService) throw new Error("no settings service");
+      const devices = settingsService.getAudioInputDevices();
       const recording = await settingsService.getRecordingSettings();
-      const name = recording?.microphonePriority?.[0]?.name;
-      return name && name.trim() !== "" ? name : fallback;
+      const priority = recording?.microphonePriority ?? [];
+
+      if (devices.length === 0) {
+        const name = priority[0]?.name?.trim() || fallbackLabel;
+        return {
+          label: t("tray.microphone", { name }),
+          click: () => {
+            void this.windowManager?.navigateMainWindow("/settings/dictation");
+          },
+        };
+      }
+
+      // Active device: highest-ranked connected priority entry, else default.
+      const activeId =
+        priority.find((entry) =>
+          devices.some((device) => device.deviceId === entry.deviceId),
+        )?.deviceId ?? "default";
+      const activeLabel =
+        devices.find((device) => device.deviceId === activeId)?.label ??
+        fallbackLabel;
+
+      const selectDevice = async (deviceId: string, label: string) => {
+        const current = await settingsService.getRecordingSettings();
+        const base = {
+          defaultFormat: "wav" as const,
+          sampleRate: 16000 as const,
+          autoStopSilence: true,
+          silenceThreshold: 3,
+          maxRecordingDuration: 60,
+          ...current,
+        };
+        await settingsService.setRecordingSettings({
+          ...base,
+          microphonePriority:
+            deviceId === "default" ? [] : [{ deviceId, name: label }],
+        });
+      };
+
+      return {
+        label: activeLabel,
+        submenu: devices.map((device) => ({
+          label: device.label,
+          type: "radio" as const,
+          checked: device.deviceId === activeId,
+          click: () => void selectDevice(device.deviceId, device.label),
+        })),
+      };
     } catch {
-      return fallback;
+      return {
+        label: t("tray.microphone", { name: fallbackLabel }),
+        click: () => {
+          void this.windowManager?.navigateMainWindow("/settings/dictation");
+        },
+      };
     }
   }
 

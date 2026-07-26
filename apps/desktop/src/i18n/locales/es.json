@@ -31,6 +31,8 @@
     "quit": "Salir"
   },
   "clipboardMenu": {
+    "editSnippets": "Editar fragmentos…",
+    "preferences": "Preferencias…",
     "history": "Historial",
     "snippets": "Fragmentos",
     "clear": "Borrar historial",
