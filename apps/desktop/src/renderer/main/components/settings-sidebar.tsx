@@ -120,9 +120,9 @@ export function SettingsSidebar({
           >
             <div className="inline-flex items-center gap-2.5 font-semibold w-full">
               <img
-                src="assets/logo.svg"
+                src="assets/app-icon.png"
                 alt={t("settings.sidebar.logoAlt")}
-                className="!size-7"
+                className="!size-8"
               />
               <span className="font-semibold">
                 {t("settings.sidebar.brand")}
