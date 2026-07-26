@@ -380,6 +380,7 @@ export function detectApplicationType(
   // reports the process name (no path, no .exe) instead of a bundle id, so our
   // own app is "Amical"; dev runs are "electron" and fall through to "default".
   const isOwnApp =
+    bundleId === "jp.btcpay.esper" ||
     bundleId === "ai.amical.desktop" ||
     bundleId.toLowerCase() === "amical" ||
     bundleId.toLowerCase() === "esper";

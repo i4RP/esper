@@ -571,7 +571,7 @@ const config: ForgeConfig = {
     name: "Esper",
     executableName: "Esper",
     icon: "./assets/logo", // Path to your icon file
-    appBundleId: "ai.amical.desktop", // Proper bundle ID
+    appBundleId: "jp.btcpay.esper", // Esper's own bundle ID (BITCOINPAY K.K.)
     extraResource: [
       `${process.platform === "win32" ? "../../packages/native-helpers/windows-helper/bin" : "../../packages/native-helpers/swift-helper/bin"}`,
       "./src/db/migrations",
@@ -588,7 +588,7 @@ const config: ForgeConfig = {
       CFBundleURLTypes: [
         {
           CFBundleURLSchemes: ["amical"],
-          CFBundleURLName: "ai.amical.desktop",
+          CFBundleURLName: "jp.btcpay.esper",
         },
       ],
     },
@@ -622,13 +622,22 @@ const config: ForgeConfig = {
           // Notarization for macOS
           ...(process.env.SKIP_NOTARIZATION === "true"
             ? {}
-            : {
-                osxNotarize: {
-                  appleId: process.env.APPLE_ID!,
-                  appleIdPassword: process.env.APPLE_APP_PASSWORD!,
-                  teamId: process.env.APPLE_TEAM_ID!,
-                },
-              }),
+            : process.env.NOTARY_KEYCHAIN_PROFILE
+              ? {
+                  // Credentials stored once via
+                  // `xcrun notarytool store-credentials <profile>` — keeps the
+                  // app-specific password out of env files.
+                  osxNotarize: {
+                    keychainProfile: process.env.NOTARY_KEYCHAIN_PROFILE,
+                  },
+                }
+              : {
+                  osxNotarize: {
+                    appleId: process.env.APPLE_ID!,
+                    appleIdPassword: process.env.APPLE_APP_PASSWORD!,
+                    teamId: process.env.APPLE_TEAM_ID!,
+                  },
+                }),
         }),
     //! issues with monorepo setup and module resolutions
     //! when forge walks paths via flora-colossus
