@@ -88,6 +88,6 @@ export function Verdict({ children }: { children: React.ReactNode }) {
 /** The `[Change X] [advance]` row inside the preview card. */
 export function CardActions({ children }: { children: React.ReactNode }) {
   return (
-    <div className="relative mt-1 flex items-center gap-2.5">{children}</div>
+    <div className="relative mt-1 flex w-full min-w-0 items-center justify-center gap-2.5">{children}</div>
   );
 }

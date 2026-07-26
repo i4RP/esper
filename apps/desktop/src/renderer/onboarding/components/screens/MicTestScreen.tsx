@@ -77,13 +77,14 @@ export function MicTestScreen({ onNext, onBack }: MicTestScreenProps) {
             variant="soft"
             onClick={() => setMicModalOpen(true)}
             title={t("onboarding.micTest.change")}
+            className="min-w-0 flex-1 justify-center px-4 py-2.5 text-xs"
           >
-            <Mic size={16} />
-            <span className="max-w-[220px] truncate">{activeLabel}</span>
+            <Mic size={14} />
+            <span className="min-w-0 truncate">{activeLabel}</span>
           </ObButton>
-          <ObButton onClick={onNext}>
+          <ObButton onClick={onNext} className="shrink-0 px-4 py-2.5 text-xs">
             {t("onboarding.navigation.continue")}
-            <ArrowRight size={16} />
+            <ArrowRight size={14} />
           </ObButton>
         </CardActions>
       </PreviewPanel>
