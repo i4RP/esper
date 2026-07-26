@@ -82,6 +82,11 @@
       "status": {
         "granted": "Berechtigung erteilt"
       },
+      "sleepGuard": {
+        "title": "Schlafschutz (Feststelltaste)",
+        "description": "Solange die Feststelltaste aktiv ist, bleibt dein Mac auch bei geschlossenem Deckel wach. Einmalig ist ein Admin-Passwort nötig",
+        "install": "Installieren"
+      },
       "actions": {
         "request": "Berechtigung anfordern",
         "requesting": "Wird angefordert…",

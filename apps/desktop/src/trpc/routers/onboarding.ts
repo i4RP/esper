@@ -425,6 +425,37 @@ export const onboardingRouter = createRouter({
   }),
 
   /**
+   * Check whether the Caps Lock sleep-guard helper is installed (macOS only)
+   */
+  checkSleepGuard: procedure.query(async ({ ctx }): Promise<boolean> => {
+    if (process.platform !== "darwin") return false;
+    try {
+      const sleepGuardService =
+        ctx.serviceManager.getService("sleepGuardService");
+      return sleepGuardService?.isInstalled() ?? false;
+    } catch (error) {
+      logger.main.error("Failed to check sleep guard:", error);
+      return false;
+    }
+  }),
+
+  /**
+   * Install the Caps Lock sleep-guard helper (shows the macOS admin prompt)
+   */
+  installSleepGuard: procedure.mutation(async ({ ctx }): Promise<boolean> => {
+    if (process.platform !== "darwin") return false;
+    try {
+      const sleepGuardService =
+        ctx.serviceManager.getService("sleepGuardService");
+      if (!sleepGuardService) return false;
+      return await sleepGuardService.install();
+    } catch (error) {
+      logger.main.error("Failed to install sleep guard:", error);
+      return false;
+    }
+  }),
+
+  /**
    * Request microphone permission
    */
   requestMicrophonePermission: procedure.mutation(

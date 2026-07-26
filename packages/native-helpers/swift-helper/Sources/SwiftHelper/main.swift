@@ -114,6 +114,11 @@ class SwiftHelper {
 let swiftHelper = SwiftHelper()
 let ioBridge = IOBridge(jsonEncoder: JSONEncoder(), jsonDecoder: JSONDecoder())
 
+// Caps Lock / clamshell monitoring for the sleep-guard feature (needs no
+// special permission — flagsState and the IORegistry read are unrestricted).
+let capsLockMonitor = CapsLockMonitor()
+capsLockMonitor.start()
+
 // Start RPC processing in a background thread
 // Using .userInteractive QoS for high priority (reduces latency for audio muting)
 DispatchQueue.global(qos: .userInteractive).async {

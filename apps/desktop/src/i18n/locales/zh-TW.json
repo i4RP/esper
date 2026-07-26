@@ -82,6 +82,11 @@
       "status": {
         "granted": "已授權"
       },
+      "sleepGuard": {
+        "title": "睡眠防護(Caps Lock)",
+        "description": "Caps Lock 開啟時，即使闔上螢幕 Mac 也不會進入睡眠。僅需輸入一次管理員密碼",
+        "install": "安裝"
+      },
       "actions": {
         "request": "要求權限",
         "requesting": "請求中…",

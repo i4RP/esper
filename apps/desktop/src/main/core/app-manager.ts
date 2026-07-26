@@ -143,6 +143,29 @@ export class AppManager {
     // Initialize tray
     await this.trayManager.initialize(this.windowManager, locale);
 
+    // Tray dot mirrors the Caps Lock sleep-guard state (green while the
+    // guard keeps the Mac awake, red on pmset errors, gray otherwise).
+    try {
+      const sleepGuardService =
+        this.serviceManager.getService("sleepGuardService");
+      if (sleepGuardService) {
+        sleepGuardService.on(
+          "changed",
+          (status: { engaged: boolean; error: boolean }) => {
+            this.trayManager.setSleepGuardState(
+              status.error ? "error" : status.engaged ? "on" : "off",
+            );
+          },
+        );
+        const initial = sleepGuardService.getStatus();
+        this.trayManager.setSleepGuardState(
+          initial.error ? "error" : initial.engaged ? "on" : "off",
+        );
+      }
+    } catch (error) {
+      logger.main.warn("Sleep guard tray wiring skipped", { error });
+    }
+
     // Setup IPC handlers
     ipcMain.handle("open-external", async (_event, url: string) => {
       await shell.openExternal(url);

@@ -27,23 +27,13 @@ export class TrayManager {
     const i18n = await initMainI18n(locale);
     const t = i18n.t.bind(i18n);
 
-    // Create tray icon
-    const iconPath = this.getIconPath();
+    // Create tray icon: a small status dot (gray = idle, green = Caps Lock
+    // sleep guard active, red = sleep guard error). Colored deliberately, so
+    // no template image.
+    const iconPath = this.getIconPath("off");
     logger.main.info(`Loading tray icon from: ${iconPath}`);
 
     const icon = nativeImage.createFromPath(iconPath);
-
-    // Log icon details for debugging
-    const size = icon.getSize();
-    logger.main.info(
-      `Icon loaded - Width: ${size.width}, Height: ${size.height}, Empty: ${icon.isEmpty()}`,
-    );
-
-    // On macOS, mark as template image for proper light/dark mode support
-    // Use guid to persist menu bar position between app launches
-    if (isMacOS()) {
-      icon.setTemplateImage(true);
-    }
     this.tray = new Tray(icon);
 
     // Set tooltip
@@ -99,11 +89,19 @@ export class TrayManager {
     logger.main.info("Tray initialized successfully");
   }
 
-  private getIconPath(): string {
-    // Use appropriate icon based on platform
+  /**
+   * Swap the tray dot to reflect the Caps Lock sleep-guard state.
+   */
+  setSleepGuardState(state: "off" | "on" | "error"): void {
+    if (!this.tray || this.tray.isDestroyed()) return;
+    const icon = nativeImage.createFromPath(this.getIconPath(state));
+    this.tray.setImage(icon);
+  }
+
+  private getIconPath(state: "off" | "on" | "error"): string {
     const iconName = isWindows()
       ? "icon-256x256.png" // Windows uses standard icon
-      : "iconTemplate.png"; // macOS uses template naming convention
+      : `tray-dot-${state}.png`;
 
     if (app.isPackaged) {
       // When packaged, assets are placed next to the bundled resources path

@@ -82,6 +82,11 @@
       "status": {
         "granted": "Permission granted"
       },
+      "sleepGuard": {
+        "title": "Sleep guard (Caps Lock)",
+        "description": "While Caps Lock is on, your Mac stays awake even with the lid closed. Requires an admin password once",
+        "install": "Install"
+      },
       "actions": {
         "request": "Request permission",
         "requesting": "Requesting…",

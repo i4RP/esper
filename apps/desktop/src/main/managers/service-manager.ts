@@ -16,6 +16,7 @@ import { OnboardingService } from "../../services/onboarding-service";
 import { FeatureFlagService } from "../../services/feature-flag-service";
 import { RemoteConfigService } from "../../services/remote-config-service";
 import { HistoryCleanupService } from "../../services/history-cleanup-service";
+import { SleepGuardService } from "../../services/sleep-guard-service";
 import { setApplicationLocale } from "../../i18n/application-locale";
 
 /**
@@ -37,6 +38,7 @@ export interface ServiceMap {
   shortcutManager: ShortcutManager;
   windowManager: WindowManager;
   onboardingService: OnboardingService;
+  sleepGuardService: SleepGuardService;
 }
 
 /**
@@ -57,6 +59,7 @@ export class ServiceManager {
   private vadService: VADService | null = null;
   private onboardingService: OnboardingService | null = null;
   private historyCleanupService: HistoryCleanupService | null = null;
+  private sleepGuardService: SleepGuardService | null = null;
 
   private nativeBridge: NativeBridge | null = null;
   private autoUpdaterService: AutoUpdaterService | null = null;
@@ -244,6 +247,9 @@ export class ServiceManager {
     // Initialize platform-specific bridge
     if (isMacOS() || isWindows()) {
       this.nativeBridge = new NativeBridge(this.telemetryService ?? undefined);
+      // Caps Lock keep-awake (macOS only; no-ops elsewhere)
+      this.sleepGuardService = new SleepGuardService(this.nativeBridge);
+      this.sleepGuardService.initialize();
     }
   }
 
@@ -310,12 +316,18 @@ export class ServiceManager {
       shortcutManager: this.shortcutManager!,
       windowManager: this.windowManager!,
       onboardingService: this.onboardingService!,
+      sleepGuardService: this.sleepGuardService!,
     };
 
     return services[serviceName];
   }
 
   async cleanup(): Promise<void> {
+    if (this.sleepGuardService) {
+      logger.main.info("Restoring sleep state (sleep guard)...");
+      await this.sleepGuardService.cleanup();
+    }
+
     if (this.shortcutManager) {
       logger.main.info("Cleaning up shortcut manager...");
       this.shortcutManager.cleanup();

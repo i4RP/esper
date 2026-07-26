@@ -82,6 +82,11 @@
       "status": {
         "granted": "Permiso concedido"
       },
+      "sleepGuard": {
+        "title": "Protección de suspensión (Bloq Mayús)",
+        "description": "Mientras Bloq Mayús esté activado, tu Mac permanece despierto incluso con la tapa cerrada. Requiere la contraseña de administrador una vez",
+        "install": "Instalar"
+      },
       "actions": {
         "request": "Solicitar permiso",
         "requesting": "Solicitando…",

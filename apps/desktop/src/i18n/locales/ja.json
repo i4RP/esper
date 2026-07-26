@@ -82,6 +82,11 @@
       "status": {
         "granted": "権限が付与されました"
       },
+      "sleepGuard": {
+        "title": "スリープ制御(CapsLock)",
+        "description": "CapsLockがオンの間、Macを閉じてもスリープさせません。1回だけ管理者パスワードが必要です",
+        "install": "インストール"
+      },
       "actions": {
         "request": "権限をリクエスト",
         "requesting": "リクエスト中…",

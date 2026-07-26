@@ -50,12 +50,29 @@ export type ActiveDisplayChangedEvent = z.infer<
   typeof ActiveDisplayChangedEventSchema
 >;
 
+// Unsolicited notification (macOS helper) whenever the Caps Lock toggle state
+// or the clamshell (lid) state changes. Drives the sleep-guard feature: while
+// Caps Lock is on, the app keeps the Mac awake even with the lid closed.
+export const CapsLockStateChangedEventSchema = z.object({
+  type: z.literal("capsLockStateChanged"),
+  payload: z.object({
+    capsLockOn: z.boolean(),
+    // null when the clamshell state could not be read (e.g. desktop Macs)
+    clamshellClosed: z.boolean().nullable().optional(),
+  }),
+  timestamp: z.string().datetime({ offset: true }).optional(),
+});
+export type CapsLockStateChangedEvent = z.infer<
+  typeof CapsLockStateChangedEventSchema
+>;
+
 // This will be the primary schema for unsolicited events from Swift
 export const HelperEventSchema = z.discriminatedUnion("type", [
   KeyDownEventSchema,
   KeyUpEventSchema,
   FlagsChangedEventSchema, // Added FlagsChangedEventSchema
   ActiveDisplayChangedEventSchema,
+  CapsLockStateChangedEventSchema,
   // Future: Add other event types like mouse events, etc.
 ]);
 export type HelperEvent = z.infer<typeof HelperEventSchema>;

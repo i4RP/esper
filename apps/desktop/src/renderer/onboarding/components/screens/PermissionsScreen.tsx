@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { api } from "@/trpc/react";
-import { Mic, Accessibility, Check } from "lucide-react";
+import { Mic, Accessibility, Check, MoonStar } from "lucide-react";
 import { OnboardingLayout } from "../shared/OnboardingLayout";
 import { InfoRow, SkipPill } from "../shared/ui";
 import { NavigationButtons } from "../shared/NavigationButtons";
@@ -37,6 +37,14 @@ export function PermissionsScreen({
   // tRPC mutations
   const requestMicPermission =
     api.onboarding.requestMicrophonePermission.useMutation();
+  const sleepGuardQuery = api.onboarding.checkSleepGuard.useQuery(undefined, {
+    enabled: platform === "darwin",
+  });
+  const installSleepGuard = api.onboarding.installSleepGuard.useMutation({
+    onSettled: () => {
+      void sleepGuardQuery.refetch();
+    },
+  });
   const openExternal = api.onboarding.openExternal.useMutation();
 
   const allPermissionsGranted =
@@ -147,6 +155,31 @@ export function PermissionsScreen({
               ) : (
                 <SkipPill onClick={() => void handleOpenAccessibility()}>
                   {t("onboarding.permissions.actions.openSettings")}
+                </SkipPill>
+              )
+            }
+          />
+        )}
+
+        {/* Caps Lock sleep guard (macOS only, optional — does not gate Next) */}
+        {platform === "darwin" && (
+          <InfoRow
+            className="gap-[15px] px-[19px] py-[17px]"
+            tileClassName="size-[38px]"
+            icon={<MoonStar size={20} />}
+            title={t("onboarding.permissions.sleepGuard.title")}
+            description={t("onboarding.permissions.sleepGuard.description")}
+            trailing={
+              sleepGuardQuery.data ? (
+                grantedPill
+              ) : (
+                <SkipPill
+                  onClick={() => installSleepGuard.mutate()}
+                  disabled={installSleepGuard.isPending}
+                >
+                  {installSleepGuard.isPending
+                    ? t("onboarding.permissions.actions.requesting")
+                    : t("onboarding.permissions.sleepGuard.install")}
                 </SkipPill>
               )
             }
