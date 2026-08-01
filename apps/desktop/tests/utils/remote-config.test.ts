@@ -11,6 +11,7 @@ import {
   isSafeRemoteConfigUrl,
   resolveSurfaceIcon,
 } from "../../src/utils/remote-config";
+import { BRAND } from "../../src/constants/brand";
 
 const config: RemoteConfig = {
   version: 1,
@@ -95,18 +96,16 @@ describe("remote config helpers", () => {
     ).toBe(false);
   });
 
-  it("only allows https URLs under the amical.ai domain", () => {
-    expect(isSafeRemoteConfigUrl("https://amical.ai")).toBe(true);
-    expect(
-      isSafeRemoteConfigUrl("https://app.amical.ai/banner/mock-cloud-banner"),
-    ).toBe(true);
-    expect(isSafeRemoteConfigUrl("https://foo.bar.amical.ai/path")).toBe(true);
-    expect(isSafeRemoteConfigUrl("http://app.amical.ai/banner")).toBe(false);
+  // BRAND.domain is null while no backend exists, so the allowlist is empty and
+  // every remote URL is rejected — the shell can't be steered anywhere at all.
+  // The host-matching rules themselves are covered in tests/constants/brand.test.ts.
+  it("rejects every remote URL while no brand domain is configured", () => {
+    expect(BRAND.domain).toBeNull();
+    expect(isSafeRemoteConfigUrl("https://example.com")).toBe(false);
+    expect(isSafeRemoteConfigUrl("https://app.example.com/banner")).toBe(false);
+    expect(isSafeRemoteConfigUrl("http://example.com/banner")).toBe(false);
     expect(isSafeRemoteConfigUrl("https://evil.example/banner")).toBe(false);
-    expect(isSafeRemoteConfigUrl("https://evilamical.ai/banner")).toBe(false);
-    expect(
-      isSafeRemoteConfigUrl("https://app.amical.ai.evil.example/banner"),
-    ).toBe(false);
+    expect(isSafeRemoteConfigUrl("not-a-url")).toBe(false);
   });
 
   it("only allows CTA routes on the known-route allowlist", () => {
@@ -116,14 +115,16 @@ describe("remote config helpers", () => {
     expect(isSafeRemoteConfigRoute("https://evil.example")).toBe(false);
   });
 
-  it("resolves a valid amical.ai iconUrl ahead of a named icon", () => {
+  // With no brand domain no iconUrl can pass the allowlist, so the named icon
+  // always wins — the remote payload can never make us fetch a third-party asset.
+  it("ignores every iconUrl while no brand domain is configured", () => {
     expect(
       resolveSurfaceIcon({
         body: "x",
         icon: "cloud",
-        iconUrl: "https://cdn.amical.ai/surfaces/promo.svg",
+        iconUrl: "https://cdn.example.com/surfaces/promo.svg",
       }),
-    ).toEqual({ kind: "url", url: "https://cdn.amical.ai/surfaces/promo.svg" });
+    ).toEqual({ kind: "name", name: "cloud" });
   });
 
   it("ignores an off-allowlist iconUrl and falls back to the named icon", () => {

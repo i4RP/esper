@@ -587,7 +587,7 @@ const config: ForgeConfig = {
         "This app needs access to your microphone to record audio for transcription.",
       CFBundleURLTypes: [
         {
-          CFBundleURLSchemes: ["amical"],
+          CFBundleURLSchemes: ["esper"],
           CFBundleURLName: "jp.btcpay.esper",
         },
       ],
@@ -595,7 +595,7 @@ const config: ForgeConfig = {
     protocols: [
       {
         name: "Esper",
-        schemes: ["amical"],
+        schemes: ["esper"],
       },
     ],
     // Code signing configuration for macOS
@@ -836,9 +836,11 @@ const config: ForgeConfig = {
   ],
   publishers: [
     new PublisherGithub({
+      // Must match BRAND.repo in src/constants/brand.ts — forge's config is
+      // loaded by its own TS loader, so it can't import from src.
       repository: {
-        owner: "amicalhq",
-        name: "amical",
+        owner: "i4RP",
+        name: "esper",
       },
       prerelease: true,
       draft: true, // Create draft releases first for review

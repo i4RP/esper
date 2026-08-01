@@ -6,6 +6,7 @@ import { SkillRow } from "./skill-row";
 import { Badge } from "@/components/ui/badge";
 import { useTranslation } from "react-i18next";
 import type { SkillEdit, SkillSnapshot } from "./catalog";
+import { BRAND } from "@/constants/brand";
 
 export default function PersonalizationSettingsPage() {
   const { t } = useTranslation();
@@ -46,8 +47,7 @@ export default function PersonalizationSettingsPage() {
   const handleReset = (id: string, field: "apps" | "sites") => {
     updateMutation.mutate({
       id,
-      data:
-        field === "apps" ? { includedApps: null } : { includedSites: null },
+      data: field === "apps" ? { includedApps: null } : { includedSites: null },
     });
   };
 
@@ -66,8 +66,8 @@ export default function PersonalizationSettingsPage() {
           </Badge>
         </div>
         <p className="mt-1 text-sm text-muted-foreground">
-          How Amical personalizes your dictation. Defaults apply automatically
-          based on the active app.
+          How {BRAND.name} personalizes your dictation. Defaults apply
+          automatically based on the active app.
         </p>
       </div>
 
@@ -110,8 +110,8 @@ export default function PersonalizationSettingsPage() {
             <Card className="p-0 overflow-clip">
               <CardContent className="px-6 py-10 text-center">
                 <p className="text-sm text-muted-foreground">
-                  Custom skills are coming soon — you&apos;ll be able to add your
-                  own to personalize dictation in specific apps.
+                  Custom skills are coming soon — you&apos;ll be able to add
+                  your own to personalize dictation in specific apps.
                 </p>
               </CardContent>
             </Card>

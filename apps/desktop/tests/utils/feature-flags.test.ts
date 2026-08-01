@@ -102,7 +102,7 @@ describe("parseSidebarCtaPayload", () => {
     expect(
       parseSidebarCtaPayload({
         text: "Read changelog",
-        url: "//amical.ai/changelog",
+        url: "//example.com/changelog",
       }),
     ).toBeNull();
   });
@@ -110,7 +110,7 @@ describe("parseSidebarCtaPayload", () => {
   it("rejects payloads missing required fields", () => {
     expect(
       parseSidebarCtaPayload({
-        url: "https://amical.ai/changelog",
+        url: "https://example.com/changelog",
       }),
     ).toBeNull();
   });

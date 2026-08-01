@@ -7,6 +7,18 @@ import {
 } from "../../src/main/services/auto-updater";
 import type { RecordingState } from "../../src/types/recording";
 
+// The shipping build has BRAND.updateServer = null, which disables the updater
+// wholesale (covered in auto-updater-no-feed.test.ts). These tests exercise the
+// state machine that runs once a feed exists, so they pin a stand-in server.
+vi.mock("../../src/constants/brand", async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import("../../src/constants/brand")>();
+  return {
+    ...actual,
+    BRAND: { ...actual.BRAND, updateServer: "https://update.esper.test" },
+  };
+});
+
 describe("classifyUpdaterError", () => {
   it("classifies macOS read-only volume updater failures as known noise", () => {
     const error = new Error(

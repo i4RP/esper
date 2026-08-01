@@ -15,8 +15,12 @@ import {
 import type { RecordingManager } from "../managers/recording-manager";
 import type { RecordingState } from "../../types/recording";
 import { computeUpdatePrompt, type UpdatePrompt } from "./update-prompt";
+import { BRAND } from "../../constants/brand";
 
-const UPDATE_SERVER = "https://update.amical.ai";
+// Null until Esper has an update feed of its own. Pointing this at a third
+// party would let them ship code inside an Esper-signed app, so every entry
+// point below no-ops instead of falling back to someone else's server.
+const UPDATE_SERVER = BRAND.updateServer;
 const CHECK_INTERVAL_MS = 60 * 60 * 1000; // 60 minutes
 const CHECK_INTERVAL_AFTER_DOWNLOAD_MS = 9 * 60 * 60 * 1000; // 9 hours
 const IDLE_INSTALL_CHECK_INTERVAL_MS = 5 * 60 * 1000; // 5 minutes
@@ -134,6 +138,13 @@ export class AutoUpdaterService extends EventEmitter {
       return;
     }
 
+    if (!UPDATE_SERVER) {
+      logger.updater.info(
+        "Skipping auto-updater: no update server configured for this build",
+      );
+      return;
+    }
+
     this.settingsService = settingsService;
     this.telemetryService = telemetryService;
     this.remoteConfigService = remoteConfigService;
@@ -174,6 +185,10 @@ export class AutoUpdaterService extends EventEmitter {
   }
 
   private setFeedURL(channel: "stable" | "beta", targetVersion?: string): void {
+    if (!UPDATE_SERVER) {
+      return;
+    }
+
     const platform = process.platform;
     const arch = process.arch;
     const runningVersion = encodeURIComponent(app.getVersion());
@@ -486,6 +501,10 @@ export class AutoUpdaterService extends EventEmitter {
   }
 
   private async fetchUpdateMetadata(): Promise<UpdateMetadata | null> {
+    if (!UPDATE_SERVER) {
+      return null;
+    }
+
     const platform = process.platform;
     const arch = process.arch;
     // Always use the running version for metadata so the server evaluates
@@ -553,6 +572,15 @@ export class AutoUpdaterService extends EventEmitter {
   async checkForUpdates(userInitiated = false): Promise<void> {
     if (!app.isPackaged) {
       logger.updater.info("Skipping update check: app is not packaged");
+      return;
+    }
+
+    // No feed to ask. Report "up to date" so the About page settles instead of
+    // spinning on a check that can never resolve.
+    if (!UPDATE_SERVER) {
+      logger.updater.info("Skipping update check: no update server configured");
+      this.setPhase("idle");
+      this.emit("update-not-available");
       return;
     }
 

@@ -5,6 +5,7 @@ import { EventEmitter } from "events";
 import { getSettingsSection, updateSettingsSection } from "../db/app-settings";
 import { getAmicalClientHeaders, getUserAgent } from "../utils/http-client";
 import { ServiceManager } from "../main/managers/service-manager";
+import { isBrandHost } from "../constants/brand";
 
 interface AuthConfig {
   clientId: string;
@@ -411,11 +412,11 @@ export class AuthService extends EventEmitter {
 
     // Server compromise is a remote risk, but `shell.openExternal` honors
     // any scheme/host the URL specifies (file://, vbscript:, etc.) and
-    // can't be undone. Constrain to https on the amical.ai family.
+    // can't be undone. Constrain to https on the brand's own domain — with no
+    // domain configured that rejects every host.
     const parsed = new URL(url);
     const host = parsed.hostname;
-    const hostAllowed = host === "amical.ai" || host.endsWith(".amical.ai");
-    if (parsed.protocol !== "https:" || !hostAllowed) {
+    if (parsed.protocol !== "https:" || !isBrandHost(host)) {
       logger.main.error("Handoff URL rejected", {
         protocol: parsed.protocol,
         host,

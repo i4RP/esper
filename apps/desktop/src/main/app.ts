@@ -9,6 +9,7 @@ import { logger } from "./logger";
 import { AppManager } from "./core/app-manager";
 import { isWindows } from "../utils/platform";
 import { ServiceManager } from "./managers/service-manager";
+import { BRAND } from "../constants/brand";
 
 // Drop expired certs before they become trust anchors (see the merge below).
 function notExpired(pem: string): boolean {
@@ -58,18 +59,18 @@ ipcMain.handle(
 
 // Set App User Model ID for Windows (required for Squirrel.Windows)
 if (isWindows()) {
-  app.setAppUserModelId("ai.amical.desktop");
+  app.setAppUserModelId(BRAND.bundleId);
 }
 
-// Register the amical:// protocol
+// Register the esper:// protocol
 if (process.defaultApp) {
   if (process.argv.length >= 2) {
-    app.setAsDefaultProtocolClient("amical", process.execPath, [
+    app.setAsDefaultProtocolClient(BRAND.scheme, process.execPath, [
       process.argv[1],
     ]);
   }
 } else {
-  app.setAsDefaultProtocolClient("amical");
+  app.setAsDefaultProtocolClient(BRAND.scheme);
 }
 
 // Enforce single instance
@@ -115,7 +116,9 @@ app.on("second-instance", (_event, commandLine) => {
   }
 
   // Check if this is a protocol launch on Windows/Linux
-  const url = commandLine.find((arg) => arg.startsWith("amical://"));
+  const url = commandLine.find((arg) =>
+    arg.startsWith(`${BRAND.scheme}://`),
+  );
   if (url) {
     if (isInitialized) {
       appManager.handleDeepLink(url);

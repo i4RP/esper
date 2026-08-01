@@ -29,6 +29,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { DEFAULT_HISTORY_RETENTION_PERIOD } from "@/constants/history-retention";
+import { brandDocsUrl } from "@/constants/brand";
 import { api } from "@/trpc/react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
@@ -169,8 +170,14 @@ export default function AdvancedSettingsPage() {
     });
   };
 
+  // Null while no brand domain is configured — the "learn more" link is hidden
+  // rather than pointed at someone else's docs site.
+  const telemetryDocsUrl = brandDocsUrl("telemetry");
+
   const handleOpenTelemetryDocs = () => {
-    window.electronAPI.openExternal("https://amical.ai/docs/telemetry");
+    if (telemetryDocsUrl) {
+      window.electronAPI.openExternal(telemetryDocsUrl);
+    }
   };
 
   const handleCopyMachineId = async () => {
@@ -323,13 +330,18 @@ export default function AdvancedSettingsPage() {
                 {t("settings.advanced.telemetry.label")}
               </Label>
               <p className="text-sm text-muted-foreground">
-                {t("settings.advanced.telemetry.description")}{" "}
-                <button
-                  onClick={handleOpenTelemetryDocs}
-                  className="text-primary hover:underline"
-                >
-                  {t("settings.advanced.telemetry.learnMore")}
-                </button>
+                {t("settings.advanced.telemetry.description")}
+                {telemetryDocsUrl && (
+                  <>
+                    {" "}
+                    <button
+                      onClick={handleOpenTelemetryDocs}
+                      className="text-primary hover:underline"
+                    >
+                      {t("settings.advanced.telemetry.learnMore")}
+                    </button>
+                  </>
+                )}
               </p>
             </div>
             <Switch

@@ -15,13 +15,15 @@ import { useTranslation } from "react-i18next";
 import { getRouteApi, useNavigate } from "@tanstack/react-router";
 import { useUpdateState } from "@/hooks/useUpdateState";
 import type { UpdateState } from "@/main/services/auto-updater";
+import { RELEASES_URL, REPO_URL } from "@/constants/brand";
 
 const routeApi = getRouteApi("/_app/settings/about");
 
-const CHANGELOG_URL = "https://github.com/amicalhq/amical/releases";
-const GITHUB_URL = "https://github.com/amicalhq/amical";
-const DISCORD_URL = "https://amical.ai/community";
-const CONTACT_EMAIL = "contact@amical.ai";
+// Releases and source live on the fork's own repo. There is no community
+// server or support inbox to point at, so those cards are simply not rendered
+// (their i18n keys stay in place for when a brand domain exists — see BRAND).
+const CHANGELOG_URL = RELEASES_URL;
+const GITHUB_URL = REPO_URL;
 
 const UPDATE_STATUS: Record<
   UpdateState,
@@ -234,50 +236,7 @@ export default function AboutSettingsPage() {
                   </div>
                 </div>
               </ExternalLink>
-              <ExternalLink href={DISCORD_URL}>
-                <div className="flex items-center justify-between py-4 group cursor-pointer">
-                  <div>
-                    <div className="flex items-center gap-2 font-semibold text-base group-hover:underline">
-                      {/* Discord icon as image */}
-                      <img
-                        src="icons/integrations/discord.svg"
-                        alt={t("settings.about.resources.discord.alt")}
-                        className="w-5 h-5 inline-block align-middle"
-                      />
-                      {t("settings.about.resources.discord.title")}
-                    </div>
-                    <div className="text-muted-foreground text-xs">
-                      {t("settings.about.resources.discord.description")}
-                    </div>
-                  </div>
-                </div>
-              </ExternalLink>
             </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="space-y-4">
-            <div className="space-y-1">
-              <div className="text-lg font-semibold text-foreground">
-                {t("settings.about.contact.title")}
-              </div>
-              <p className="text-xs text-muted-foreground">
-                {t("settings.about.contact.description")}
-              </p>
-            </div>
-            <ExternalLink href={`mailto:${CONTACT_EMAIL}`}>
-              <div className="flex items-center justify-between group cursor-pointer">
-                <div>
-                  <div className="font-semibold text-base group-hover:underline">
-                    {CONTACT_EMAIL}
-                  </div>
-                  <div className="text-muted-foreground text-xs">
-                    {t("settings.about.contact.emailCta")}
-                  </div>
-                </div>
-              </div>
-            </ExternalLink>
           </CardContent>
         </Card>
       </div>

@@ -5,6 +5,7 @@ import {
   ONBOARDING_WINDOW_TITLE,
   TRY_IT_WINDOW_TITLES,
 } from "../../src/constants/window-titles";
+import { BRAND } from "../../src/constants/brand";
 
 const ctx = (bundleId: string | null, title: string | null) =>
   ({
@@ -14,34 +15,30 @@ const ctx = (bundleId: string | null, title: string | null) =>
     },
   }) as unknown as GetAccessibilityContextResult;
 
-describe("detectApplicationType — Amical's own surfaces", () => {
+describe("detectApplicationType — the app's own surfaces", () => {
   it("treats the onboarding email try-it as an email surface", () => {
     expect(
-      detectApplicationType(
-        ctx("ai.amical.desktop", TRY_IT_WINDOW_TITLES.email),
-      ),
+      detectApplicationType(ctx(BRAND.bundleId, TRY_IT_WINDOW_TITLES.email)),
     ).toBe("email");
   });
 
   it("treats the onboarding notes try-it as a notes surface", () => {
     expect(
-      detectApplicationType(
-        ctx("ai.amical.desktop", TRY_IT_WINDOW_TITLES.notes),
-      ),
+      detectApplicationType(ctx(BRAND.bundleId, TRY_IT_WINDOW_TITLES.notes)),
     ).toBe("notes");
   });
 
   it("treats the rest of the setup wizard as a generic surface", () => {
     expect(
-      detectApplicationType(ctx("ai.amical.desktop", ONBOARDING_WINDOW_TITLE)),
+      detectApplicationType(ctx(BRAND.bundleId, ONBOARDING_WINDOW_TITLE)),
     ).toBe("default");
   });
 
-  it("keeps the in-app notes treatment for Amical's other windows", () => {
-    expect(
-      detectApplicationType(ctx("ai.amical.desktop", "Notes Widget")),
-    ).toBe("amical-notes");
-    expect(detectApplicationType(ctx("ai.amical.desktop", null))).toBe(
+  it("keeps the in-app notes treatment for the app's other windows", () => {
+    expect(detectApplicationType(ctx(BRAND.bundleId, "Notes Widget"))).toBe(
+      "amical-notes",
+    );
+    expect(detectApplicationType(ctx(BRAND.bundleId, null))).toBe(
       "amical-notes",
     );
   });
@@ -56,7 +53,7 @@ describe("detectApplicationType — Amical's own surfaces", () => {
   });
 
   it("recognizes its own app on Windows by process name (helper has no bundle ids)", () => {
-    const exe = "Amical";
+    const exe = BRAND.name;
     expect(detectApplicationType(ctx(exe, TRY_IT_WINDOW_TITLES.email))).toBe(
       "email",
     );

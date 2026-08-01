@@ -4,6 +4,7 @@ import {
   ONBOARDING_WINDOW_TITLE,
   TRY_IT_WINDOW_TITLES,
 } from "../../../constants/window-titles";
+import { BRAND } from "../../../constants/brand";
 
 // Kept in sync with Axis backend repo (~/exa9/axis), packages/prompts/src/formatting.ts.
 // Note: Prompts are intentionally treated as "code" and should be updated with care.
@@ -303,7 +304,7 @@ const BUNDLE_TO_TYPE: Record<string, AppType> = {
   "com.readdle.smartemail": "email",
   "com.google.Gmail": "email",
   "com.superhuman.electron": "email",
-  "MailClient": "email", // eM Client (Windows) — Windows bundleIdentifier is the process name
+  MailClient: "email", // eM Client (Windows) — Windows bundleIdentifier is the process name
   "com.tinyspeck.slackmacgap": "chat",
   "com.microsoft.teams": "chat",
   "com.facebook.archon": "chat", // Messenger
@@ -372,18 +373,16 @@ export function detectApplicationType(
 
   const bundleId = accessibilityContext.context.application.bundleIdentifier;
 
-  // Amical's own app: align to Axis prompt format but preserve appType value.
+  // Our own app: align to Axis prompt format but preserve the appType value.
   // The onboarding try-it sheets emulate an email and a notes app — their
   // window titles (constants we control end-to-end) declare which, so the
   // demo formats like the surface it depicts instead of as Markdown notes.
   // The rest of the setup wizard is a generic surface. On Windows the helper
   // reports the process name (no path, no .exe) instead of a bundle id, so our
-  // own app is "Amical"; dev runs are "electron" and fall through to "default".
+  // own app is "Esper"; dev runs are "electron" and fall through to "default".
   const isOwnApp =
-    bundleId === "jp.btcpay.esper" ||
-    bundleId === "ai.amical.desktop" ||
-    bundleId.toLowerCase() === "amical" ||
-    bundleId.toLowerCase() === "esper";
+    bundleId === BRAND.bundleId ||
+    bundleId.toLowerCase() === BRAND.name.toLowerCase();
   if (isOwnApp) {
     const title = accessibilityContext.context?.windowInfo?.title ?? "";
     if (title === TRY_IT_WINDOW_TITLES.email) return "email";

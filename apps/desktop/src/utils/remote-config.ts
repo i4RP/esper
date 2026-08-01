@@ -9,8 +9,7 @@ import {
   APP_NAV_ITEMS,
   SETTINGS_NAV_ITEMS,
 } from "@/renderer/main/lib/settings-navigation";
-
-const ALLOWED_CTA_DOMAIN = "amical.ai";
+import { isBrandHost } from "@/constants/brand";
 
 // Internal app routes an `open_route` CTA may target — derived from the nav tree
 // so it stays in sync as routes are added/removed. Config is untrusted, so an
@@ -74,7 +73,7 @@ export type ResolvedSurfaceIcon =
   | { kind: "url"; url: string }
   | { kind: "name"; name: RemoteConfigIconName };
 
-// Decides what the icon tile renders. A valid `iconUrl` (https + amical.ai) wins;
+// Decides what the icon tile renders. A valid `iconUrl` (https + brand domain) wins;
 // otherwise the named lucide icon; otherwise the tone's default glyph. Config is
 // untrusted, so a non-allowlisted iconUrl is ignored (never inlined); the named
 // icon is passed through and the renderer falls back to the tone default if it
@@ -94,15 +93,16 @@ export function resolveSurfaceIcon(
   return { kind: "name", name: TONE_DEFAULT_ICON[tone] };
 }
 
+// Only https URLs on the brand's own domain are honoured. With no domain
+// configured (see BRAND.domain) this rejects everything, so a remote payload
+// can never steer the shell at a third-party host.
 export function isSafeRemoteConfigUrl(rawUrl: string): boolean {
   try {
     const url = new URL(rawUrl);
-    const hostname = url.hostname.toLowerCase();
 
     return (
       url.protocol === "https:" &&
-      (hostname === ALLOWED_CTA_DOMAIN ||
-        hostname.endsWith(`.${ALLOWED_CTA_DOMAIN}`)) &&
+      isBrandHost(url.hostname) &&
       !url.username &&
       !url.password
     );

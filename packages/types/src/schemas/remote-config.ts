@@ -37,7 +37,8 @@ export const RemoteConfigContentSchema = z.object({
   title: z.string().optional(),
   // `icon` names any lucide glyph (kebab-case); `iconUrl` is a remote image
   // rendered as an <img> (never inlined). `iconUrl` wins when both are present.
-  // Client also enforces the https + amical.ai allowlist on the URL fields below.
+  // Client also enforces an https + brand-domain allowlist on the URL fields
+  // below (see BRAND.domain / isBrandHost in the desktop app).
   icon: z.string().optional(),
   iconUrl: z.string().url().optional(),
   backgroundImageUrl: z.string().url().optional(),

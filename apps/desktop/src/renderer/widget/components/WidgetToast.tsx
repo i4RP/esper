@@ -82,10 +82,10 @@ export const WidgetToast: React.FC<WidgetToastProps> = ({
               size="sm"
               onClick={() => onActionClick(secondaryAction)}
             >
-              {secondaryAction.icon === "discord" && (
+              {secondaryAction.icon === "github" && (
                 <img
-                  src="assets/discord-icon.svg"
-                  alt={t("widget.notifications.discordAlt")}
+                  src="icons/integrations/github.svg"
+                  alt="GitHub"
                   className="size-3.5"
                 />
               )}
@@ -99,10 +99,10 @@ export const WidgetToast: React.FC<WidgetToastProps> = ({
               className="flex-1"
               onClick={() => onActionClick(primaryAction)}
             >
-              {primaryAction.icon === "discord" && (
+              {primaryAction.icon === "github" && (
                 <img
-                  src="assets/discord-icon.svg"
-                  alt={t("widget.notifications.discordAlt")}
+                  src="icons/integrations/github.svg"
+                  alt="GitHub"
                   className="size-3.5"
                 />
               )}

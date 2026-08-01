@@ -10,7 +10,7 @@ describe("isInternalUrl", () => {
   });
 
   it("rejects protocol-relative URLs", () => {
-    expect(isInternalUrl("//amical.ai/changelog")).toBe(false);
+    expect(isInternalUrl("//example.com/changelog")).toBe(false);
   });
 });
 

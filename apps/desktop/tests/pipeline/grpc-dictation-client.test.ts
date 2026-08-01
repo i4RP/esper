@@ -147,7 +147,7 @@ const encodeRichStatus = (
     .uint32(10)
     .string(reason)
     .uint32(18)
-    .string("dictation.amical.ai")
+    .string("dictation.esper")
     .finish();
   const localized = Writer.create()
     .uint32(10)

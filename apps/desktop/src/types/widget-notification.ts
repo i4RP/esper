@@ -1,4 +1,5 @@
 import { ErrorCodes, type ErrorCode } from "./error";
+import { SUPPORT_URL } from "../constants/brand";
 
 export type WidgetNotificationType =
   | "no_audio"
@@ -7,7 +8,7 @@ export type WidgetNotificationType =
   | "recording_duration_warning"
   | "recording_auto_stopped";
 
-export type WidgetNotificationActionIcon = "discord";
+export type WidgetNotificationActionIcon = "github";
 
 export type I18nText = {
   key: string;
@@ -103,9 +104,9 @@ export const buildNotificationDescription = (
   return { ...fallback, params: { ...fallback.params, ...data.params } };
 };
 
-// Discord support server URL (same as sidebar Community link)
-export const DISCORD_SUPPORT_URL = "https://amical.ai/community";
-export const APP_PLAN_URL = "https://app.amical.ai/plan";
+// Where "get support" sends the user. The fork has no community server or
+// billing portal, so failures go to the repo's issue tracker (see BRAND).
+export { SUPPORT_URL };
 
 // Config keyed by error code. USER_DISMISSED is intentionally excluded — it's a
 // control signal (the user dismissed the dictation), never a user-facing notification.
@@ -125,8 +126,8 @@ export const ERROR_CODE_CONFIG: Record<
     },
     secondaryAction: {
       label: { key: "widget.notifications.action.support" },
-      icon: "discord",
-      externalUrl: DISCORD_SUPPORT_URL,
+      icon: "github",
+      externalUrl: SUPPORT_URL,
     },
   },
   [ErrorCodes.RATE_LIMIT_EXCEEDED]: {
@@ -141,8 +142,8 @@ export const ERROR_CODE_CONFIG: Record<
     },
     secondaryAction: {
       label: { key: "widget.notifications.action.support" },
-      icon: "discord",
-      externalUrl: DISCORD_SUPPORT_URL,
+      icon: "github",
+      externalUrl: SUPPORT_URL,
     },
   },
   [ErrorCodes.QUOTA_EXCEEDED]: {
@@ -151,14 +152,11 @@ export const ERROR_CODE_CONFIG: Record<
       key: "widget.notifications.errorCode.quotaExceeded.description",
     },
     subDescription: { key: "widget.notifications.recordingSaved" },
+    // No billing portal to upgrade at, so support is the only action left.
     primaryAction: {
-      label: { key: "widget.notifications.action.upgradePlan" },
-      externalUrl: APP_PLAN_URL,
-    },
-    secondaryAction: {
       label: { key: "widget.notifications.action.support" },
-      icon: "discord",
-      externalUrl: DISCORD_SUPPORT_URL,
+      icon: "github",
+      externalUrl: SUPPORT_URL,
     },
   },
   [ErrorCodes.INTERNAL_SERVER_ERROR]: {
@@ -169,8 +167,8 @@ export const ERROR_CODE_CONFIG: Record<
     subDescription: { key: "widget.notifications.recordingSaved" },
     primaryAction: {
       label: { key: "widget.notifications.action.support" },
-      icon: "discord",
-      externalUrl: DISCORD_SUPPORT_URL,
+      icon: "github",
+      externalUrl: SUPPORT_URL,
     },
     secondaryAction: {
       label: { key: "widget.notifications.action.viewHistory" },
@@ -189,8 +187,8 @@ export const ERROR_CODE_CONFIG: Record<
     },
     secondaryAction: {
       label: { key: "widget.notifications.action.support" },
-      icon: "discord",
-      externalUrl: DISCORD_SUPPORT_URL,
+      icon: "github",
+      externalUrl: SUPPORT_URL,
     },
   },
   [ErrorCodes.UNKNOWN]: {
@@ -203,8 +201,8 @@ export const ERROR_CODE_CONFIG: Record<
     },
     secondaryAction: {
       label: { key: "widget.notifications.action.support" },
-      icon: "discord",
-      externalUrl: DISCORD_SUPPORT_URL,
+      icon: "github",
+      externalUrl: SUPPORT_URL,
     },
   },
   [ErrorCodes.NETWORK_ERROR]: {
@@ -219,8 +217,8 @@ export const ERROR_CODE_CONFIG: Record<
     },
     secondaryAction: {
       label: { key: "widget.notifications.action.support" },
-      icon: "discord",
-      externalUrl: DISCORD_SUPPORT_URL,
+      icon: "github",
+      externalUrl: SUPPORT_URL,
     },
   },
   [ErrorCodes.MODEL_MISSING]: {
@@ -234,8 +232,8 @@ export const ERROR_CODE_CONFIG: Record<
     },
     secondaryAction: {
       label: { key: "widget.notifications.action.support" },
-      icon: "discord",
-      externalUrl: DISCORD_SUPPORT_URL,
+      icon: "github",
+      externalUrl: SUPPORT_URL,
     },
   },
   [ErrorCodes.WORKER_INITIALIZATION_FAILED]: {
@@ -248,8 +246,8 @@ export const ERROR_CODE_CONFIG: Record<
     subDescription: { key: "widget.notifications.recordingSaved" },
     primaryAction: {
       label: { key: "widget.notifications.action.support" },
-      icon: "discord",
-      externalUrl: DISCORD_SUPPORT_URL,
+      icon: "github",
+      externalUrl: SUPPORT_URL,
     },
   },
   [ErrorCodes.WORKER_CRASHED]: {
@@ -260,8 +258,8 @@ export const ERROR_CODE_CONFIG: Record<
     subDescription: { key: "widget.notifications.recordingSaved" },
     primaryAction: {
       label: { key: "widget.notifications.action.support" },
-      icon: "discord",
-      externalUrl: DISCORD_SUPPORT_URL,
+      icon: "github",
+      externalUrl: SUPPORT_URL,
     },
   },
   [ErrorCodes.LOCAL_TRANSCRIPTION_FAILED]: {
@@ -278,8 +276,8 @@ export const ERROR_CODE_CONFIG: Record<
     },
     secondaryAction: {
       label: { key: "widget.notifications.action.support" },
-      icon: "discord",
-      externalUrl: DISCORD_SUPPORT_URL,
+      icon: "github",
+      externalUrl: SUPPORT_URL,
     },
   },
   [ErrorCodes.LOCAL_TRANSCRIPTION_UNSUPPORTED]: {
@@ -296,8 +294,8 @@ export const ERROR_CODE_CONFIG: Record<
     },
     secondaryAction: {
       label: { key: "widget.notifications.action.support" },
-      icon: "discord",
-      externalUrl: DISCORD_SUPPORT_URL,
+      icon: "github",
+      externalUrl: SUPPORT_URL,
     },
   },
 };
@@ -315,8 +313,8 @@ export const WIDGET_NOTIFICATION_CONFIG: Record<
     },
     secondaryAction: {
       label: { key: "widget.notifications.action.support" },
-      icon: "discord",
-      externalUrl: DISCORD_SUPPORT_URL,
+      icon: "github",
+      externalUrl: SUPPORT_URL,
     },
   },
   empty_transcript: {
@@ -331,8 +329,8 @@ export const WIDGET_NOTIFICATION_CONFIG: Record<
     },
     secondaryAction: {
       label: { key: "widget.notifications.action.support" },
-      icon: "discord",
-      externalUrl: DISCORD_SUPPORT_URL,
+      icon: "github",
+      externalUrl: SUPPORT_URL,
     },
   },
   recording_duration_warning: {

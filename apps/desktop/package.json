@@ -9,9 +9,9 @@
     "url": "https://github.com/i4RP/esper"
   },
   "author": {
-    "name": "Amical",
-    "email": "contact@amical.ai",
-    "url": "https://amical.ai"
+    "name": "BITCOINPAY K.K.",
+    "email": "sugita@btcpay.jp",
+    "url": "https://github.com/i4RP/esper"
   },
   "scripts": {
     "start": "pnpm build:deps && electron-forge start",

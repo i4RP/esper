@@ -14,6 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { brandDocsUrl } from "@/constants/brand";
 import { api } from "@/trpc/react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
@@ -72,10 +73,15 @@ export function ShortcutsSettingsPage() {
       dictationKeyBehavior: value as DictationKeyBehavior,
     });
   };
+  // Null while no brand domain is configured — the "learn more" link is hidden
+  // rather than pointed at someone else's docs site.
+  const injectedKeysDocsUrl = brandDocsUrl(
+    "custom-hotkeys#allow-injected-keystrokes-windows",
+  );
   const handleOpenInjectedKeysDocs = () => {
-    window.electronAPI.openExternal(
-      "https://amical.ai/docs/custom-hotkeys#allow-injected-keystrokes-windows",
-    );
+    if (injectedKeysDocsUrl) {
+      window.electronAPI.openExternal(injectedKeysDocsUrl);
+    }
   };
 
   const setShortcutMutation = api.settings.setShortcut.useMutation({
@@ -323,14 +329,19 @@ export function ShortcutsSettingsPage() {
                 <Info />
                 <AlertDescription>
                   <p>
-                    {t("settings.shortcuts.allowInjectedKeys.callout")}{" "}
-                    <button
-                      type="button"
-                      onClick={handleOpenInjectedKeysDocs}
-                      className="text-primary hover:underline"
-                    >
-                      {t("settings.shortcuts.allowInjectedKeys.learnMore")}
-                    </button>
+                    {t("settings.shortcuts.allowInjectedKeys.callout")}
+                    {injectedKeysDocsUrl && (
+                      <>
+                        {" "}
+                        <button
+                          type="button"
+                          onClick={handleOpenInjectedKeysDocs}
+                          className="text-primary hover:underline"
+                        >
+                          {t("settings.shortcuts.allowInjectedKeys.learnMore")}
+                        </button>
+                      </>
+                    )}
                   </p>
                 </AlertDescription>
               </Alert>

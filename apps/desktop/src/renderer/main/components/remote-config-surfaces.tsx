@@ -32,6 +32,7 @@ import {
   readDismissedUntil,
   recordDismissal,
 } from "@/utils/remote-config-dismissals";
+import { WEB_APP_HOST } from "@/constants/brand";
 
 // Resolve a kebab-case lucide name (any of the ~1700 icons) to its component;
 // undefined if the name isn't a real icon. Custom art comes through `iconUrl`
@@ -112,15 +113,11 @@ function useDismissals() {
 
 const EMPTY_REMOTE_CONFIG: RemoteConfig = { version: 1, surfaces: [] };
 
-// Server-controlled config from amical-core (the main-process RemoteConfigService).
+// Server-controlled config from the backend (the main-process RemoteConfigService).
 function useRemoteConfig(): RemoteConfig {
   const live = api.remoteConfig.get.useQuery();
   return live.data ?? EMPTY_REMOTE_CONFIG;
 }
-
-// Host of the web app — CTAs pointing here are opened via the signed-in session
-// handoff so the user lands authenticated instead of on a login wall.
-const WEB_APP_HOST = "app.amical.ai";
 
 // Runs a CTA's navigation/external action. `dismiss` is handled by the caller
 // (it needs the surface id), so it is a no-op here.
@@ -150,7 +147,7 @@ function useRemoteConfigCtaHandler() {
           return;
         }
 
-        // The URL passed isSafeRemoteConfigUrl, so it parses (https, amical.ai).
+        // The URL passed isSafeRemoteConfigUrl, so it parses (https, brand host).
         const target = new URL(cta.url);
 
         // For the web app, hand off the desktop session so the user arrives
@@ -319,7 +316,7 @@ function SurfaceCta({
   );
 }
 
-// Optional banner background image: only an allowlisted https amical.ai URL is
+// Optional banner background image: only an allowlisted https brand URL is
 // honoured, rendered as an <img> behind a card-tinted scrim that keeps the copy
 // legible.
 function SurfaceBackdrop({ url }: { url?: string }) {

@@ -2,7 +2,10 @@ import type { Metadata } from "@grpc/grpc-js";
 import { Root, type Type } from "protobufjs";
 
 const GRPC_STATUS_DETAILS_HEADER = "grpc-status-details-bin";
-const DICTATION_ERROR_DOMAIN = "dictation.amical.ai";
+// Error domain the dictation backend stamps on google.rpc.ErrorInfo details.
+// A protocol constant, not a hostname — it only has to match whatever the
+// Esper-branded backend sends once one exists.
+const DICTATION_ERROR_DOMAIN = "dictation.esper";
 
 const root = Root.fromJSON({
   nested: {
