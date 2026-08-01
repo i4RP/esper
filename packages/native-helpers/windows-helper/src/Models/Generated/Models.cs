@@ -293,6 +293,10 @@ namespace WindowsHelper.Models
 
         [JsonPropertyName("muteSystemAudio")]
         public bool MuteSystemAudio { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonPropertyName("sound")]
+        public string Sound { get; set; }
     }
 
     public partial class StartRecordingResult
@@ -310,6 +314,10 @@ namespace WindowsHelper.Models
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("muteSounds")]
         public bool? MuteSounds { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonPropertyName("sound")]
+        public string Sound { get; set; }
 
         [JsonPropertyName("wasMuted")]
         public bool WasMuted { get; set; }
@@ -594,8 +602,9 @@ namespace WindowsHelper.Models
         /// <summary>
         /// Raw key code, e.g., from CGEvent
         /// </summary>
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("keyCode")]
-        public long KeyCode { get; set; }
+        public long? KeyCode { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("metaKey")]
@@ -604,6 +613,13 @@ namespace WindowsHelper.Models
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("shiftKey")]
         public bool? ShiftKey { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        [JsonPropertyName("capsLockOn")]
+        public bool? CapsLockOn { get; set; }
+
+        [JsonPropertyName("clamshellClosed")]
+        public bool? ClamshellClosed { get; set; }
     }
 
     public enum Method { GetAccessibilityContext, GetAccessibilityStatus, GetAccessibilityTreeDetails, GetSelectedTextViaCopy, PasteText, RecheckPressedKeys, RequestAccessibilityPermission, SetAllowInjectedKeys, SetDraftEnterCapture, SetShortcuts, StartRecording, StopRecording };
@@ -618,7 +634,7 @@ namespace WindowsHelper.Models
 
     public enum FlagsChangedEventType { FlagsChanged };
 
-    public enum HelperEventType { ActiveDisplayChanged, FlagsChanged, KeyDown, KeyUp };
+    public enum HelperEventType { ActiveDisplayChanged, CapsLockStateChanged, FlagsChanged, KeyDown, KeyUp };
 
     public partial class RpcRequest
     {
@@ -1089,6 +1105,8 @@ namespace WindowsHelper.Models
             {
                 case "activeDisplayChanged":
                     return HelperEventType.ActiveDisplayChanged;
+                case "capsLockStateChanged":
+                    return HelperEventType.CapsLockStateChanged;
                 case "flagsChanged":
                     return HelperEventType.FlagsChanged;
                 case "keyDown":
@@ -1105,6 +1123,9 @@ namespace WindowsHelper.Models
             {
                 case HelperEventType.ActiveDisplayChanged:
                     JsonSerializer.Serialize(writer, "activeDisplayChanged", options);
+                    return;
+                case HelperEventType.CapsLockStateChanged:
+                    JsonSerializer.Serialize(writer, "capsLockStateChanged", options);
                     return;
                 case HelperEventType.FlagsChanged:
                     JsonSerializer.Serialize(writer, "flagsChanged", options);
