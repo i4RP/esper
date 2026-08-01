@@ -18,6 +18,7 @@ import { RemoteConfigService } from "../../services/remote-config-service";
 import { HistoryCleanupService } from "../../services/history-cleanup-service";
 import { SleepGuardService } from "../../services/sleep-guard-service";
 import { ClipboardHistoryService } from "../../services/clipboard-history-service";
+import { AgentService } from "../../services/agent/agent-service";
 import { setApplicationLocale } from "../../i18n/application-locale";
 
 /**
@@ -41,6 +42,7 @@ export interface ServiceMap {
   onboardingService: OnboardingService;
   sleepGuardService: SleepGuardService;
   clipboardHistoryService: ClipboardHistoryService;
+  agentService: AgentService;
 }
 
 /**
@@ -63,6 +65,7 @@ export class ServiceManager {
   private historyCleanupService: HistoryCleanupService | null = null;
   private sleepGuardService: SleepGuardService | null = null;
   private clipboardHistoryService: ClipboardHistoryService | null = null;
+  private agentService: AgentService | null = null;
 
   private nativeBridge: NativeBridge | null = null;
   private autoUpdaterService: AutoUpdaterService | null = null;
@@ -88,6 +91,7 @@ export class ServiceManager {
     await this.initializeModelServices();
     await this.initializeOnboardingService();
     this.initializePlatformServices();
+    this.initializeAgentService();
     await this.initializeVADService();
     await this.initializeAIServices();
     this.initializeRecordingManager();
@@ -259,6 +263,13 @@ export class ServiceManager {
     }
   }
 
+  private initializeAgentService(): void {
+    // AgentService takes an injected logger so it stays free of Electron and
+    // can move into a standalone daemon process later.
+    this.agentService = new AgentService(logger.main);
+    logger.main.info("Agent service initialized");
+  }
+
   private initializeRecordingManager(): void {
     this.recordingManager = new RecordingManager(this);
     logger.main.info("Recording manager initialized");
@@ -324,12 +335,20 @@ export class ServiceManager {
       onboardingService: this.onboardingService!,
       sleepGuardService: this.sleepGuardService!,
       clipboardHistoryService: this.clipboardHistoryService!,
+      agentService: this.agentService!,
     };
 
     return services[serviceName];
   }
 
   async cleanup(): Promise<void> {
+    if (this.agentService) {
+      // Each live session owns a Claude Code child process; without this they
+      // outlive the app and keep running against the user's account.
+      logger.main.info("Closing agent sessions...");
+      this.agentService.shutdown();
+    }
+
     if (this.clipboardHistoryService) {
       this.clipboardHistoryService.cleanup();
     }

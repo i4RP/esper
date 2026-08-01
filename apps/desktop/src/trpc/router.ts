@@ -14,6 +14,7 @@ import { featureFlagsRouter } from "./routers/feature-flags";
 import { remoteConfigRouter } from "./routers/remote-config";
 import { telemetryRouter } from "./routers/telemetry";
 import { skillsRouter } from "./routers/skills";
+import { agentRouter } from "./routers/agent";
 import { createRouter, procedure } from "./trpc";
 
 export const router = createRouter({
@@ -85,6 +86,7 @@ export const router = createRouter({
 
   // Personalization skills (per-app dictation formatting rules)
   skills: skillsRouter,
+  agent: agentRouter,
 });
 
 export type AppRouter = typeof router;
