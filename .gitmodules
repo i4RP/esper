@@ -1,3 +1,7 @@
 [submodule "packages/whisper-wrapper/whisper.cpp"]
 	path = packages/whisper-wrapper/whisper.cpp
-	url = https://github.com/ggerganov/whisper.cpp.git
+	# Fork of ggml-org/whisper.cpp. We carry a patch on top of v1.8.2 (branch
+	# esper-v1.8.2) that reads no_speech_prob from the SOT position; pointing
+	# this at upstream would silently drop it on a fresh clone.
+	url = https://github.com/i4RP/whisper.cpp.git
+	branch = esper-v1.8.2
