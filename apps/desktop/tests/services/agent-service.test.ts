@@ -1,36 +1,13 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type {
-  CanUseTool,
-  PermissionResult,
-  SDKMessage,
-} from "@anthropic-ai/claude-agent-sdk";
-
-const queryMock = vi.fn();
-// Default to "installed" so the suite doesn't depend on whether the machine
-// running it happens to have Claude Code.
-const resolveExecutableMock = vi.fn<() => string | null>(
-  () => "/opt/test/claude",
-);
-
-vi.mock("@anthropic-ai/claude-agent-sdk", () => ({
-  query: (params: unknown) => queryMock(params),
-}));
-
-vi.mock(
-  "../../src/services/agent/resolve-executable",
-  async (importOriginal) => {
-    const actual =
-      await importOriginal<
-        typeof import("../../src/services/agent/resolve-executable")
-      >();
-    return {
-      ...actual,
-      resolveClaudeExecutable: () => resolveExecutableMock(),
-    };
-  },
-);
-
 import { AgentService } from "../../src/services/agent/agent-service";
+import { NO_CAPABILITIES } from "../../src/services/agent/provider";
+import type {
+  AgentProviderClient,
+  CreateProviderSessionInput,
+  ProviderAvailability,
+  ProviderEvent,
+  ProviderSession,
+} from "../../src/services/agent/provider";
 import type {
   AgentPermissionRequest,
   AgentSessionSummary,
@@ -43,212 +20,258 @@ const silentLogger = {
   debug: vi.fn(),
 };
 
-/**
- * Stand-in for the SDK's Query: an async generator we can feed messages into
- * from the test, plus the control methods the service calls.
- */
-class FakeQuery {
-  readonly interrupt = vi.fn(async () => undefined);
-  readonly setPermissionMode = vi.fn(async () => undefined);
-  readonly setModel = vi.fn(async () => undefined);
-  readonly close = vi.fn();
+/** A provider under the test's control — no SDK, no child process. */
+class FakeSession implements ProviderSession {
+  readonly listeners = new Set<(event: ProviderEvent) => void>();
+  readonly sent: string[] = [];
+  readonly closed = vi.fn();
+  readonly interrupted = vi.fn();
+  readonly permissionAnswers: Array<{ requestId: string; allow: boolean }> = [];
+  model: string | undefined;
 
-  private readonly pending: SDKMessage[] = [];
-  private waiting: ((value: IteratorResult<SDKMessage>) => void) | null = null;
-  private failure: Error | null = null;
-  private ended = false;
+  constructor(public nativeSessionId: string | null) {}
 
-  emit(message: SDKMessage): void {
-    const waiting = this.waiting;
-    if (waiting) {
-      this.waiting = null;
-      waiting({ value: message, done: false });
-      return;
-    }
-    this.pending.push(message);
+  send(text: string): void {
+    this.sent.push(text);
   }
 
-  fail(error: Error): void {
-    this.failure = error;
-    this.end();
+  subscribe(listener: (event: ProviderEvent) => void): () => void {
+    this.listeners.add(listener);
+    return () => this.listeners.delete(listener);
   }
 
-  end(): void {
-    this.ended = true;
-    const waiting = this.waiting;
-    if (waiting) {
-      this.waiting = null;
-      waiting({ value: undefined as never, done: true });
-    }
+  async interrupt(): Promise<void> {
+    this.interrupted();
+    this.emit({ type: "state", state: "idle" });
   }
 
-  async *[Symbol.asyncIterator](): AsyncGenerator<SDKMessage, void> {
-    while (true) {
-      const buffered = this.pending.shift();
-      if (buffered) {
-        yield buffered;
-        continue;
-      }
-      if (this.ended) {
-        if (this.failure) throw this.failure;
-        return;
-      }
-      const next = await new Promise<IteratorResult<SDKMessage>>((resolve) => {
-        this.waiting = resolve;
-      });
-      if (next.done) {
-        if (this.failure) throw this.failure;
-        return;
-      }
-      yield next.value;
+  async setModel(model: string | undefined): Promise<void> {
+    this.model = model;
+  }
+
+  respondToPermission(requestId: string, decision: { allow: boolean }): void {
+    this.permissionAnswers.push({ requestId, allow: decision.allow });
+    this.emit({ type: "permission-resolved", requestId });
+  }
+
+  close(): void {
+    this.closed();
+  }
+
+  emit(event: ProviderEvent): void {
+    for (const listener of this.listeners) {
+      listener(event);
     }
   }
 }
 
-/** Lets a test wait for the service's async pump to process emitted messages. */
-const flush = () => new Promise((resolve) => setTimeout(resolve, 0));
+class FakeProvider implements AgentProviderClient {
+  readonly capabilities = {
+    ...NO_CAPABILITIES,
+    interrupt: true,
+    selectModel: true,
+  };
+  lastSession: FakeSession | null = null;
+  availability: ProviderAvailability = {
+    available: true,
+    path: "/opt/test/agent",
+    reason: null,
+  };
+  lastInput: CreateProviderSessionInput | null = null;
 
-const assistantWithText = (text: string): SDKMessage =>
-  ({
-    type: "assistant",
-    message: { role: "assistant", content: [{ type: "text", text }] },
-    parent_tool_use_id: null,
-  }) as unknown as SDKMessage;
+  constructor(
+    readonly id: string,
+    readonly label: string,
+  ) {}
 
-const successResult = (): SDKMessage =>
-  ({
-    type: "result",
-    subtype: "success",
-    is_error: false,
-    duration_ms: 10,
-    total_cost_usd: 0.01,
-    result: "ok",
-  }) as unknown as SDKMessage;
+  checkAvailability(): ProviderAvailability {
+    return this.availability;
+  }
+
+  async createSession(
+    input: CreateProviderSessionInput,
+  ): Promise<ProviderSession> {
+    this.lastInput = input;
+    this.lastSession = new FakeSession(`native-${this.id}`);
+    return this.lastSession;
+  }
+}
+
+const entry = (text: string) =>
+  ({ kind: "assistant", id: "e1", at: 1, text }) as const;
 
 describe("AgentService", () => {
   let service: AgentService;
-  let fake: FakeQuery;
-  let canUseTool: CanUseTool;
+  let provider: FakeProvider;
 
   beforeEach(() => {
     vi.clearAllMocks();
-    resolveExecutableMock.mockReturnValue("/opt/test/claude");
-    fake = new FakeQuery();
-    queryMock.mockImplementation(
-      (params: { options?: { canUseTool?: CanUseTool } }) => {
-        if (params.options?.canUseTool) {
-          canUseTool = params.options.canUseTool;
-        }
-        return fake;
-      },
-    );
     service = new AgentService(silentLogger);
+    provider = new FakeProvider("fake", "Fake Agent");
+    service.register(provider);
   });
 
-  describe("session lifecycle", () => {
-    it("creates a session and lists it", () => {
-      const summary = service.createSession({ cwd: "/tmp/project" });
-
-      expect(summary.cwd).toBe("/tmp/project");
-      expect(summary.state).toBe("starting");
-      expect(summary.title).toBeNull();
-      expect(service.listSessions()).toHaveLength(1);
-      expect(service.getSession(summary.id)).toMatchObject({ id: summary.id });
+  describe("providers", () => {
+    it("lists registered providers with availability and capabilities", () => {
+      expect(service.listProviders()).toEqual([
+        {
+          id: "fake",
+          label: "Fake Agent",
+          available: true,
+          reason: null,
+          capabilities: provider.capabilities,
+        },
+      ]);
     });
 
-    // The id the service hands out must be the id the SDK persists the
-    // transcript under, or resume can never find the session again.
-    it("passes its own session id and cwd through to the SDK", () => {
-      const summary = service.createSession({ cwd: "/tmp/project" });
-
-      expect(queryMock).toHaveBeenCalledTimes(1);
-      const options = queryMock.mock.calls[0][0].options;
-      expect(options.sessionId).toBe(summary.id);
-      expect(options.cwd).toBe("/tmp/project");
-      expect(options.permissionMode).toBe("default");
-    });
-
-    it("forwards resume and fork when resuming", () => {
-      service.createSession({
-        cwd: "/tmp/p",
-        resume: "prev-session",
-        fork: true,
-      });
-
-      const options = queryMock.mock.calls[0][0].options;
-      expect(options.resume).toBe("prev-session");
-      expect(options.forkSession).toBe(true);
-    });
-
-    it("titles the session from the first turn only", () => {
-      const { id } = service.createSession({ cwd: "/tmp/p" });
-
-      service.sendMessage(id, "add a health endpoint");
-      expect(service.getSession(id)?.title).toBe("add a health endpoint");
-
-      service.sendMessage(id, "now add tests");
-      expect(service.getSession(id)?.title).toBe("add a health endpoint");
-    });
-
-    // Without an absolute path the SDK falls back to PATH, which a packaged
-    // macOS app doesn't inherit — so the resolved path must reach the SDK.
-    it("hands the SDK an absolute path to the executable", () => {
-      service.createSession({ cwd: "/tmp/p" });
-
-      expect(
-        queryMock.mock.calls[0][0].options.pathToClaudeCodeExecutable,
-      ).toBe("/opt/test/claude");
-    });
-
-    it("reports availability from the resolver", () => {
+    it("reports overall availability from its providers", () => {
       expect(service.isAvailable()).toBe(true);
 
-      resolveExecutableMock.mockReturnValue(null);
+      provider.availability = {
+        available: false,
+        path: null,
+        reason: "not installed",
+      };
       expect(service.isAvailable()).toBe(false);
     });
 
-    it("refuses to start a session when Claude Code isn't installed", () => {
-      resolveExecutableMock.mockReturnValue(null);
-
-      expect(() => service.createSession({ cwd: "/tmp/p" })).toThrow(
-        /Claude Code was not found/,
-      );
-      expect(queryMock).not.toHaveBeenCalled();
-      expect(service.listSessions()).toHaveLength(0);
+    // With one agent installed, making the caller name it is friction; the
+    // convenience must not extend to the ambiguous case below.
+    it("defaults to the only available provider", async () => {
+      const summary = await service.createSession({ cwd: "/tmp/p" });
+      expect(summary.providerId).toBe("fake");
     });
 
-    it("throws on operations against an unknown session", () => {
-      expect(() => service.sendMessage("nope", "hi")).toThrow(
+    it("requires an explicit choice when several are available", async () => {
+      service.register(new FakeProvider("other", "Other Agent"));
+
+      await expect(service.createSession({ cwd: "/tmp/p" })).rejects.toThrow(
+        /specify which to use/,
+      );
+    });
+
+    it("reports when nothing is installed", async () => {
+      provider.availability = {
+        available: false,
+        path: null,
+        reason: "not installed",
+      };
+
+      await expect(service.createSession({ cwd: "/tmp/p" })).rejects.toThrow(
+        /No coding agent is installed/,
+      );
+    });
+
+    it("refuses an unavailable provider named explicitly", async () => {
+      provider.availability = {
+        available: false,
+        path: null,
+        reason: "Fake Agent was not found.",
+      };
+
+      await expect(
+        service.createSession({ providerId: "fake", cwd: "/tmp/p" }),
+      ).rejects.toThrow(/Fake Agent was not found/);
+    });
+
+    it("rejects an unknown provider id", async () => {
+      await expect(
+        service.createSession({ providerId: "nope", cwd: "/tmp/p" }),
+      ).rejects.toThrow(/Unknown agent provider/);
+    });
+  });
+
+  describe("session lifecycle", () => {
+    it("creates a session and lists it", async () => {
+      const summary = await service.createSession({ cwd: "/tmp/project" });
+
+      expect(summary).toMatchObject({
+        cwd: "/tmp/project",
+        state: "starting",
+        title: null,
+        providerId: "fake",
+      });
+      expect(service.listSessions()).toHaveLength(1);
+    });
+
+    // resume needs the provider's own id, not the one Esper hands out.
+    it("records the provider's native session id", async () => {
+      const summary = await service.createSession({ cwd: "/tmp/p" });
+      expect(summary.nativeSessionId).toBe("native-fake");
+    });
+
+    it("picks up a native id reported later", async () => {
+      const { id } = await service.createSession({ cwd: "/tmp/p" });
+
+      provider.lastSession!.emit({ type: "session-id", sessionId: "acp-42" });
+
+      expect(service.getSession(id)?.nativeSessionId).toBe("acp-42");
+    });
+
+    it("forwards resume and fork to the provider", async () => {
+      await service.createSession({
+        cwd: "/tmp/p",
+        resume: "prev",
+        fork: true,
+      });
+
+      expect(provider.lastInput).toMatchObject({ resume: "prev", fork: true });
+    });
+
+    it("titles the session from the first turn only", async () => {
+      const { id } = await service.createSession({ cwd: "/tmp/p" });
+
+      await service.sendMessage(id, "add a health endpoint");
+      expect(service.getSession(id)?.title).toBe("add a health endpoint");
+
+      await service.sendMessage(id, "now add tests");
+      expect(service.getSession(id)?.title).toBe("add a health endpoint");
+    });
+
+    it("throws on operations against an unknown session", async () => {
+      await expect(service.sendMessage("nope", "hi")).rejects.toThrow(
         /Unknown agent session/,
       );
     });
 
-    it("removes the session and closes the SDK query on close", () => {
-      const { id } = service.createSession({ cwd: "/tmp/p" });
+    it("closes the provider session and drops it", async () => {
+      const { id } = await service.createSession({ cwd: "/tmp/p" });
+      const session = provider.lastSession!;
 
       service.closeSession(id);
 
-      expect(fake.close).toHaveBeenCalled();
+      expect(session.closed).toHaveBeenCalled();
       expect(service.listSessions()).toHaveLength(0);
     });
 
-    it("closes every session on shutdown", () => {
-      service.createSession({ cwd: "/tmp/a" });
-      service.createSession({ cwd: "/tmp/b" });
+    it("closes every session on shutdown", async () => {
+      await service.createSession({ cwd: "/tmp/a" });
+      await service.createSession({ providerId: "fake", cwd: "/tmp/b" });
 
       service.shutdown();
 
       expect(service.listSessions()).toHaveLength(0);
     });
+
+    // A closed session must stop mutating state, or a provider that emits on
+    // its way down would resurrect entries for a session the user dismissed.
+    it("stops listening to a closed session", async () => {
+      const { id } = await service.createSession({ cwd: "/tmp/p" });
+      const session = provider.lastSession!;
+
+      service.closeSession(id);
+      session.emit({ type: "entry", entry: entry("late") });
+
+      expect(service.getTimeline(id)).toEqual([]);
+    });
   });
 
   describe("timeline", () => {
-    it("records the user turn and streamed assistant text", async () => {
-      const { id } = service.createSession({ cwd: "/tmp/p" });
-      service.sendMessage(id, "hello");
+    it("records the user turn and provider entries", async () => {
+      const { id } = await service.createSession({ cwd: "/tmp/p" });
 
-      fake.emit(assistantWithText("hi there"));
-      await flush();
+      await service.sendMessage(id, "hello");
+      provider.lastSession!.emit({ type: "entry", entry: entry("hi there") });
 
       expect(service.getTimeline(id).map((e) => e.kind)).toEqual([
         "user",
@@ -256,149 +279,152 @@ describe("AgentService", () => {
       ]);
     });
 
-    it("goes back to idle when the turn produces a result", async () => {
-      const { id } = service.createSession({ cwd: "/tmp/p" });
-      service.sendMessage(id, "hello");
-      expect(service.getSession(id)?.state).toBe("running");
+    it("forwards the message text to the provider", async () => {
+      const { id } = await service.createSession({ cwd: "/tmp/p" });
 
-      fake.emit(successResult());
-      await flush();
+      await service.sendMessage(id, "hello");
 
-      expect(service.getSession(id)?.state).toBe("idle");
+      expect(provider.lastSession!.sent).toEqual(["hello"]);
     });
 
     it("emits entries to subscribers as they arrive", async () => {
-      const entries: string[] = [];
-      service.on("session-entry", (event) => entries.push(event.entry.kind));
+      const kinds: string[] = [];
+      service.on("session-entry", (event) => kinds.push(event.entry.kind));
 
-      const { id } = service.createSession({ cwd: "/tmp/p" });
-      service.sendMessage(id, "hello");
-      fake.emit(assistantWithText("hi"));
-      await flush();
+      const { id } = await service.createSession({ cwd: "/tmp/p" });
+      await service.sendMessage(id, "hello");
+      provider.lastSession!.emit({ type: "entry", entry: entry("hi") });
 
-      expect(entries).toEqual(["user", "assistant"]);
+      expect(kinds).toEqual(["user", "assistant"]);
+    });
+
+    it("tracks state reported by the provider", async () => {
+      const { id } = await service.createSession({ cwd: "/tmp/p" });
+
+      await service.sendMessage(id, "hello");
+      expect(service.getSession(id)?.state).toBe("running");
+
+      provider.lastSession!.emit({ type: "state", state: "idle" });
+      expect(service.getSession(id)?.state).toBe("idle");
+    });
+
+    it("records provider errors", async () => {
+      const { id } = await service.createSession({ cwd: "/tmp/p" });
+
+      provider.lastSession!.emit({ type: "error", message: "process died" });
+
+      expect(service.getSession(id)).toMatchObject({
+        state: "error",
+        error: "process died",
+      });
     });
   });
 
   describe("tool permissions", () => {
-    it("parks the tool call and reports the request", async () => {
-      const { id } = service.createSession({ cwd: "/tmp/p" });
+    const request = (session: FakeSession, requestId = "req-1") =>
+      session.emit({
+        type: "permission",
+        requestId,
+        toolName: "Bash",
+        input: { command: "ls" },
+      });
+
+    it("surfaces the request and parks the session", async () => {
       const requests: AgentPermissionRequest[] = [];
       service.on("permission-requested", (r) => requests.push(r));
 
-      let settled = false;
-      const decision = canUseTool("Bash", { command: "rm -rf /" }, {} as never);
-      void decision.then(() => {
-        settled = true;
-      });
-      await flush();
+      const { id } = await service.createSession({ cwd: "/tmp/p" });
+      request(provider.lastSession!);
 
-      expect(requests).toHaveLength(1);
       expect(requests[0]).toMatchObject({ toolName: "Bash", sessionId: id });
       expect(service.getSession(id)?.state).toBe("awaiting_permission");
-      // Still parked — nothing may run until the user answers.
-      expect(settled).toBe(false);
     });
 
-    it("allows the call when approved", async () => {
-      const { id } = service.createSession({ cwd: "/tmp/p" });
-      let request!: AgentPermissionRequest;
-      service.on("permission-requested", (r) => (request = r));
+    it("routes the decision to the provider session", async () => {
+      const { id } = await service.createSession({ cwd: "/tmp/p" });
+      const session = provider.lastSession!;
+      request(session);
 
-      const decision = canUseTool("Read", { file: "a.ts" }, {} as never);
-      await flush();
-      service.resolvePermission(id, request.id, { allow: true });
+      await service.resolvePermission(id, "req-1", { allow: true });
 
-      expect(await decision).toEqual<PermissionResult>({ behavior: "allow" });
-    });
-
-    it("denies with the reason so the agent can adapt", async () => {
-      const { id } = service.createSession({ cwd: "/tmp/p" });
-      let request!: AgentPermissionRequest;
-      service.on("permission-requested", (r) => (request = r));
-
-      const decision = canUseTool("Bash", {}, {} as never);
-      await flush();
-      service.resolvePermission(id, request.id, {
-        allow: false,
-        reason: "Use the test runner instead.",
-      });
-
-      expect(await decision).toEqual<PermissionResult>({
-        behavior: "deny",
-        message: "Use the test runner instead.",
-      });
+      expect(session.permissionAnswers).toEqual([
+        { requestId: "req-1", allow: true },
+      ]);
+      expect(service.getSession(id)?.state).toBe("running");
     });
 
     // A late answer from a slow UI (or a phone on a flaky link) must not throw.
-    it("ignores decisions for requests that no longer exist", () => {
-      const { id } = service.createSession({ cwd: "/tmp/p" });
-      expect(() =>
-        service.resolvePermission(id, "stale-request", { allow: true }),
-      ).not.toThrow();
+    it("ignores decisions for requests that no longer exist", async () => {
+      const { id } = await service.createSession({ cwd: "/tmp/p" });
+
+      await expect(
+        service.resolvePermission(id, "stale", { allow: true }),
+      ).resolves.toBeUndefined();
+      expect(provider.lastSession!.permissionAnswers).toEqual([]);
     });
 
-    // Without this the SDK child process waits on a promise that can never
-    // settle, and the session leaks for the lifetime of the app.
-    it("denies parked requests when the session is closed", async () => {
-      const { id } = service.createSession({ cwd: "/tmp/p" });
-      const decision = canUseTool("Bash", {}, {} as never);
-      await flush();
+    // Otherwise a provider reporting progress mid-question would clear the
+    // prompt the user is still looking at.
+    it("stays parked while a question is outstanding", async () => {
+      const { id } = await service.createSession({ cwd: "/tmp/p" });
+      const session = provider.lastSession!;
+      request(session);
 
-      service.closeSession(id);
+      session.emit({ type: "state", state: "running" });
 
-      expect(await decision).toMatchObject({ behavior: "deny" });
+      expect(service.getSession(id)?.state).toBe("awaiting_permission");
     });
 
-    it("denies parked requests when the session errors out", async () => {
-      const { id } = service.createSession({ cwd: "/tmp/p" });
-      const decision = canUseTool("Bash", {}, {} as never);
-      await flush();
+    it("stays parked until the last of several questions is answered", async () => {
+      const { id } = await service.createSession({ cwd: "/tmp/p" });
+      const session = provider.lastSession!;
+      request(session, "req-1");
+      request(session, "req-2");
 
-      fake.fail(new Error("claude process exited"));
-      await flush();
+      await service.resolvePermission(id, "req-1", { allow: true });
+      expect(service.getSession(id)?.state).toBe("awaiting_permission");
 
-      expect(await decision).toMatchObject({ behavior: "deny" });
-      expect(service.getSession(id)).toMatchObject({
-        state: "error",
-        error: "claude process exited",
-      });
+      await service.resolvePermission(id, "req-2", { allow: false });
+      expect(service.getSession(id)?.state).toBe("running");
     });
   });
 
   describe("live controls", () => {
-    it("interrupts and settles back to idle", async () => {
-      const { id } = service.createSession({ cwd: "/tmp/p" });
-      service.sendMessage(id, "long task");
+    it("interrupts through the provider", async () => {
+      const { id } = await service.createSession({ cwd: "/tmp/p" });
 
       await service.interrupt(id);
 
-      expect(fake.interrupt).toHaveBeenCalled();
+      expect(provider.lastSession!.interrupted).toHaveBeenCalled();
       expect(service.getSession(id)?.state).toBe("idle");
     });
 
-    it("records the mode and model it applied", async () => {
-      const { id } = service.createSession({ cwd: "/tmp/p" });
+    it("records the model it applied", async () => {
+      const { id } = await service.createSession({ cwd: "/tmp/p" });
 
-      await service.setPermissionMode(id, "plan");
       await service.setModel(id, "claude-opus-5");
 
-      expect(fake.setPermissionMode).toHaveBeenCalledWith("plan");
-      expect(fake.setModel).toHaveBeenCalledWith("claude-opus-5");
-      expect(service.getSession(id)).toMatchObject({
-        permissionMode: "plan",
-        model: "claude-opus-5",
-      });
+      expect(provider.lastSession!.model).toBe("claude-opus-5");
+      expect(service.getSession(id)?.model).toBe("claude-opus-5");
+    });
+
+    // Capabilities differ per provider; asking for one a provider lacks must
+    // fail with a clear message rather than a TypeError on an absent method.
+    it("reports clearly when a provider lacks a control", async () => {
+      const { id } = await service.createSession({ cwd: "/tmp/p" });
+
+      await expect(service.setPermissionMode(id, "plan")).rejects.toThrow(
+        /Fake Agent has no permission modes/,
+      );
     });
 
     it("publishes state changes to subscribers", async () => {
       const states: AgentSessionSummary[] = [];
       service.on("session-updated", (s) => states.push(s));
 
-      const { id } = service.createSession({ cwd: "/tmp/p" });
-      service.sendMessage(id, "hello");
-      fake.emit(successResult());
-      await flush();
+      const { id } = await service.createSession({ cwd: "/tmp/p" });
+      await service.sendMessage(id, "hello");
+      provider.lastSession!.emit({ type: "state", state: "idle" });
 
       expect(states.map((s) => s.state)).toContain("running");
       expect(states.at(-1)?.state).toBe("idle");

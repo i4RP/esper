@@ -15,9 +15,14 @@ const permissionMode = z.enum([
 ]);
 
 export const agentRouter = createRouter({
-  /** False when Claude Code isn't installed — sessions can't be created. */
+  /** False when no agent CLI is installed — sessions can't be created. */
   isAvailable: procedure.query(({ ctx }) =>
     ctx.serviceManager.getService("agentService").isAvailable(),
+  ),
+
+  /** Every supported agent, with whether its CLI is installed on this machine. */
+  listProviders: procedure.query(({ ctx }) =>
+    ctx.serviceManager.getService("agentService").listProviders(),
   ),
 
   listSessions: procedure.query(({ ctx }) =>
@@ -41,6 +46,7 @@ export const agentRouter = createRouter({
   createSession: procedure
     .input(
       z.object({
+        providerId: z.string().optional(),
         cwd: z.string().min(1),
         model: z.string().optional(),
         permissionMode: permissionMode.optional(),
@@ -54,8 +60,8 @@ export const agentRouter = createRouter({
 
   sendMessage: procedure
     .input(z.object({ sessionId: z.string(), text: z.string().min(1) }))
-    .mutation(({ ctx, input }) => {
-      ctx.serviceManager
+    .mutation(async ({ ctx, input }) => {
+      await ctx.serviceManager
         .getService("agentService")
         .sendMessage(input.sessionId, input.text);
       return { ok: true };
@@ -97,8 +103,8 @@ export const agentRouter = createRouter({
         reason: z.string().optional(),
       }),
     )
-    .mutation(({ ctx, input }) => {
-      ctx.serviceManager
+    .mutation(async ({ ctx, input }) => {
+      await ctx.serviceManager
         .getService("agentService")
         .resolvePermission(input.sessionId, input.requestId, {
           allow: input.allow,

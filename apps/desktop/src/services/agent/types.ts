@@ -18,6 +18,13 @@ export type AgentSessionState =
 
 export interface AgentSessionSummary {
   id: string;
+  /** Which agent runs this session, e.g. "claude-code" or "acp:cursor". */
+  providerId: string;
+  /**
+   * The provider's own session id — what `resume` must be given. Null until the
+   * provider reports it (ACP assigns it after `session/new`).
+   */
+  nativeSessionId: string | null;
   /** Working directory the agent operates in. */
   cwd: string;
   /** Derived from the first user turn until the session is renamed. */
@@ -95,6 +102,8 @@ export interface AgentPermissionDecision {
 }
 
 export interface CreateAgentSessionInput {
+  /** Defaults to the only available provider when exactly one is installed. */
+  providerId?: string;
   cwd: string;
   model?: string;
   permissionMode?: AgentPermissionMode;
@@ -102,6 +111,16 @@ export interface CreateAgentSessionInput {
   resume?: string;
   /** With `resume`, branch into a new session instead of continuing it. */
   fork?: boolean;
+}
+
+/** A provider offered to the user, with whether its CLI is actually installed. */
+export interface AgentProviderInfo {
+  id: string;
+  label: string;
+  available: boolean;
+  /** Why it is unavailable, phrased for a user. Null when available. */
+  reason: string | null;
+  capabilities: import("./provider").AgentCapabilities;
 }
 
 export interface AgentServiceEvents {

@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import type { SDKMessage } from "@anthropic-ai/claude-agent-sdk";
-import type { AgentTimelineEntry } from "./types";
+import type { AgentTimelineEntry } from "../types";
 
 /**
  * Content blocks are read structurally rather than through the SDK's imported

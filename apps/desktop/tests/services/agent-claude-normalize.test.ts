@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { normalizeMessage } from "../../src/services/agent/normalize";
+import { normalizeMessage } from "../../src/services/agent/providers/claude-code-normalize";
 import type { SDKMessage } from "@anthropic-ai/claude-agent-sdk";
 
 const AT = 1_800_000_000_000;

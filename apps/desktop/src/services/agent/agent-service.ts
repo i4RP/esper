@@ -1,22 +1,15 @@
 import { EventEmitter } from "node:events";
 import { randomUUID } from "node:crypto";
-import { query } from "@anthropic-ai/claude-agent-sdk";
 import type {
-  CanUseTool,
-  PermissionResult,
-  Query,
-  SDKMessage,
-} from "@anthropic-ai/claude-agent-sdk";
-import { InputQueue } from "./input-queue";
-import { normalizeMessage } from "./normalize";
-import {
-  CLAUDE_NOT_FOUND_MESSAGE,
-  resolveClaudeExecutable,
-} from "./resolve-executable";
+  AgentProviderClient,
+  ProviderEvent,
+  ProviderSession,
+} from "./provider";
 import type {
   AgentPermissionDecision,
   AgentPermissionMode,
   AgentPermissionRequest,
+  AgentProviderInfo,
   AgentSessionState,
   AgentSessionSummary,
   AgentTimelineEntry,
@@ -41,36 +34,52 @@ const MAX_TIMELINE_ENTRIES = 2000;
 
 interface Session {
   summary: AgentSessionSummary;
-  queue: InputQueue;
-  query: Query;
+  provider: AgentProviderClient;
+  session: ProviderSession;
   timeline: AgentTimelineEntry[];
-  /** Pending `canUseTool` promises, keyed by request id. */
-  pendingPermissions: Map<string, (result: PermissionResult) => void>;
+  unsubscribe: () => void;
+  /** Permission requests awaiting an answer, by request id. */
+  pending: Set<string>;
 }
 
 /**
- * Runs Claude Code sessions and exposes them as observable, addressable
+ * Runs coding-agent sessions and exposes them as observable, addressable
  * objects.
  *
- * Session lifecycle, transcript persistence, resume/fork and interruption all
- * belong to the Agent SDK — this service owns the parts the SDK deliberately
- * leaves to the host: which sessions exist, what state each is in, a live
- * timeline for UI, and routing tool-permission questions to whoever is
+ * Providers own how their agent is launched and spoken to; this service owns
+ * what is common to all of them — which sessions exist, what state each is in,
+ * a live timeline for UI, and routing tool-permission questions to whoever is
  * watching (a settings pane today, a phone later).
  */
 export class AgentService extends EventEmitter {
+  private readonly providers = new Map<string, AgentProviderClient>();
   private readonly sessions = new Map<string, Session>();
 
   constructor(private readonly logger: AgentLogger) {
     super();
   }
 
-  /**
-   * Whether Claude Code is installed and runnable. Sessions cannot be created
-   * without it, so surfaces should check this before offering to start one.
-   */
+  register(provider: AgentProviderClient): void {
+    this.providers.set(provider.id, provider);
+  }
+
+  /** Every registered provider with its current availability. */
+  listProviders(): AgentProviderInfo[] {
+    return [...this.providers.values()].map((provider) => {
+      const availability = provider.checkAvailability();
+      return {
+        id: provider.id,
+        label: provider.label,
+        available: availability.available,
+        reason: availability.reason,
+        capabilities: provider.capabilities,
+      };
+    });
+  }
+
+  /** Whether any provider can currently start a session. */
   isAvailable(): boolean {
-    return resolveClaudeExecutable() !== null;
+    return this.listProviders().some((provider) => provider.available);
   }
 
   listSessions(): AgentSessionSummary[] {
@@ -87,63 +96,62 @@ export class AgentService extends EventEmitter {
     return this.sessions.get(sessionId)?.timeline ?? [];
   }
 
-  createSession(input: CreateAgentSessionInput): AgentSessionSummary {
-    // Resolved here rather than left to the SDK's PATH lookup: a packaged macOS
-    // app inherits launchd's PATH, which does not include the install location.
-    const executable = resolveClaudeExecutable();
-    if (!executable) {
-      throw new Error(CLAUDE_NOT_FOUND_MESSAGE);
+  async createSession(
+    input: CreateAgentSessionInput,
+  ): Promise<AgentSessionSummary> {
+    const provider = this.resolveProvider(input.providerId);
+
+    const availability = provider.checkAvailability();
+    if (!availability.available) {
+      throw new Error(
+        availability.reason ?? `${provider.label} is not available.`,
+      );
     }
 
     const id = randomUUID();
     const now = Date.now();
-    const permissionMode = input.permissionMode ?? "default";
-
-    const queue = new InputQueue();
     const summary: AgentSessionSummary = {
       id,
+      providerId: provider.id,
+      nativeSessionId: null,
       cwd: input.cwd,
       title: null,
       state: "starting",
       model: input.model ?? null,
-      permissionMode,
+      permissionMode: input.permissionMode ?? "default",
       createdAt: now,
       lastActivityAt: now,
       error: null,
     };
 
-    const session: Session = {
-      summary,
-      queue,
-      // Assigned immediately below; `query()` is synchronous and needs the
-      // session object to exist first so `canUseTool` can close over it.
-      query: undefined as unknown as Query,
-      timeline: [],
-      pendingPermissions: new Map(),
-    };
-
-    session.query = query({
-      // Always streaming input: interrupt(), setModel() and setPermissionMode()
-      // are unavailable in single-prompt mode.
-      prompt: queue.stream(),
-      options: {
-        cwd: input.cwd,
-        sessionId: id,
-        permissionMode,
-        pathToClaudeCodeExecutable: executable,
-        ...(input.model ? { model: input.model } : {}),
-        ...(input.resume
-          ? { resume: input.resume, forkSession: input.fork ?? false }
-          : {}),
-        canUseTool: this.makeCanUseTool(session),
-      },
+    const providerSession = await provider.createSession({
+      cwd: input.cwd,
+      model: input.model,
+      permissionMode: input.permissionMode,
+      resume: input.resume,
+      fork: input.fork,
     });
 
-    this.sessions.set(id, session);
-    void this.pump(session);
+    const session: Session = {
+      summary,
+      provider,
+      session: providerSession,
+      timeline: [],
+      unsubscribe: () => {},
+      pending: new Set(),
+    };
 
+    session.unsubscribe = providerSession.subscribe((event) =>
+      this.handleProviderEvent(session, event),
+    );
+    // Providers that know their id up front (Claude Code) never emit
+    // "session-id", so seed it here.
+    summary.nativeSessionId = providerSession.nativeSessionId;
+
+    this.sessions.set(id, session);
     this.logger.info("Agent session created", {
       sessionId: id,
+      provider: provider.id,
       cwd: input.cwd,
       resume: input.resume ?? null,
     });
@@ -151,18 +159,10 @@ export class AgentService extends EventEmitter {
     return summary;
   }
 
-  sendMessage(sessionId: string, text: string): void {
+  async sendMessage(sessionId: string, text: string): Promise<void> {
     const session = this.requireSession(sessionId);
 
-    session.queue.push({
-      type: "user",
-      message: { role: "user", content: text },
-      parent_tool_use_id: null,
-      // Marks this as typed (or dictated) by a person rather than machine-
-      // generated. The SDK fails closed at trust gates on unattributed input.
-      origin: { kind: "human" },
-      session_id: sessionId,
-    });
+    await session.session.send(text);
 
     this.appendEntry(session, {
       kind: "user",
@@ -182,8 +182,10 @@ export class AgentService extends EventEmitter {
 
   async interrupt(sessionId: string): Promise<void> {
     const session = this.requireSession(sessionId);
-    await session.query.interrupt();
-    this.setState(session, "idle");
+    if (!session.session.interrupt) {
+      throw new Error(`${session.provider.label} cannot interrupt a turn.`);
+    }
+    await session.session.interrupt();
   }
 
   async setPermissionMode(
@@ -191,14 +193,20 @@ export class AgentService extends EventEmitter {
     mode: AgentPermissionMode,
   ): Promise<void> {
     const session = this.requireSession(sessionId);
-    await session.query.setPermissionMode(mode);
+    if (!session.session.setPermissionMode) {
+      throw new Error(`${session.provider.label} has no permission modes.`);
+    }
+    await session.session.setPermissionMode(mode);
     session.summary.permissionMode = mode;
     this.touch(session);
   }
 
   async setModel(sessionId: string, model: string | undefined): Promise<void> {
     const session = this.requireSession(sessionId);
-    await session.query.setModel(model);
+    if (!session.session.setModel) {
+      throw new Error(`${session.provider.label} cannot change model.`);
+    }
+    await session.session.setModel(model);
     session.summary.model = model ?? null;
     this.touch(session);
   }
@@ -209,32 +217,16 @@ export class AgentService extends EventEmitter {
    * interrupted, so a slow UI (or a phone on a flaky link) can easily answer
    * one that no longer exists.
    */
-  resolvePermission(
+  async resolvePermission(
     sessionId: string,
     requestId: string,
     decision: AgentPermissionDecision,
-  ): void {
+  ): Promise<void> {
     const session = this.sessions.get(sessionId);
-    const resolve = session?.pendingPermissions.get(requestId);
-    if (!session || !resolve) {
+    if (!session?.pending.has(requestId)) {
       return;
     }
-
-    session.pendingPermissions.delete(requestId);
-    resolve(
-      decision.allow
-        ? { behavior: "allow" }
-        : {
-            behavior: "deny",
-            message: decision.reason ?? "Denied by the user.",
-          },
-    );
-
-    this.emit("permission-resolved", { requestId, sessionId });
-    this.setState(
-      session,
-      session.pendingPermissions.size > 0 ? "awaiting_permission" : "running",
-    );
+    await session.session.respondToPermission?.(requestId, decision);
   }
 
   closeSession(sessionId: string): void {
@@ -243,12 +235,8 @@ export class AgentService extends EventEmitter {
       return;
     }
 
-    // Deny anything still parked, or the SDK process would sit on a promise
-    // that can never settle and never exit.
-    this.denyAllPending(session, "Session closed.");
-
-    session.queue.close();
-    session.query.close();
+    session.unsubscribe();
+    void session.session.close();
     this.sessions.delete(sessionId);
 
     this.setState(session, "closed");
@@ -262,67 +250,97 @@ export class AgentService extends EventEmitter {
     }
   }
 
-  private makeCanUseTool(session: Session): CanUseTool {
-    return (toolName, input) =>
-      new Promise<PermissionResult>((resolve) => {
+  private handleProviderEvent(session: Session, event: ProviderEvent): void {
+    switch (event.type) {
+      case "entry":
+        this.appendEntry(session, event.entry);
+        return;
+
+      case "state":
+        this.setState(
+          session,
+          // A provider reporting "running" while a question is outstanding
+          // must not clear the prompt the user is looking at.
+          session.pending.size > 0 && event.state === "running"
+            ? "awaiting_permission"
+            : event.state,
+        );
+        return;
+
+      case "permission": {
+        session.pending.add(event.requestId);
         const request: AgentPermissionRequest = {
-          id: randomUUID(),
+          id: event.requestId,
           sessionId: session.summary.id,
-          toolName,
-          input,
+          toolName: event.toolName,
+          input: event.input,
           at: Date.now(),
         };
-
-        session.pendingPermissions.set(request.id, resolve);
         this.setState(session, "awaiting_permission");
         this.emit("permission-requested", request);
-
         this.logger.debug("Agent tool permission requested", {
           sessionId: session.summary.id,
-          toolName,
+          toolName: event.toolName,
         });
-      });
-  }
-
-  private async pump(session: Session): Promise<void> {
-    try {
-      for await (const message of session.query) {
-        this.handleMessage(session, message);
+        return;
       }
-      this.setState(session, "closed");
-    } catch (error) {
-      // The iterator throwing is terminal for this session: no further
-      // messages arrive, so anything waiting on a permission is stuck.
-      this.denyAllPending(session, "Session ended.");
-      session.summary.error =
-        error instanceof Error ? error.message : String(error);
-      this.setState(session, "error");
-      this.logger.error("Agent session failed", {
-        sessionId: session.summary.id,
-        error: session.summary.error,
-      });
+
+      case "permission-resolved":
+        session.pending.delete(event.requestId);
+        this.emit("permission-resolved", {
+          requestId: event.requestId,
+          sessionId: session.summary.id,
+        });
+        if (session.pending.size === 0) {
+          this.setState(session, "running");
+        }
+        return;
+
+      case "session-id":
+        // Providers that assign their own id (ACP) report it once known; it is
+        // what a later resume has to be given.
+        session.summary.nativeSessionId = event.sessionId;
+        this.touch(session);
+        return;
+
+      case "error":
+        session.summary.error = event.message;
+        this.setState(session, "error");
+        this.logger.error("Agent session failed", {
+          sessionId: session.summary.id,
+          error: event.message,
+        });
+        return;
     }
   }
 
-  private handleMessage(session: Session, message: SDKMessage): void {
-    const at = Date.now();
-
-    for (const entry of normalizeMessage(message, at)) {
-      this.appendEntry(session, entry);
+  private resolveProvider(providerId?: string): AgentProviderClient {
+    if (providerId) {
+      const provider = this.providers.get(providerId);
+      if (!provider) {
+        throw new Error(`Unknown agent provider: ${providerId}`);
+      }
+      return provider;
     }
 
-    // A result message ends the turn — the agent is waiting on us again.
-    if (message.type === "result") {
-      this.setState(session, "idle");
-      return;
+    // With one provider installed, asking the caller to name it is friction for
+    // no benefit. With several it is ambiguous, so make the caller choose.
+    const available = [...this.providers.values()].filter(
+      (provider) => provider.checkAvailability().available,
+    );
+    if (available.length === 1) {
+      return available[0];
     }
-
-    if (message.type === "assistant") {
-      this.setState(
-        session,
-        session.pendingPermissions.size > 0 ? "awaiting_permission" : "running",
+    if (available.length === 0) {
+      throw new Error(
+        "No coding agent is installed. Install Claude Code or another supported agent.",
       );
     }
+    throw new Error(
+      `Several agents are available (${available
+        .map((provider) => provider.id)
+        .join(", ")}); specify which to use.`,
+    );
   }
 
   private appendEntry(session: Session, entry: AgentTimelineEntry): void {
@@ -336,17 +354,6 @@ export class AgentService extends EventEmitter {
 
     this.touch(session);
     this.emit("session-entry", { sessionId: session.summary.id, entry });
-  }
-
-  private denyAllPending(session: Session, message: string): void {
-    for (const [requestId, resolve] of session.pendingPermissions) {
-      resolve({ behavior: "deny", message });
-      this.emit("permission-resolved", {
-        requestId,
-        sessionId: session.summary.id,
-      });
-    }
-    session.pendingPermissions.clear();
   }
 
   private setState(session: Session, state: AgentSessionState): void {

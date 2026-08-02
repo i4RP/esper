@@ -19,7 +19,9 @@ import { HistoryCleanupService } from "../../services/history-cleanup-service";
 import { SleepGuardService } from "../../services/sleep-guard-service";
 import { ClipboardHistoryService } from "../../services/clipboard-history-service";
 import { AgentService } from "../../services/agent/agent-service";
-import { resolveClaudeExecutable } from "../../services/agent/resolve-executable";
+import { ClaudeCodeProvider } from "../../services/agent/providers/claude-code";
+import { AcpProvider } from "../../services/agent/providers/acp";
+import { resolveCatalog } from "../../services/agent/catalog";
 import { setApplicationLocale } from "../../i18n/application-locale";
 
 /**
@@ -268,12 +270,23 @@ export class ServiceManager {
     // AgentService takes an injected logger so it stays free of Electron and
     // can move into a standalone daemon process later.
     this.agentService = new AgentService(logger.main);
-    // Log the resolved executable: a packaged app doesn't inherit the shell's
-    // PATH, so "did we find Claude Code" is the first thing to check when
-    // sessions fail to start in a build but work under `pnpm start`.
+    this.agentService.register(new ClaudeCodeProvider());
+    // The ACP catalog is registered whole; each entry reports its own
+    // availability, so uninstalled agents show as "install this" rather than
+    // vanishing from the list.
+    for (const spec of resolveCatalog()) {
+      this.agentService.register(new AcpProvider(spec));
+    }
+    // Log what was found: a packaged app doesn't inherit the shell's PATH, so
+    // "which agents did we resolve" is the first thing to check when sessions
+    // fail to start in a build but work under `pnpm start`.
     logger.main.info("Agent service initialized", {
-      claudeCodeAvailable: this.agentService.isAvailable(),
-      claudeCodePath: resolveClaudeExecutable(),
+      // Only the installed ones: the catalog is long and the absent entries
+      // are noise in a log.
+      available: this.agentService
+        .listProviders()
+        .filter((provider) => provider.available)
+        .map((provider) => provider.id),
     });
   }
 
