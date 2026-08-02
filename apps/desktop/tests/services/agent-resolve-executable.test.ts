@@ -1,14 +1,22 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { accessSync } from "node:fs";
+import { accessSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import {
   CLAUDE_PATH_ENV_VAR,
   resolveClaudeExecutable,
+  resolveExecutable,
 } from "../../src/services/agent/resolve-executable";
 
 vi.mock("node:fs", async (importOriginal) => {
   const actual = await importOriginal<typeof import("node:fs")>();
-  return { ...actual, accessSync: vi.fn() };
+  return {
+    ...actual,
+    accessSync: vi.fn(),
+    // No version manager installed unless a test says otherwise.
+    readdirSync: vi.fn(() => {
+      throw new Error("ENOENT");
+    }),
+  };
 });
 
 const HOME = "/Users/tester";
@@ -24,6 +32,58 @@ const onlyExecutable = (...paths: string[]) => {
 
 afterEach(() => {
   vi.mocked(accessSync).mockReset();
+});
+
+describe("node version managers", () => {
+  // Most of the ACP catalog runs through npx. Version managers put it under a
+  // per-version directory that only a shell profile adds to PATH, so a
+  // packaged app would otherwise find no npx and hide those agents.
+  it("finds npx under an nvm-managed node", () => {
+    const npx = join(
+      HOME,
+      ".nvm",
+      "versions",
+      "node",
+      "v22.22.2",
+      "bin",
+      "npx",
+    );
+    vi.mocked(readdirSync).mockImplementation(((target: string) =>
+      String(target).endsWith(join(".nvm", "versions", "node"))
+        ? ["v20.1.0", "v22.22.2"]
+        : (() => {
+            throw new Error("ENOENT");
+          })()) as unknown as typeof readdirSync);
+    onlyExecutable(npx);
+
+    expect(resolveExecutable("npx", { env: {}, home: HOME })).toBe(npx);
+  });
+
+  // A version manager's copy is a fallback, not the preferred one.
+  it("prefers a system install over a managed one", () => {
+    const managed = join(
+      HOME,
+      ".nvm",
+      "versions",
+      "node",
+      "v22.22.2",
+      "bin",
+      "npx",
+    );
+    vi.mocked(readdirSync).mockImplementation((() => [
+      "v22.22.2",
+    ]) as unknown as typeof readdirSync);
+    onlyExecutable(managed, "/opt/homebrew/bin/npx");
+
+    expect(resolveExecutable("npx", { env: {}, home: HOME })).toBe(
+      "/opt/homebrew/bin/npx",
+    );
+  });
+
+  it("copes with no version manager present", () => {
+    onlyExecutable();
+    expect(resolveExecutable("npx", { env: {}, home: HOME })).toBeNull();
+  });
 });
 
 describe("resolveClaudeExecutable", () => {

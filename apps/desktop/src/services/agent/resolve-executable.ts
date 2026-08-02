@@ -1,4 +1,4 @@
-import { accessSync, constants } from "node:fs";
+import { accessSync, constants, readdirSync } from "node:fs";
 import { homedir } from "node:os";
 import { delimiter, join } from "node:path";
 
@@ -21,6 +21,40 @@ const withExeSuffix = (name: string): string =>
   process.platform === "win32" ? `${name}.exe` : name;
 
 /**
+ * Node version managers install `node`/`npx` under a per-version directory that
+ * is only on PATH because a shell profile put it there — so a packaged app
+ * never sees it. Most of the ACP catalog runs through `npx`, which would make
+ * those agents silently undetectable. Newest version first, since that is what
+ * an interactive shell would most likely resolve to.
+ */
+const versionManagerBinDirs = (home: string): string[] => {
+  const roots = [
+    join(home, ".nvm", "versions", "node"),
+    join(home, ".fnm", "node-versions"),
+    join(home, ".local", "share", "mise", "installs", "node"),
+    join(home, ".asdf", "installs", "nodejs"),
+  ];
+
+  const dirs: string[] = [];
+  for (const root of roots) {
+    let versions: string[];
+    try {
+      versions = readdirSync(root);
+    } catch {
+      continue;
+    }
+    // Reverse lexicographic order approximates newest-first well enough for
+    // picking a runner; exact semver ordering is not worth the complexity.
+    for (const version of versions.sort().reverse()) {
+      // fnm and asdf nest the actual bin one level deeper than nvm does.
+      dirs.push(join(root, version, "bin"));
+      dirs.push(join(root, version, "installation", "bin"));
+    }
+  }
+  return dirs;
+};
+
+/**
  * Install locations searched ahead of PATH, in preference order. These are
  * where the agent CLIs and the package managers that install them put things.
  */
@@ -37,6 +71,10 @@ const wellKnownDirs = (home: string): string[] => {
   if (process.platform !== "win32") {
     dirs.push("/opt/homebrew/bin", "/usr/local/bin", "/usr/bin");
   }
+
+  // Last among the well-known locations: a system-wide install should win over
+  // whichever version a version manager happens to have selected.
+  dirs.push(...versionManagerBinDirs(home));
 
   return dirs;
 };
