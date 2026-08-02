@@ -6,10 +6,29 @@ import type {
 } from "@anthropic-ai/claude-agent-sdk";
 
 const queryMock = vi.fn();
+// Default to "installed" so the suite doesn't depend on whether the machine
+// running it happens to have Claude Code.
+const resolveExecutableMock = vi.fn<() => string | null>(
+  () => "/opt/test/claude",
+);
 
 vi.mock("@anthropic-ai/claude-agent-sdk", () => ({
   query: (params: unknown) => queryMock(params),
 }));
+
+vi.mock(
+  "../../src/services/agent/resolve-executable",
+  async (importOriginal) => {
+    const actual =
+      await importOriginal<
+        typeof import("../../src/services/agent/resolve-executable")
+      >();
+    return {
+      ...actual,
+      resolveClaudeExecutable: () => resolveExecutableMock(),
+    };
+  },
+);
 
 import { AgentService } from "../../src/services/agent/agent-service";
 import type {
@@ -113,6 +132,7 @@ describe("AgentService", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    resolveExecutableMock.mockReturnValue("/opt/test/claude");
     fake = new FakeQuery();
     queryMock.mockImplementation(
       (params: { options?: { canUseTool?: CanUseTool } }) => {
@@ -168,6 +188,33 @@ describe("AgentService", () => {
 
       service.sendMessage(id, "now add tests");
       expect(service.getSession(id)?.title).toBe("add a health endpoint");
+    });
+
+    // Without an absolute path the SDK falls back to PATH, which a packaged
+    // macOS app doesn't inherit — so the resolved path must reach the SDK.
+    it("hands the SDK an absolute path to the executable", () => {
+      service.createSession({ cwd: "/tmp/p" });
+
+      expect(
+        queryMock.mock.calls[0][0].options.pathToClaudeCodeExecutable,
+      ).toBe("/opt/test/claude");
+    });
+
+    it("reports availability from the resolver", () => {
+      expect(service.isAvailable()).toBe(true);
+
+      resolveExecutableMock.mockReturnValue(null);
+      expect(service.isAvailable()).toBe(false);
+    });
+
+    it("refuses to start a session when Claude Code isn't installed", () => {
+      resolveExecutableMock.mockReturnValue(null);
+
+      expect(() => service.createSession({ cwd: "/tmp/p" })).toThrow(
+        /Claude Code was not found/,
+      );
+      expect(queryMock).not.toHaveBeenCalled();
+      expect(service.listSessions()).toHaveLength(0);
     });
 
     it("throws on operations against an unknown session", () => {

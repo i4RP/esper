@@ -19,6 +19,7 @@ import { HistoryCleanupService } from "../../services/history-cleanup-service";
 import { SleepGuardService } from "../../services/sleep-guard-service";
 import { ClipboardHistoryService } from "../../services/clipboard-history-service";
 import { AgentService } from "../../services/agent/agent-service";
+import { resolveClaudeExecutable } from "../../services/agent/resolve-executable";
 import { setApplicationLocale } from "../../i18n/application-locale";
 
 /**
@@ -267,7 +268,13 @@ export class ServiceManager {
     // AgentService takes an injected logger so it stays free of Electron and
     // can move into a standalone daemon process later.
     this.agentService = new AgentService(logger.main);
-    logger.main.info("Agent service initialized");
+    // Log the resolved executable: a packaged app doesn't inherit the shell's
+    // PATH, so "did we find Claude Code" is the first thing to check when
+    // sessions fail to start in a build but work under `pnpm start`.
+    logger.main.info("Agent service initialized", {
+      claudeCodeAvailable: this.agentService.isAvailable(),
+      claudeCodePath: resolveClaudeExecutable(),
+    });
   }
 
   private initializeRecordingManager(): void {

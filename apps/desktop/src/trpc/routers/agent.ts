@@ -15,6 +15,11 @@ const permissionMode = z.enum([
 ]);
 
 export const agentRouter = createRouter({
+  /** False when Claude Code isn't installed — sessions can't be created. */
+  isAvailable: procedure.query(({ ctx }) =>
+    ctx.serviceManager.getService("agentService").isAvailable(),
+  ),
+
   listSessions: procedure.query(({ ctx }) =>
     ctx.serviceManager.getService("agentService").listSessions(),
   ),

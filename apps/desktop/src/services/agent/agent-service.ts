@@ -9,6 +9,10 @@ import type {
 } from "@anthropic-ai/claude-agent-sdk";
 import { InputQueue } from "./input-queue";
 import { normalizeMessage } from "./normalize";
+import {
+  CLAUDE_NOT_FOUND_MESSAGE,
+  resolveClaudeExecutable,
+} from "./resolve-executable";
 import type {
   AgentPermissionDecision,
   AgentPermissionMode,
@@ -61,6 +65,14 @@ export class AgentService extends EventEmitter {
     super();
   }
 
+  /**
+   * Whether Claude Code is installed and runnable. Sessions cannot be created
+   * without it, so surfaces should check this before offering to start one.
+   */
+  isAvailable(): boolean {
+    return resolveClaudeExecutable() !== null;
+  }
+
   listSessions(): AgentSessionSummary[] {
     return [...this.sessions.values()]
       .map((session) => session.summary)
@@ -76,6 +88,13 @@ export class AgentService extends EventEmitter {
   }
 
   createSession(input: CreateAgentSessionInput): AgentSessionSummary {
+    // Resolved here rather than left to the SDK's PATH lookup: a packaged macOS
+    // app inherits launchd's PATH, which does not include the install location.
+    const executable = resolveClaudeExecutable();
+    if (!executable) {
+      throw new Error(CLAUDE_NOT_FOUND_MESSAGE);
+    }
+
     const id = randomUUID();
     const now = Date.now();
     const permissionMode = input.permissionMode ?? "default";
@@ -111,6 +130,7 @@ export class AgentService extends EventEmitter {
         cwd: input.cwd,
         sessionId: id,
         permissionMode,
+        pathToClaudeCodeExecutable: executable,
         ...(input.model ? { model: input.model } : {}),
         ...(input.resume
           ? { resume: input.resume, forkSession: input.fork ?? false }
