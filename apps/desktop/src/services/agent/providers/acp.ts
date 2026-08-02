@@ -20,10 +20,14 @@ export interface AcpAgentSpec {
   /** Provider id, namespaced to avoid colliding with native providers. */
   id: string;
   label: string;
-  /** Executable name, resolved against well-known install locations. */
-  command: string;
-  /** Arguments that put the CLI into ACP mode. */
-  args: string[];
+  /**
+   * Launch command. `command[0]` is the executable — often `npx` or `uvx`,
+   * since most agents are run at a pinned version rather than installed — and
+   * the rest are its arguments.
+   */
+  command: readonly string[];
+  /** Extra environment for the agent process, e.g. disabling auto-update. */
+  env?: Readonly<Record<string, string>>;
 }
 
 /**
@@ -400,14 +404,13 @@ export class AcpProvider implements AgentProviderClient {
   }
 
   checkAvailability(): ProviderAvailability {
-    const path = resolveExecutable(this.spec.command);
+    const executable = this.spec.command[0];
+    const path = resolveExecutable(executable);
     return {
       available: path !== null,
       path,
       reason:
-        path === null
-          ? notInstalledMessage(this.spec.label, this.spec.command)
-          : null,
+        path === null ? notInstalledMessage(this.spec.label, executable) : null,
     };
   }
 
@@ -421,8 +424,11 @@ export class AcpProvider implements AgentProviderClient {
 
     const rpc = this.createProcess({
       command: path,
-      args: this.spec.args,
+      args: [...this.spec.command.slice(1)],
       cwd: input.cwd,
+      // Merged over the inherited environment rather than replacing it: these
+      // are targeted flags (disable auto-update), not a full env.
+      ...(this.spec.env ? { env: { ...process.env, ...this.spec.env } } : {}),
     });
     const session = new AcpSession(rpc, this.label);
 

@@ -477,6 +477,10 @@
         "title": "パーソナライズ",
         "description": "アプリごとに音声入力をカスタマイズするルールを設定"
       },
+      "agents": {
+        "title": "エージェント",
+        "description": "コーディングエージェントをこのマシンで実行"
+      },
       "aiModels": {
         "title": "AIモデル",
         "description": "AIモデルとプロバイダーを設定"

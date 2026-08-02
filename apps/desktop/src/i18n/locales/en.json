@@ -156,7 +156,10 @@
         "local": {
           "name": "Local",
           "tag": "Private and offline",
-          "bullets": ["Runs entirely on your device", "No account needed"],
+          "bullets": [
+            "Runs entirely on your device",
+            "No account needed"
+          ],
           "caveats": [
             "Speed and accuracy depend on your hardware",
             "One-time download"
@@ -473,6 +476,10 @@
       "formatting": {
         "title": "Personalization",
         "description": "Per-app personalization rules for your dictation"
+      },
+      "agents": {
+        "title": "Agents",
+        "description": "Run coding agents on your machine"
       },
       "aiModels": {
         "title": "AI Models",

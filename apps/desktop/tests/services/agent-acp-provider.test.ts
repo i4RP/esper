@@ -101,8 +101,7 @@ class FakeRpc {
 const spec = {
   id: "acp:test",
   label: "Test Agent",
-  command: "test-agent",
-  args: ["acp"],
+  command: ["test-agent", "acp"],
 };
 
 const flush = () => new Promise((resolve) => setTimeout(resolve, 0));

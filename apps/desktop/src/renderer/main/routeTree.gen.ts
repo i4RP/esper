@@ -24,6 +24,7 @@ import { Route as AppSettingsLabsRouteImport } from './routes/_app/settings/labs
 import { Route as AppSettingsFormattingRouteImport } from './routes/_app/settings/formatting'
 import { Route as AppSettingsDictationRouteImport } from './routes/_app/settings/dictation'
 import { Route as AppSettingsAiModelsRouteImport } from './routes/_app/settings/ai-models'
+import { Route as AppSettingsAgentsRouteImport } from './routes/_app/settings/agents'
 import { Route as AppSettingsAdvancedRouteImport } from './routes/_app/settings/advanced'
 import { Route as AppSettingsAboutRouteImport } from './routes/_app/settings/about'
 import { Route as AppNotesNoteIdRouteImport } from './routes/_app/notes.$noteId'
@@ -103,6 +104,11 @@ const AppSettingsAiModelsRoute = AppSettingsAiModelsRouteImport.update({
   path: '/settings/ai-models',
   getParentRoute: () => AppRouteRoute,
 } as any)
+const AppSettingsAgentsRoute = AppSettingsAgentsRouteImport.update({
+  id: '/settings/agents',
+  path: '/settings/agents',
+  getParentRoute: () => AppRouteRoute,
+} as any)
 const AppSettingsAdvancedRoute = AppSettingsAdvancedRouteImport.update({
   id: '/settings/advanced',
   path: '/settings/advanced',
@@ -126,6 +132,7 @@ export interface FileRoutesByFullPath {
   '/notes/$noteId': typeof AppNotesNoteIdRoute
   '/settings/about': typeof AppSettingsAboutRoute
   '/settings/advanced': typeof AppSettingsAdvancedRoute
+  '/settings/agents': typeof AppSettingsAgentsRoute
   '/settings/ai-models': typeof AppSettingsAiModelsRoute
   '/settings/dictation': typeof AppSettingsDictationRoute
   '/settings/formatting': typeof AppSettingsFormattingRoute
@@ -144,6 +151,7 @@ export interface FileRoutesByTo {
   '/notes/$noteId': typeof AppNotesNoteIdRoute
   '/settings/about': typeof AppSettingsAboutRoute
   '/settings/advanced': typeof AppSettingsAdvancedRoute
+  '/settings/agents': typeof AppSettingsAgentsRoute
   '/settings/ai-models': typeof AppSettingsAiModelsRoute
   '/settings/dictation': typeof AppSettingsDictationRoute
   '/settings/formatting': typeof AppSettingsFormattingRoute
@@ -165,6 +173,7 @@ export interface FileRoutesById {
   '/_app/notes/$noteId': typeof AppNotesNoteIdRoute
   '/_app/settings/about': typeof AppSettingsAboutRoute
   '/_app/settings/advanced': typeof AppSettingsAdvancedRoute
+  '/_app/settings/agents': typeof AppSettingsAgentsRoute
   '/_app/settings/ai-models': typeof AppSettingsAiModelsRoute
   '/_app/settings/dictation': typeof AppSettingsDictationRoute
   '/_app/settings/formatting': typeof AppSettingsFormattingRoute
@@ -186,6 +195,7 @@ export interface FileRouteTypes {
     | '/notes/$noteId'
     | '/settings/about'
     | '/settings/advanced'
+    | '/settings/agents'
     | '/settings/ai-models'
     | '/settings/dictation'
     | '/settings/formatting'
@@ -204,6 +214,7 @@ export interface FileRouteTypes {
     | '/notes/$noteId'
     | '/settings/about'
     | '/settings/advanced'
+    | '/settings/agents'
     | '/settings/ai-models'
     | '/settings/dictation'
     | '/settings/formatting'
@@ -224,6 +235,7 @@ export interface FileRouteTypes {
     | '/_app/notes/$noteId'
     | '/_app/settings/about'
     | '/_app/settings/advanced'
+    | '/_app/settings/agents'
     | '/_app/settings/ai-models'
     | '/_app/settings/dictation'
     | '/_app/settings/formatting'
@@ -349,6 +361,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppSettingsAiModelsRouteImport
       parentRoute: typeof AppRouteRoute
     }
+    '/_app/settings/agents': {
+      id: '/_app/settings/agents'
+      path: '/settings/agents'
+      fullPath: '/settings/agents'
+      preLoaderRoute: typeof AppSettingsAgentsRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
     '/_app/settings/advanced': {
       id: '/_app/settings/advanced'
       path: '/settings/advanced'
@@ -392,6 +411,7 @@ interface AppRouteRouteChildren {
   AppNotesRoute: typeof AppNotesRouteWithChildren
   AppSettingsAboutRoute: typeof AppSettingsAboutRoute
   AppSettingsAdvancedRoute: typeof AppSettingsAdvancedRoute
+  AppSettingsAgentsRoute: typeof AppSettingsAgentsRoute
   AppSettingsAiModelsRoute: typeof AppSettingsAiModelsRoute
   AppSettingsDictationRoute: typeof AppSettingsDictationRoute
   AppSettingsFormattingRoute: typeof AppSettingsFormattingRoute
@@ -409,6 +429,7 @@ const AppRouteRouteChildren: AppRouteRouteChildren = {
   AppNotesRoute: AppNotesRouteWithChildren,
   AppSettingsAboutRoute: AppSettingsAboutRoute,
   AppSettingsAdvancedRoute: AppSettingsAdvancedRoute,
+  AppSettingsAgentsRoute: AppSettingsAgentsRoute,
   AppSettingsAiModelsRoute: AppSettingsAiModelsRoute,
   AppSettingsDictationRoute: AppSettingsDictationRoute,
   AppSettingsFormattingRoute: AppSettingsFormattingRoute,

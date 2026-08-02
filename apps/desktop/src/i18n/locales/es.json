@@ -477,6 +477,10 @@
         "title": "Personalización",
         "description": "Reglas de personalización por aplicación para tus dictados"
       },
+      "agents": {
+        "title": "Agentes",
+        "description": "Ejecuta agentes de código en tu equipo"
+      },
       "aiModels": {
         "title": "Modelos de IA",
         "description": "Configura modelos y proveedores de IA"

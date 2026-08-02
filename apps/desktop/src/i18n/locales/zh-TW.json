@@ -477,6 +477,10 @@
         "title": "個人化",
         "description": "為各個應用程式設定個人化聽寫規則"
       },
+      "agents": {
+        "title": "Agents",
+        "description": "Run coding agents on your machine"
+      },
       "aiModels": {
         "title": "AI 模型",
         "description": "AI 模型與提供者設定"

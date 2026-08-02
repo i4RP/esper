@@ -477,6 +477,10 @@
         "title": "Personalisierung",
         "description": "App-spezifische Regeln zur Personalisierung deiner Diktate"
       },
+      "agents": {
+        "title": "Agenten",
+        "description": "Coding-Agents auf diesem Rechner ausführen"
+      },
       "aiModels": {
         "title": "KI-Modelle",
         "description": "KI-Modelle und Anbieter konfigurieren"

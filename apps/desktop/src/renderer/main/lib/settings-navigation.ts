@@ -8,6 +8,7 @@ import {
   IconHistory,
   IconKeyboard,
   IconAdjustments,
+  IconRobot,
   type Icon,
 } from "@tabler/icons-react";
 
@@ -70,6 +71,13 @@ export const SETTINGS_NAV_ITEMS: SettingsNavItem[] = [
     url: "/settings/snippet-editor",
     descriptionKey: "settings.nav.snippetEditor.description",
     icon: IconClipboard,
+    type: "settings",
+  },
+  {
+    titleKey: "settings.nav.agents.title",
+    url: "/settings/agents",
+    descriptionKey: "settings.nav.agents.description",
+    icon: IconRobot,
     type: "settings",
   },
   {
