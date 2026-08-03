@@ -114,7 +114,8 @@
       "accessibility": {
         "title": "輔助使用",
         "description": "讓 Esper 能將文字貼到任何應用程式"
-      }
+      },
+      "skipHint": "您可以稍後在設定中授予這些權限。"
     },
     "discovery": {
       "title": "您是如何得知我們的？",

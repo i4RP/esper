@@ -114,7 +114,8 @@
       "accessibility": {
         "title": "Bedienungshilfen",
         "description": "Damit Esper Text in jede App einfügen kann"
-      }
+      },
+      "skipHint": "Sie können diese Berechtigungen später in den Einstellungen erteilen."
     },
     "discovery": {
       "title": "Wie hast du von uns erfahren?",

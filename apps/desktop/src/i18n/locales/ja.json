@@ -114,7 +114,8 @@
       "accessibility": {
         "title": "アクセシビリティ",
         "description": "Esperがどのアプリにもテキストを貼り付けられるようにするために必要です"
-      }
+      },
+      "skipHint": "これらの権限は後から設定で許可できます。"
     },
     "discovery": {
       "title": "Esperをどこで知りましたか？",

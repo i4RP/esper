@@ -113,11 +113,17 @@ export function PermissionsScreen({
       title={t("onboarding.permissions.title")}
       subtitle={t("onboarding.permissions.subtitle")}
       footer={
-        <NavigationButtons
-          onBack={onBack}
-          onNext={onNext}
-          disableNext={!allPermissionsGranted}
-        />
+        // Permissions are not gated: a re-signed build resets macOS's grants,
+        // and blocking here would strand the user on this screen with no way
+        // forward. They can be granted later from Settings.
+        <div className="flex w-full flex-col items-end gap-2">
+          {!allPermissionsGranted && (
+            <p className="text-[13px] text-muted-foreground">
+              {t("onboarding.permissions.skipHint")}
+            </p>
+          )}
+          <NavigationButtons onBack={onBack} onNext={onNext} />
+        </div>
       }
     >
       <div className="flex w-full max-w-[560px] animate-ob-rise flex-col gap-[11px]">

@@ -114,7 +114,8 @@
       "accessibility": {
         "title": "Accesibilidad",
         "description": "Para que Esper pueda pegar texto en cualquier aplicación"
-      }
+      },
+      "skipHint": "Puedes conceder estos permisos más tarde en Ajustes."
     },
     "discovery": {
       "title": "¿Cómo nos conociste?",

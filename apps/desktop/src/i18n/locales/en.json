@@ -114,7 +114,8 @@
       "accessibility": {
         "title": "Accessibility",
         "description": "So Esper can paste text into any app"
-      }
+      },
+      "skipHint": "You can grant these later in Settings."
     },
     "discovery": {
       "title": "How did you hear about us?",
